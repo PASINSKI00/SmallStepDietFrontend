@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SharedService } from 'src/app/shared.service';
 
 @Component({
   selector: 'app-signup',
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SignupComponent implements OnInit {
 
-  constructor() { }
+  constructor(private _sharedService: SharedService) { }
 
   ngOnInit(): void {
   }
 
+  signup() {
+    console.log('signup');
+  }
+
+  login() {
+    console.log('login');
+    this._sharedService.emitChange('login');
+  }
 }

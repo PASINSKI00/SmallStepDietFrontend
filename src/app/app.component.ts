@@ -18,6 +18,10 @@ export class AppComponent {
     _sharedService.changeEmitted$.subscribe( text => {
       if(text == 'closeAccess')
         this.closeAccess();
+      else if(text == 'login')
+        this.login();
+      else if(text == 'signup')
+        this.signup();
       });
    }
 
@@ -26,18 +30,21 @@ export class AppComponent {
   }
 
   login(){
+    this.closeAccess();
     this.overlayRef = this.overlay.create();
     const componentPortal = new ComponentPortal(LoginComponent);
     this.overlayRef.attach(componentPortal);
   }
 
   signup(){
+    this.closeAccess();
     this.overlayRef = this.overlay.create();
     const componentPortal = new ComponentPortal(SignupComponent);
     this.overlayRef.attach(componentPortal);
   }
 
   closeAccess(){
-    this.overlayRef.dispose();
+    if(this.overlayRef)
+      this.overlayRef.dispose();
   }
 }

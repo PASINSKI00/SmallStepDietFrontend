@@ -1,1 +1,14 @@
-<app-base></app-base>
+<app-base>
+    <div id="login-container">
+        <p>Sign in to your account</p>
+        <input id="email" placeholder="email">
+        <input type="password" id="password" placeholder="password">
+        <button id="login-button" (click)="login()">Log in</button>
+        <div id="divider">
+            <hr>
+            <p>or</p>
+            <hr>
+        </div>
+        <button id="signup-button" (click)="signup()">Create a new account</button>
+    </div>
+</app-base>

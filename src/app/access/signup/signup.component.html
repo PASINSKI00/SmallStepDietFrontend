@@ -1,1 +1,16 @@
-<p>signup works!</p>
+<app-base>
+    <div id="signup-container">
+        <p>Create a new account</p>
+        <input id="name" placeholder="name">
+        <input id="email" placeholder="email">
+        <input type="password" id="password" placeholder="password">
+        <input id="confirm-password" placeholder="confirm password">
+        <button id="signup-button" (click)="signup()">Sign Up</button>
+        <div id="divider">
+            <hr>
+            <p>or</p>
+            <hr>
+        </div>
+        <button id="login-button" (click)="login()">Use existing account</button>
+    </div>
+</app-base>
