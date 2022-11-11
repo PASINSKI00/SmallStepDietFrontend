@@ -7,6 +7,10 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { DietComponent } from './diet/diet.component';
 import { WallComponent } from './wall/wall.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { LoginComponent } from './access/login/login.component';
+import { SignupComponent } from './access/signup/signup.component';
 
 @NgModule({
   declarations: [
@@ -14,11 +18,15 @@ import { WallComponent } from './wall/wall.component';
     NavbarComponent,
     HomeComponent,
     DietComponent,
-    WallComponent
+    WallComponent,
+    LoginComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FontAwesomeModule,
+    OverlayModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

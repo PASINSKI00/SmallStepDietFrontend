@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./navbar.component.sass']
 })
 export class NavbarComponent implements OnInit {
+  @Output() accessEvent = new EventEmitter<string>();
   active: string = 'home';
 
   constructor() { }
@@ -13,7 +14,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  register() {
-    console.log('register');
+  access() {
+    this.accessEvent.next('access');
   }
 }
