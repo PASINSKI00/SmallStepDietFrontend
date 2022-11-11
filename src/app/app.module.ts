@@ -11,6 +11,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { LoginComponent } from './access/login/login.component';
 import { SignupComponent } from './access/signup/signup.component';
+import { BaseComponent } from './access/base/base.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { SignupComponent } from './access/signup/signup.component';
     DietComponent,
     WallComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
+    BaseComponent
   ],
   imports: [
     BrowserModule,

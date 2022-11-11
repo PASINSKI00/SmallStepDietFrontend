@@ -3,6 +3,7 @@ import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import { ComponentPortal } from "@angular/cdk/portal";
 import { LoginComponent } from "./access/login/login.component";
 import { SignupComponent } from "./access/signup/signup.component";
+import { SharedService } from './shared.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,12 @@ export class AppComponent {
   title = 'frontend';
   overlayRef!: OverlayRef;
 
-  constructor(private overlay: Overlay) { }
+  constructor(private overlay: Overlay, private _sharedService: SharedService) {
+    _sharedService.changeEmitted$.subscribe( text => {
+      if(text == 'closeAccess')
+        this.closeAccess();
+      });
+   }
 
   access() {
     this.login();
@@ -29,5 +35,9 @@ export class AppComponent {
     this.overlayRef = this.overlay.create();
     const componentPortal = new ComponentPortal(SignupComponent);
     this.overlayRef.attach(componentPortal);
+  }
+
+  closeAccess(){
+    this.overlayRef.dispose();
   }
 }
