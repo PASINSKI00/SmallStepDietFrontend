@@ -1,0 +1,11 @@
+<div id="navbar">
+    <p id="logo">Dieter</p>
+    <nav>
+        <a [className]="active === 'home' ? 'selected' : ''" routerLink="/home" (click)="active='home'" routerLinkActive="active">Home</a>
+        <a [className]="active === 'diet' ? 'selected' : ''" routerLink="/diet" (click)="active='diet'" routerLinkActive="active">Diet</a>
+        <a [className]="active === 'wall' ? 'selected' : ''" routerLink="/wall" (click)="active='wall'" routerLinkActive="active">Wall</a>
+    </nav>
+    <div id="button-container">
+        <button id="join-us-button" (click)="register()">Join Us</button>
+    </div>
+</div>

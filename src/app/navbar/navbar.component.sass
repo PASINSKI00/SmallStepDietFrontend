@@ -1,0 +1,57 @@
+@import '~/src/variables.sass'
+
+#navbar
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    align-items: center
+    padding: 0
+    width: 100%
+    height: 50px
+    background-color: $color-white
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.25)
+
+#navbar #logo
+    display: flex
+    flex-direction: row
+    justify-content: center
+    align-items: center
+    width: 150px
+    height: 100%
+    cursor: pointer
+    font-size: $text-size-2 
+    font-weight: 400
+
+#navbar nav
+    display: flex
+    flex-direction: row
+    justify-content: center
+    align-items: center
+    width: 100%
+    height: 100%
+
+#navbar nav a
+    margin: 0 10px
+    text-decoration: none
+    color: $color-text-black
+    font-weight: $font-weight-light
+
+#navbar nav a.selected
+    font-weight: $font-weight-medium 
+
+#navbar #button-container
+    display: flex
+    flex-direction: row
+    justify-content: center
+    align-items: center
+    width: 150px
+    height: 100%
+
+#navbar #button-container button
+    background-color: $color-green
+    border: none
+    border-radius: 40px
+    padding: 5px 15px
+    font-size: $text-size-1
+    color: $color-white
+    cursor: pointer
