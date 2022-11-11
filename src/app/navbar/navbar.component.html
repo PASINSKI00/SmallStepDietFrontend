@@ -1,5 +1,5 @@
 <div id="navbar">
-    <p id="logo">Dieter</p>
+    <p id="logo" routerLink="/home" (click)="active='home'">Dieter</p>
     <nav>
         <a [className]="active === 'home' ? 'selected' : ''" routerLink="/home" (click)="active='home'" routerLinkActive="active">Home</a>
         <a [className]="active === 'diet' ? 'selected' : ''" routerLink="/diet" (click)="active='diet'" routerLinkActive="active">Diet</a>
