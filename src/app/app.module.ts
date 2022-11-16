@@ -12,6 +12,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { LoginComponent } from './access/login/login.component';
 import { SignupComponent } from './access/signup/signup.component';
 import { BaseComponent } from './access/base/base.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,8 @@ import { BaseComponent } from './access/base/base.component';
     AppRoutingModule,
     FontAwesomeModule,
     OverlayModule,
+    HttpClientModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
