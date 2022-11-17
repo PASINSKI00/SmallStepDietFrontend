@@ -14,6 +14,7 @@ import { SignupComponent } from './access/signup/signup.component';
 import { BaseComponent } from './access/base/base.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     WallComponent,
     LoginComponent,
     SignupComponent,
-    BaseComponent
+    BaseComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
