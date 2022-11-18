@@ -2,8 +2,8 @@
     <div id="bar-and-meals">
         <div id="utility-bar">
             <div id="show-filter">
-                <fa-icon class="filter-icon" [icon]="filterIcon" (click)="showFilters()"></fa-icon>
-                <p class="small-wide-text">Show Filters</p>
+                <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible == true}" (click)="showFilters()"></fa-icon>
+                <p class="small-wide-text" (click)="showFilters()">Show Filters</p>
             </div>
             <input id="search-bar" class="normal-text-light" placeholder="Search..."/>
         </div>
@@ -11,6 +11,16 @@
 
 
         <div id="meals">
+            <div id="filters" [ngClass]="{'display-none' : filtersVisible !== true}" class="grey-bg display-none">
+                <div id="sort-box">
+                    <p class="small-wide-text green-text">Sort by:</p>
+                    <p class="super-small-wide-text" *ngFor="let sort of sortCriterias">{{sort}}</p>
+                </div>
+                <div id="categories-box">
+                    <p class="small-wide-text green-text box-title">Choose categories</p>
+                    <p class="category super-small-wide-text" *ngFor="let category of categories">{{category.name}}</p>
+                </div>
+            </div>
             <div *ngFor="let meal of meals" class="meal">
                 <img src="{{meal.image}}" alt="meal image" />
                 <div class="meal-info">
@@ -27,6 +37,7 @@
             </div>
         </div>
     </div>
+
 
 
     <div id="diet-planner">

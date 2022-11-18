@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Meal } from './meal';
 import { faTrashAlt, faAdd, faAnglesDown } from '@fortawesome/free-solid-svg-icons';
+import { Category } from './category';
 
 @Component({
   selector: 'app-diet',
@@ -15,6 +16,9 @@ export class DietComponent implements OnInit {
   diet: Array<Array<Meal>> = [];
   chosenDayIndex: number = 0;
   maxDayIndex: number = -1;
+  sortCriterias: Array<string> = ["ranking", "protein%", "popularity"];
+  categories: Array<Category> = [];
+  filtersVisible: boolean = false;
 
   constructor() {
     this.meals.push(new Meal(1, "White rice with vegetables and some other stuff", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
@@ -29,6 +33,31 @@ export class DietComponent implements OnInit {
     this.meals.push(new Meal(1, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
     this.meals.push(new Meal(1, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
     this.meals.push(new Meal(1, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
+
+    this.categories.push(new Category(1, "Breakfast"));
+    this.categories.push(new Category(2, "Lunch"));
+    this.categories.push(new Category(3, "Dinner"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+    this.categories.push(new Category(4, "Snack"));
+
+
 
     this.addDayToDiet();
     this.addMealToDiet(this.meals[0]);
@@ -85,6 +114,6 @@ export class DietComponent implements OnInit {
   }
 
   showFilters() {
-    alert("Filters");
+    this.filtersVisible = !this.filtersVisible;
   }
 }

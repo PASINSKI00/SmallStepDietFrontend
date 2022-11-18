@@ -41,6 +41,52 @@
 #utility-bar #show-filter .filter-icon
     padding-right: 10px
 
+#meals #filters
+    display: flex
+    flex-direction: row
+    box-shadow: 0 0 10px $color-black-o07
+    width: 100%
+    height: fit-content
+    color: $color-white
+    padding-bottom: 10px
+
+#meals #filters #sort-box
+    display: flex
+    flex-direction: column
+    width: fit-content
+    padding: 0 50px
+    padding-top: 10px
+    border-right: 1px solid $color-black-o06
+
+#meals #filters #sort-box p
+    margin: 0
+    margin-bottom: 10px
+
+#meals #filters #sort-box p:first-child
+    margin-top: 0
+    margin-bottom: 20px
+    
+#meals #filters #sort-box p:hover
+    color: $color-yellow
+
+#meals #filters #categories-box
+    display: flex
+    flex-direction: row
+    height: fit-content
+    padding: 0 50px
+    padding-top: 10px
+    flex-wrap: wrap
+
+#meals #filters #categories-box .category
+    width: 120px
+    margin: 0
+    margin-bottom: 10px
+
+#meals #filters #categories-box .box-title
+    width: 100%
+    margin: 0
+    margin-bottom: 20px
+
 #utility-bar input
     width: 75%
     padding: 1px 15px
@@ -104,9 +150,6 @@
     -webkit-line-clamp: 1
     line-clamp: 1
     -webkit-box-orient: vertical
-
-
-
 
 
 
@@ -191,4 +234,6 @@
 .non-active-day
     opacity: 0.5
 
+.display-none
+    display: none !important
 
