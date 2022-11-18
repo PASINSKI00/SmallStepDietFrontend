@@ -56,7 +56,6 @@ export class DietComponent implements OnInit {
     }
 
     this.diet[this.chosenDayIndex].push(meal);
-    console.log(this.diet);
   }
 
   removeMealFromDiet(meal: Meal) {

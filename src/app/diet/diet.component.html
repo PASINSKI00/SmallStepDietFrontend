@@ -33,7 +33,7 @@
         <div id="day-bar">
             <div id="days">
                 <div class="btn btn-round-white super-small-wide-text day" *ngFor="let day of diet; let i = index" [ngClass]="{'non-active-day' : i !== chosenDayIndex}" (click)="changeDay(i)">
-                    {{i}}
+                    {{i+1}}
                 </div>
             </div>
             <span id="buttons">

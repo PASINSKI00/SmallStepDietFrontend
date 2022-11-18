@@ -9,7 +9,7 @@
 
 
 
-    
+
 #bar-and-meals
     display: flex
     flex-direction: column
@@ -21,7 +21,7 @@
     flex-direction: row
     justify-content: space-between
     align-items: center
-    height: 6%
+    height: 50px
     background-color: $color-white
     box-shadow: 0 0 10px $color-black-o07
 
@@ -59,7 +59,7 @@
     flex-direction: row
     justify-content: space-around
     width: 100%
-    height: 94%
+    height: calc(100% - 50px)
     flex-wrap: wrap
     overflow-y: scroll
 
@@ -124,7 +124,7 @@
     flex-direction: row
     justify-content: space-between
     align-items: center
-    height: 6%
+    height: 50px
     padding: 0 10px
     background-color: $color-yellow
     box-shadow: 0 0 5px $color-black-o07
@@ -160,6 +160,10 @@
     align-items: center
     background-color: $color-white
     box-shadow: 0 0 5px $color-black-o07
+
+#diet-planner #chosen-meals
+    height: calc( 100% - 50px )
+    overflow-y: scroll
 
 #diet-planner #chosen-meals .chosen-meal
     margin: 10px
