@@ -17,15 +17,41 @@ button
 
 .btn
     border: none
-    border-radius: 40px
-    padding: 5px 15px
     cursor: pointer
 
 .btn-primary-green
     background-color: $color-green
     padding: 5px 15px
+    border-radius: 40px
     font-size: $font-size-1
     color: $color-white
+
+.btn-small-green
+    height: fit-content
+    padding: 3px 15px
+    border-radius: 40px
+    background-color: $color-green
+    color: $color-white
+    font-size: $font-size-0
+
+.btn-small-red
+    height: fit-content
+    padding: 3px 15px
+    border-radius: 40px
+    background-color: $color-red
+    color: $color-white
+    font-size: $font-size-0
+
+.btn-round-white
+    border-radius: 50%
+    background-color: $color-white
+    // padding: 5px
+    // box-shadow: 0 0 5px 0 $color-black-o07
+
+
+
+
+
 
 .bigger-text
     font-size: $font-size-4
@@ -36,6 +62,39 @@ button
     font-weight: $font-weight-light
     font-size: $font-size-2
 
+.normal-text-light
+    font-weight: $font-weight-extra-light
+    font-size: $font-size-2
+
 .small-text
     font-weight: $font-weight-extra-light
     font-size: $font-size-1
+
+.small-wide-text
+    font-weight: $font-weight-normal
+    font-size: $font-size-1
+
+.super-small-text
+    font-weight: $font-weight-extra-light
+    font-size: $font-size-0
+
+.super-small-wide-text
+    font-weight: $font-weight-normal
+    font-size: $font-size-0
+
+// Scroll 
+::-webkit-scrollbar
+    width: 20px
+
+::-webkit-scrollbar-track 
+    background-color: transparent
+
+::-webkit-scrollbar-thumb
+    background-color: #d6dee1
+    border-radius: 20px
+    border: 6px solid transparent
+    background-clip: content-box
+
+::-webkit-scrollbar-thumb:hover 
+    background-color: #a8bbbf
+

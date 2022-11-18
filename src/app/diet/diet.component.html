@@ -1,3 +1,57 @@
 <div id="container">
-    <p>diet works!</p>
+    <div id="bar-and-meals">
+        <div id="utility-bar">
+            <div id="show-filter">
+                <fa-icon class="filter-icon" [icon]="filterIcon" (click)="showFilters()"></fa-icon>
+                <p class="small-wide-text">Show Filters</p>
+            </div>
+            <input id="search-bar" class="normal-text-light" placeholder="Search..."/>
+        </div>
+
+
+
+        <div id="meals">
+            <div *ngFor="let meal of meals" class="meal">
+                <img src="{{meal.image}}" alt="meal image" />
+                <div class="meal-info">
+                    <span>
+                        <p class="meal-name super-small-wide-text">{{meal.name}}</p>
+                        <div class="ingredients-names">
+                            <p class="small-text">
+                                {{meal.getIngredientsNames()}}
+                            </p>
+                        </div>
+                    </span>
+                    <button class="btn btn-small-green" (click)="addMealToDiet(meal)">add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="diet-planner">
+        <div id="day-bar">
+            <div id="days">
+                <div class="btn btn-round-white super-small-wide-text day" *ngFor="let day of diet; let i = index" [ngClass]="{'non-active-day' : i !== chosenDayIndex}" (click)="changeDay(i)">
+                    {{i}}
+                </div>
+            </div>
+            <span id="buttons">
+                <fa-icon class="btn btn-small-green" [icon]="addIcon" (click)="addDayToDiet()"></fa-icon>
+                <fa-icon class="btn btn-small-red" [icon]="deleteIcon" (click)="removeDayFromDiet()"></fa-icon>
+            </span>
+        </div>
+        <div id="chosen-meals">
+            <div *ngFor="let meal of diet[chosenDayIndex]" [ngStyle]="chosenMealBackground(meal.image)" class="chosen-meal">
+                <div class="background-darkener">
+                    <p class="chosen-meal-name super-small-wide-text">{{meal.name}}</p>
+                    <fa-icon class="btn btn-small-red" [icon]="deleteIcon" (click)="removeMealFromDiet(meal)"></fa-icon>
+                </div>
+            </div>
+        </div>
+        <div id="button-box">
+            <button class="btn btn-primary-green" (click)="continue()">Continue</button>
+        </div>
+    </div>
 </div>
+

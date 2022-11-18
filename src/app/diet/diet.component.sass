@@ -1,0 +1,190 @@
+@import 'src/variables.sass'
+
+#container
+    display: flex
+    flex-direction: row
+    height: $height-without-navbar
+
+
+
+
+
+    
+#bar-and-meals
+    display: flex
+    flex-direction: column
+    width: 75%
+    height: 100%
+
+#utility-bar
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    align-items: center
+    height: 6%
+    background-color: $color-white
+    box-shadow: 0 0 10px $color-black-o07
+
+#utility-bar #show-filter 
+    display: flex
+    flex-direction: row
+    align-items: center
+    justify-content: center
+    cursor: pointer
+    height: 60%
+    width: 25%
+    border-right: 1px solid $color-black-o06
+
+#utility-bar #show-filter:hover
+    color: $color-yellow 
+
+#utility-bar #show-filter .filter-icon
+    padding-right: 10px
+
+#utility-bar input
+    width: 75%
+    padding: 1px 15px
+    margin: 0 50px
+    border: none
+    border-bottom: 1px solid $color-black-o06
+    outline: none
+    cursor: pointer
+
+
+
+
+// ------------------ MEALS ------------------
+#meals
+    display: flex
+    flex-direction: row
+    justify-content: space-around
+    width: 100%
+    height: 94%
+    flex-wrap: wrap
+    overflow-y: scroll
+
+
+#meals .meal
+    width: 32%
+    margin: 10px 0
+    border-radius: 20px
+    overflow: hidden
+    box-shadow: 0 0 5px 0 $color-black-o07
+    height: fit-content
+
+#meals .meal .meal-info
+    padding: 0px 10px
+    padding-bottom: 5px
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+
+#meals .meal .meal-info p
+    margin: 5px 0
+
+#meals .meal .meal-info span .meal-name
+    overflow: hidden
+    text-overflow: ellipsis
+    display: -webkit-box
+    -webkit-line-clamp: 1
+    line-clamp: 1
+    -webkit-box-orient: vertical
+
+#meals .meal img
+    width: 100%
+    aspect-ratio: 840/320
+
+#meals .meal .meal-info .btn-small-green
+    margin-top: auto
+    
+#meals .meal .meal-info .ingredients-names
+    overflow: hidden
+    text-overflow: ellipsis
+    display: -webkit-box
+    -webkit-line-clamp: 1
+    line-clamp: 1
+    -webkit-box-orient: vertical
+
+
+
+
+
+
+// ---------------------------- DIET PLANNER ----------------------------
+#diet-planner
+    display: flex
+    flex-direction: column
+    width: 25%
+    height: 100%
+    background-color: $color-white
+    box-shadow: 0 0 5px $color-black-o07
+
+#diet-planner #day-bar
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    align-items: center
+    height: 6%
+    padding: 0 10px
+    background-color: $color-yellow
+    box-shadow: 0 0 5px $color-black-o07
+
+#diet-planner #day-bar #days
+    display: flex
+    flex-direction: row
+    align-items: center
+    width: 60%
+    height: 100%
+    overflow: hidden
+    overflow-x: overlay
+    
+
+#diet-planner .btn
+    margin: 0 5px
+
+
+#diet-planner #day-bar .day
+    display: flex
+    flex-direction: row
+    align-items: center
+    justify-content: center
+    min-width: 30px
+    min-height: 30px
+
+#diet-planner #button-box
+    height: 6%
+    margin-top: auto
+    display: flex
+    flex-direction: row
+    justify-content: center
+    align-items: center
+    background-color: $color-white
+    box-shadow: 0 0 5px $color-black-o07
+
+#diet-planner #chosen-meals .chosen-meal
+    margin: 10px
+    border-radius: 20px
+
+#diet-planner .chosen-meal .background-darkener
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    align-items: center
+    background-color: $color-black-o06
+    padding: 10px
+    border-radius: 20px
+    margin: 0  
+    color: $color-white
+
+#diet-planner .chosen-meal .chosen-meal-name
+    overflow: hidden
+    text-overflow: ellipsis
+    display: -webkit-box
+    -webkit-line-clamp: 1
+    line-clamp: 1
+    -webkit-box-orient: vertical
+
+.non-active-day
+    opacity: 0.5
+
+
