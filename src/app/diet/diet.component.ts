@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Meal } from './meal';
-import { faTrashAlt, faAdd, faAnglesDown } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faAdd, faAnglesDown, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { Category } from './category';
+import { Review } from './review';
 
 @Component({
   selector: 'app-diet',
@@ -12,6 +13,7 @@ export class DietComponent implements OnInit {
   deleteIcon = faTrashAlt;
   addIcon = faAdd;
   filterIcon = faAnglesDown;
+  returnIcon = faAngleLeft;
   meals: Array<Meal> = [];
   diet: Array<Array<Meal>> = [];
   chosenDayIndex: number = 0;
@@ -19,9 +21,11 @@ export class DietComponent implements OnInit {
   sortCriterias: Array<string> = ["ranking", "protein%", "popularity"];
   categories: Array<Category> = [];
   filtersVisible: boolean = false;
+  singleMealVisible: boolean = true;
+  singleMeal: Meal|undefined = undefined;
 
   constructor() {
-    this.meals.push(new Meal(1, "White rice with vegetables and some other stuff", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
+    this.meals.push(new Meal(1, "White rice with vegetables and some other stuff", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png"));
     this.meals.push(new Meal(1, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
     this.meals.push(new Meal(1, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
     this.meals.push(new Meal(1, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
@@ -62,6 +66,12 @@ export class DietComponent implements OnInit {
     this.addDayToDiet();
     this.addMealToDiet(this.meals[0]);
     this.addMealToDiet(this.meals[1]);
+
+
+    this.meals[0].extendMeal("This is a recipe sadsdsad asdasdsad sad sadsadsa asdsadsad saddsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n ds sad sa da dad as dsa da d a adsada \n dsfadsadsa \n dsadsadsads \nfor meal dsadsad sad sad sa da dad as dsa da d a adsada \n ds dsadsad sad sad sa da dad as dsa da d a adsada \n ds 0", 20, 20, 20, 60, new Array<Review>());
+    this.singleMeal = this.meals[0];
+    this.singleMeal.reviews.push(new Review("/assets/images/Hot_meal_header.png", "Charlie", 7, "Good meal"));
+    this.singleMeal.reviews.push(new Review("/assets/images/Hot_meal_header.png", "Katy", 6));
    }
 
   ngOnInit(): void {
@@ -115,5 +125,11 @@ export class DietComponent implements OnInit {
 
   showFilters() {
     this.filtersVisible = !this.filtersVisible;
+  }
+
+  showSingleMeal(meal: Meal){
+    console.log(meal);
+    this.singleMealVisible = !this.singleMealVisible;
+    this.singleMeal = meal;
   }
 }

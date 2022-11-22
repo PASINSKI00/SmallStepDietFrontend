@@ -17,7 +17,7 @@ export class AppComponent {
   constructor(private overlay: Overlay, private _sharedService: SharedService) {
     _sharedService.changeEmitted$.subscribe( text => {
       if(text == 'closeAccess')
-        this.closeAccess();
+        this.closeOverlay();
       else if(text == 'login')
         this.login();
       else if(text == 'signup')
@@ -30,20 +30,20 @@ export class AppComponent {
   }
 
   login(){
-    this.closeAccess();
+    this.closeOverlay();
     this.overlayRef = this.overlay.create();
     const componentPortal = new ComponentPortal(LoginComponent);
     this.overlayRef.attach(componentPortal);
   }
 
   signup(){
-    this.closeAccess();
+    this.closeOverlay();
     this.overlayRef = this.overlay.create();
     const componentPortal = new ComponentPortal(SignupComponent);
     this.overlayRef.attach(componentPortal);
   }
 
-  closeAccess(){
+  closeOverlay(){
     if(this.overlayRef)
       this.overlayRef.dispose();
   }

@@ -41,7 +41,7 @@
 #utility-bar #show-filter .filter-icon
     padding-right: 10px
 
-#meals #filters
+.meals #filters
     display: flex
     flex-direction: row
     box-shadow: 0 0 10px $color-black-o07
@@ -50,7 +50,7 @@
     color: $color-white
     padding-bottom: 10px
 
-#meals #filters #sort-box
+.meals #filters #sort-box
     display: flex
     flex-direction: column
     width: fit-content
@@ -58,18 +58,18 @@
     padding-top: 10px
     border-right: 1px solid $color-black-o06
 
-#meals #filters #sort-box p
+.meals #filters #sort-box p
     margin: 0
     margin-bottom: 10px
 
-#meals #filters #sort-box p:first-child
+.meals #filters #sort-box p:first-child
     margin-top: 0
     margin-bottom: 20px
     
-#meals #filters #sort-box p:hover
+.meals #filters #sort-box p:hover
     color: $color-yellow
 
-#meals #filters #categories-box
+.meals #filters #categories-box
     display: flex
     flex-direction: row
     height: fit-content
@@ -77,12 +77,12 @@
     padding-top: 10px
     flex-wrap: wrap
 
-#meals #filters #categories-box .category
+.meals #filters #categories-box .category
     width: 120px
     margin: 0
     margin-bottom: 10px
 
-#meals #filters #categories-box .box-title
+.meals #filters #categories-box .box-title
     width: 100%
     margin: 0
     margin-bottom: 20px
@@ -100,7 +100,7 @@
 
 
 // ------------------ MEALS ------------------
-#meals
+.meals
     display: flex
     flex-direction: row
     justify-content: space-around
@@ -110,25 +110,26 @@
     overflow-y: scroll
 
 
-#meals .meal
+.meals .meal
     width: 32%
     margin: 10px 0
     border-radius: 20px
     overflow: hidden
     box-shadow: 0 0 5px 0 $color-black-o07
     height: fit-content
+    cursor: pointer
 
-#meals .meal .meal-info
+.meals .meal .meal-info
     padding: 0px 10px
     padding-bottom: 5px
     display: flex
     flex-direction: row
     justify-content: space-between
 
-#meals .meal .meal-info p
+.meals .meal .meal-info p
     margin: 5px 0
 
-#meals .meal .meal-info span .meal-name
+.meals .meal .meal-info span .meal-name
     overflow: hidden
     text-overflow: ellipsis
     display: -webkit-box
@@ -136,14 +137,14 @@
     line-clamp: 1
     -webkit-box-orient: vertical
 
-#meals .meal img
+.meals .meal img
     width: 100%
     aspect-ratio: 840/320
 
-#meals .meal .meal-info .btn-small-green
+.meals .meal .meal-info .btn-small-green
     margin-top: auto
     
-#meals .meal .meal-info .ingredients-names
+.meals .meal .meal-info .ingredients-names
     overflow: hidden
     text-overflow: ellipsis
     display: -webkit-box
@@ -231,6 +232,103 @@
     line-clamp: 1
     -webkit-box-orient: vertical
 
+
+// ---------------------------- SINGLE MEAL  ----------------------------
+#single-meal
+    display: flex
+    flex-direction: column
+    align-items: center
+    flex-wrap: nowrap
+    justify-content: start
+
+#return-button
+    display: flex
+    flex-direction: row
+    align-items: center
+    justify-content: center
+    cursor: pointer
+    height: 50px
+    margin: 15px
+    margin-right: auto
+
+#return-button p
+    padding-left: 5px
+    margin: 0
+
+#return-button:hover
+    color: $color-yellow
+
+#single-meal ul
+    list-style-type: none
+    padding: 5px 10px
+
+
+#single-meal-info
+    display: flex
+    flex-direction: column
+    background-color: $color-yellow
+    width: 90%
+    border-radius: 20px
+    margin-bottom: 20px
+
+#single-meal-info img
+    border-radius: 20px 20px 0 0
+
+#single-meal-title
+    padding: 8px 12px
+
+#single-meal-specific-info-and-reviews
+    display: flex
+    flex-direction: row
+
+#single-meal-specific-info
+    display: flex
+    flex-direction: row
+
+#reviews
+    width: 30%
+
+.review
+    background-color: $color-white
+    display: flex
+    flex-direction: row
+    align-items: center
+    margin-bottom: 10px
+    padding: 10px
+    border-radius: 20px
+
+.img-container
+    width: 25%
+
+.review img
+    width: 100%
+    border-radius: 50%
+    aspect-ratio: 1/1
+    object-fit: cover
+
+.review p 
+    margin: 0
+    padding-left: 10px
+
+.name-and-rating
+    display: flex
+    flex-direction: row
+    align-items: center
+
+#single-meal-recipe
+    width: 90%
+
+#single-meal-recipe p 
+    margin: 0
+    margin-bottom: 10px
+
+    
+    
+
+
+
+
+// ---------------------------- GENERAL CLASSES ----------------------------
 .non-active-day
     opacity: 0.5
 

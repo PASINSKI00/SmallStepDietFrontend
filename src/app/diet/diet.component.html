@@ -10,8 +10,8 @@
 
 
 
-        <div id="meals">
-            <div id="filters" [ngClass]="{'display-none' : filtersVisible !== true}" class="grey-bg display-none">
+        <div class="meals" [ngClass]="{'display-none' : singleMealVisible === true}">
+            <div id="filters" [ngClass]="{'display-none' : filtersVisible === false}" class="grey-bg display-none">
                 <div id="sort-box">
                     <p class="small-wide-text green-text">Sort by:</p>
                     <p class="super-small-wide-text" *ngFor="let sort of sortCriterias">{{sort}}</p>
@@ -21,7 +21,7 @@
                     <p class="category super-small-wide-text" *ngFor="let category of categories">{{category.name}}</p>
                 </div>
             </div>
-            <div *ngFor="let meal of meals" class="meal">
+            <div *ngFor="let meal of meals" class="meal" (click)="showSingleMeal(meal)">
                 <img src="{{meal.image}}" alt="meal image" />
                 <div class="meal-info">
                     <span>
@@ -32,11 +32,57 @@
                             </p>
                         </div>
                     </span>
-                    <button class="btn btn-small-green" (click)="addMealToDiet(meal)">add</button>
+                    <button class="btn btn-small-green" (click)="addMealToDiet(meal)" (click)="$event.stopPropagation()">add</button>
                 </div>
             </div>
         </div>
+
+        <div id="single-meal" class="meals" [ngClass]="{'display-none' : singleMealVisible === false}">
+            <div id="return-button" (click)="singleMealVisible = false">
+                <fa-icon class="filter-icon" [icon]="returnIcon"></fa-icon>
+                <p class="small-wide-text">return</p>
+            </div>
+            <div id="single-meal-info">
+                <img src="{{singleMeal?.image}}" alt="meal image" />
+                <div id="single-meal-specific-info-and-reviews">
+                    <span>
+                        <div id="single-meal-title" class="normal-text">{{singleMeal?.name}}</div>
+                        <div id="single-meal-specific-info" class="small-wide-text">
+                            <ul id="single-meal-ingredients">
+                                <li *ngFor="let ingredient of singleMeal?.ingredientsNames">{{ingredient}}</li>
+                            </ul>
+                            <ul id="single-meal-nutrition">
+                                <li>Protein: {{singleMeal?.proteinRatio}}%</li>
+                                <li>Carbs: {{singleMeal?.carbsRatio}}%</li>
+                                <li>Fats: {{singleMeal?.fatsRatio}}%</li>
+                            </ul>
+                        </div>
+                    </span>
+                    <div id="reviews">
+                        <ul id="single-meal-review" *ngIf="singleMeal?.reviews?.length !== 0">
+                            <li class="review" *ngFor="let review of singleMeal?.reviews">
+                                <div class="img-container">
+                                    <img src="{{review?.image}}" alt="reviewer image" />
+                                </div>
+                                <div class="name-and-content">
+                                    <span class="name-and-rating">
+                                        <p class="extra-small-text">{{review?.name}}</p>
+                                        <p class="super-small-wide-text extra-small-text">{{review?.rating}}/10</p>
+                                    </span>
+                                    <p *ngIf="review?.content" class="small-text">{{review?.content}}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="single-meal-recipe">
+                <p class="normal-text">Recipe:</p>
+                <p class="small-wide-text">{{singleMeal?.recipe}}</p>
+            </div>
+        </div>
     </div>
+
 
 
 

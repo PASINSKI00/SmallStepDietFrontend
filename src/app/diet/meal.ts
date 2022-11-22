@@ -11,7 +11,7 @@ export class Meal {
     timeToPrepare: number = 0;
     proteinRatio: number = 0;
     carbsRatio: number = 0;
-    fatsRtaio: number = 0;
+    fatsRatio: number = 0;
     reviews: Array<Review> = [];
 
     constructor(idMeal: number, name: string, ingredientsNames: Array<String>, rating: number, image: string) {
@@ -22,12 +22,15 @@ export class Meal {
         this.image = image;
     }
 
-    extendMeal(recipe: string, timeToPrepare: number, proteinRatio: number, carbsRatio: number, fatsRtaio: number, reviews: Array<Review>) {
+    extendMeal(recipe: string, timeToPrepare: number, proteinRatio: number, carbsRatio: number, fatsRatio
+: number, reviews: Array<Review>) {
         this.recipe = recipe;
         this.timeToPrepare = timeToPrepare;
         this.proteinRatio = proteinRatio;
         this.carbsRatio = carbsRatio;
-        this.fatsRtaio = fatsRtaio;
+        this.fatsRatio
+ = fatsRatio
+;
         this.reviews = reviews;
     }
 
