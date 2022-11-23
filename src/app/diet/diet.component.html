@@ -48,10 +48,10 @@
                     <span>
                         <div id="single-meal-title" class="normal-text">{{singleMeal?.name}}</div>
                         <div id="single-meal-specific-info" class="small-wide-text">
-                            <ul id="single-meal-ingredients">
+                            <ul id="single-meal-ingredients" class="small-wide-text">
                                 <li *ngFor="let ingredient of singleMeal?.ingredientsNames">{{ingredient}}</li>
                             </ul>
-                            <ul id="single-meal-nutrition">
+                            <ul id="single-meal-nutrition" class="small-wide-text">
                                 <li>Protein: {{singleMeal?.proteinRatio}}%</li>
                                 <li>Carbs: {{singleMeal?.carbsRatio}}%</li>
                                 <li>Fats: {{singleMeal?.fatsRatio}}%</li>
@@ -66,10 +66,10 @@
                                 </div>
                                 <div class="name-and-content">
                                     <span class="name-and-rating">
-                                        <p class="extra-small-text">{{review?.name}}</p>
-                                        <p class="super-small-wide-text extra-small-text">{{review?.rating}}/10</p>
+                                        <p class="super-small-wide-text">{{review?.name}}</p>
+                                        <p class="super-super-small-text">{{review?.rating}}/10</p>
                                     </span>
-                                    <p *ngIf="review?.content" class="small-text">{{review?.content}}</p>
+                                    <p *ngIf="review?.content" class="review-content super-small-text">{{review?.content}}</p>
                                 </div>
                             </li>
                         </ul>

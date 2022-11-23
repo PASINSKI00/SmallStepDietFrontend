@@ -284,9 +284,10 @@
 #single-meal-specific-info
     display: flex
     flex-direction: row
+    justify-content: space-around
 
 #reviews
-    width: 30%
+    width: 40%
 
 .review
     background-color: $color-white
@@ -298,11 +299,13 @@
     border-radius: 20px
 
 .img-container
-    width: 25%
+    width: 30%
+    display: flex
+    align-items: center
 
 .review img
     width: 100%
-    border-radius: 50%
+    border-radius: 100% !important
     aspect-ratio: 1/1
     object-fit: cover
 
@@ -321,6 +324,9 @@
 #single-meal-recipe p 
     margin: 0
     margin-bottom: 10px
+
+.review-content
+    padding-left: 15px !important
 
     
     
