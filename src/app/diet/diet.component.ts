@@ -21,7 +21,7 @@ export class DietComponent implements OnInit {
   sortCriterias: Array<string> = ["ranking", "protein%", "popularity"];
   categories: Array<Category> = [];
   filtersVisible: boolean = false;
-  singleMealVisible: boolean = true;
+  singleMealVisible: boolean = false;
   singleMeal: Meal|undefined = undefined;
 
   constructor() {
