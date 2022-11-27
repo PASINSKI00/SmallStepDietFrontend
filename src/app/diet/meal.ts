@@ -6,13 +6,14 @@ export class Meal {
     rating: number;
     image: string;
     ingredientsNames: Array<String>;
-
+    
     recipe: string = "";
     timeToPrepare: number = 0;
     proteinRatio: number = 0;
     carbsRatio: number = 0;
     fatsRatio: number = 0;
     reviews: Array<Review> = [];
+    categoriesNames: Array<String> = [];
 
     constructor(idMeal: number, name: string, ingredientsNames: Array<String>, rating: number, image: string) {
         this.idMeal = idMeal;
