@@ -10,12 +10,12 @@ import { AccessService } from '../access.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) { }
-
   loginForm = this.formBuilder.group({
     email: '',
     password: ''
   });
+
+  constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
   }
