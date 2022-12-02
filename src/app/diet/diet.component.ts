@@ -25,47 +25,11 @@ export class DietComponent implements OnInit {
   singleMealVisible: boolean = false;
   singleMeal: Meal|undefined = undefined;
 
-  constructor(private dietService: DietService) {
-    this.categories.push(new Category(1, "Breakfast"));
-    this.categories.push(new Category(2, "Lunch"));
-    this.categories.push(new Category(3, "Dinner"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-    this.categories.push(new Category(4, "Snack"));
-   }
+  constructor(private dietService: DietService) {}
 
   ngOnInit(): void {
-    this.dietService.getMeals().subscribe((response) => {
-      let mealsJSON: Array<any> = JSON.parse(response.body);
-      mealsJSON.forEach((mealJSON: any) => {
-        this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image), mealJSON));
-      });
-
-      this.addDayToDiet();
-      this.addMealToDiet(this.meals[0]);
-      this.addMealToDiet(this.meals[1]);
-  
-      this.meals[0].extendMeal("This is a recipe sadsdsad asdasdsad sad sadsadsa asdsadsad saddsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n ds sad sa da dad as dsa da d a adsada \n dsfadsadsa \n dsadsadsads \nfor meal dsadsad sad sad sa da dad as dsa da d a adsada \n ds dsadsad sad sad sa da dad as dsa da d a adsada \n ds 0", 20, 20, 20, 60, new Array<Review>());
-      this.singleMeal = this.meals[0];
-      this.singleMeal.reviews.push(new Review("/assets/images/Hot_meal_header.png", "Charlie", 7, "Good meal"));
-      this.singleMeal.reviews.push(new Review("/assets/images/Hot_meal_header.png", "Katy", 6));
-    });
+    this.getMealsFromBackend();
+    this.getCategoriesFromBackend();
   }
 
   addDayToDiet() {
@@ -122,5 +86,31 @@ export class DietComponent implements OnInit {
     console.log(meal);
     this.singleMealVisible = !this.singleMealVisible;
     this.singleMeal = meal;
+  }
+
+  private getMealsFromBackend() {
+    this.dietService.getMeals().subscribe((response) => {
+      let mealsJSON: Array<any> = JSON.parse(response.body);
+      mealsJSON.forEach((mealJSON: any) => {
+        this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image), mealJSON));
+      });
+
+      this.addDayToDiet();
+      this.addMealToDiet(this.meals[0]);
+  
+      this.meals[0].extendMeal("This is a recipe sadsdsad asdasdsad sad sadsadsa asdsadsad saddsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n ds sad sa da dad as dsa da d a adsada \n dsfadsadsa \n dsadsadsads \nfor meal dsadsad sad sad sa da dad as dsa da d a adsada \n ds dsadsad sad sad sa da dad as dsa da d a adsada \n ds 0", 20, 20, 20, 60, new Array<Review>());
+      this.singleMeal = this.meals[0];
+      this.singleMeal.reviews.push(new Review("/assets/images/Hot_meal_header.png", "Charlie", 7, "Good meal"));
+      this.singleMeal.reviews.push(new Review("/assets/images/Hot_meal_header.png", "Katy", 6));
+    });
+  }
+
+  private getCategoriesFromBackend() {
+    this.dietService.getCategories().subscribe((response) => {
+      let categoriesJSON: Array<any> = JSON.parse(response.body);
+      categoriesJSON.forEach((categoryJSON: any) => {
+        this.categories.push(Object.assign(new Category(categoryJSON.id, categoryJSON.name), categoryJSON));
+      });
+    });
   }
 }

@@ -17,5 +17,7 @@ export class DietService {
     return this.http.get(this.address + '/api/meal/search', { observe: 'response', responseType: 'text' as 'json' })
   }
 
-
+  getCategories() : Observable<any> {
+    return this.http.get(this.address + '/api/category/all', { observe: 'response', responseType: 'text' as 'json' })
+  }
 }
