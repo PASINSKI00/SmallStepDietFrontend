@@ -28,6 +28,7 @@ export class DietComponent implements OnInit {
   constructor(private dietService: DietService) {}
 
   ngOnInit(): void {
+    this.addDayToDiet();
     this.getMealsFromBackend();
     this.getCategoriesFromBackend();
   }
@@ -95,7 +96,6 @@ export class DietComponent implements OnInit {
         this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image), mealJSON));
       });
 
-      this.addDayToDiet();
       this.addMealToDiet(this.meals[0]);
   
       this.meals[0].extendMeal("This is a recipe sadsdsad asdasdsad sad sadsadsa asdsadsad saddsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n ds sad sa da dad as dsa da d a adsada \n dsfadsadsa \n dsadsadsads \nfor meal dsadsad sad sad sa da dad as dsa da d a adsada \n ds dsadsad sad sad sa da dad as dsa da d a adsada \n ds 0", 20, 20, 20, 60, new Array<Review>());
