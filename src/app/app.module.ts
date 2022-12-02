@@ -15,7 +15,7 @@ import { BaseComponent } from './access/base/base.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from './footer/footer.component';
-// import { RatingModule } from 'ngx-bootstrap/rating';
+import { AddMealComponent } from './add-meal/add-meal.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,8 @@ import { FooterComponent } from './footer/footer.component';
     LoginComponent,
     SignupComponent,
     BaseComponent,
-    FooterComponent
+    FooterComponent,
+    AddMealComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +37,6 @@ import { FooterComponent } from './footer/footer.component';
     OverlayModule,
     HttpClientModule,
     ReactiveFormsModule,
-    // RatingModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent]
