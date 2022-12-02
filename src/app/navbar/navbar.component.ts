@@ -12,6 +12,9 @@ export class NavbarComponent implements OnInit {
 
   constructor(private router: Router) { 
     this.active = window.location.pathname.split('/')[1];
+    if (this.active == '') {
+      this.active = 'home';
+    }
   }
 
   ngOnInit(): void {
