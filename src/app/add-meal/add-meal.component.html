@@ -1,1 +1,27 @@
-<p>add-meal works!</p>
+<div id="container">
+    <div [formGroup]="mealForm" id="add-meal-container">
+        <p>Add a new meal</p>
+        <input formControlName="name" id="name" type="text" placeholder="Name">
+        <input formControlName="timeToPrepare" id="time-to-prepare" type="number" min="0" placeholder="Time to prepare">
+        <div id="ingredients">
+            <p>Ingredients</p>
+            <div class="ingredient-with-weight" *ngFor="let ingredient of chosenIngredients | keyvalue; let i = index">
+                <input list="ingredients-list" id="ingredient{{i}}" placeholder="Choose ingredient...">
+                <input type="number" min="0" placeholder="Weight" [(ngModel)]="ingredient.value" [ngModelOptions]="{standalone: true}">
+            </div>
+            <fa-icon class="btn btn-small-green" [icon]="addIcon" (click)="addIngredientField()"></fa-icon>
+        </div>
+        <div id="categories">
+            <p>Categories</p>
+            <input list="categories-list" *ngFor="let category of chosenCategories" placeholder="Choose category...">
+            <fa-icon class="btn btn-small-green" [icon]="addIcon" (click)="addCategoryField()"></fa-icon>
+        </div>  
+    </div>
+
+    <datalist id="ingredients-list">
+        <option *ngFor="let ingredient of ingredients">{{ingredient.name}}</option>
+    </datalist>
+    <datalist id="categories-list">
+        <option *ngFor="let category of categories">{{category.name}}</option>
+    </datalist>
+</div>

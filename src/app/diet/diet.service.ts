@@ -20,4 +20,8 @@ export class DietService {
   getCategories() : Observable<any> {
     return this.http.get(this.address + '/api/category/all', { observe: 'response', responseType: 'text' as 'json' })
   }
+
+  getIngredients() : Observable<any> {
+    return this.http.get(this.address + '/api/ingredient/all', { observe: 'response', responseType: 'text' as 'json' })
+  }
 }
