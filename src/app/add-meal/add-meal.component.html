@@ -1,21 +1,44 @@
 <div id="container">
-    <div [formGroup]="mealForm" id="add-meal-container">
-        <p>Add a new meal</p>
-        <input formControlName="name" id="name" type="text" placeholder="Name">
-        <input formControlName="timeToPrepare" id="time-to-prepare" type="number" min="0" placeholder="Time to prepare">
-        <div id="ingredients">
-            <p>Ingredients</p>
-            <div class="ingredient-with-weight" *ngFor="let ingredient of chosenIngredients | keyvalue; let i = index">
-                <input list="ingredients-list" id="ingredient{{i}}" placeholder="Choose ingredient...">
-                <input type="number" min="0" placeholder="Weight" [(ngModel)]="ingredient.value" [ngModelOptions]="{standalone: true}">
-            </div>
-            <fa-icon class="btn btn-small-green" [icon]="addIcon" (click)="addIngredientField()"></fa-icon>
+    <div [formGroup]="addMealForm" id="add-meal-container">
+        <p class="normal-text">Add a new meal</p>
+        <div class="input-container">
+            <p class="super-small-wide-text">Name of Your meal</p>
+            <input class="input" formControlName="name" id="name" type="text" placeholder="Chicken soup...">
         </div>
-        <div id="categories">
-            <p>Categories</p>
-            <input list="categories-list" *ngFor="let category of chosenCategories" placeholder="Choose category...">
-            <fa-icon class="btn btn-small-green" [icon]="addIcon" (click)="addCategoryField()"></fa-icon>
+
+        <div class="input-container">
+            <p class="super-small-wide-text">Time to prepare in minutes</p>
+            <input class="input" formControlName="timeToPrepare" id="time-to-prepare" type="number" min="1">
+        </div>
+
+        <div id="ingredients" class="input-container" formArrayName="ingredientsArray">
+            <p class="super-small-wide-text">Ingredients with weight [g]</p>
+            <div class="ingredient-with-weight" *ngFor="let ingredientForm of ingredientsArray.controls; let i = index">
+                <div class="ingredient-form" [formGroupName]="i">
+                    <input class="input ingredient-input" list="ingredients-list" formControlName="name" placeholder="Choose ingredient...">
+                    <input class="input weight-input" type="number" formControlName="weight" min="0" placeholder="Weight">
+                    <fa-icon class="btn" [icon]="deleteIcon" (click)="deleteIngredientField(i)"></fa-icon>
+                </div>
+            </div>
+            <fa-icon class="add-icon btn" [icon]="addIcon" (click)="addIngredientField()"></fa-icon>
+        </div>
+
+        <div id="categories" class="input-container" formArrayName="categoriesArray">
+            <p class="super-small-wide-text">Categories</p>
+            <div *ngFor="let categoryForm of categoriesArray.controls; let i = index">
+                <div class="category-form" [formGroupName]="i">
+                    <input class="input" list="categories-list" formControlName="name" placeholder="Choose category...">
+                    <fa-icon class="btn" [icon]="deleteIcon" (click)="deleteCategoryField(i)"></fa-icon>
+                </div>
+            </div>
+            <fa-icon class="add-icon btn" [icon]="addIcon" (click)="addCategoryField()"></fa-icon>
         </div>  
+
+        <textarea class="super-super-small-text" formControlName="recipe" id="recipe" type="text" placeholder="Recipe...">
+        </textarea>
+        <div id="add-meal-btn-container">
+            <button class="btn btn-primary-green" (click)="uploadMeal()">Upload</button>
+        </div>
     </div>
 
     <datalist id="ingredients-list">

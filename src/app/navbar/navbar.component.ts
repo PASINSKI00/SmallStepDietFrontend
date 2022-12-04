@@ -12,7 +12,7 @@ export class NavbarComponent implements OnInit {
 
   constructor(private router: Router) { 
     this.active = window.location.pathname.split('/')[1];
-    if (this.active == '') {
+    if (this.active == '' || this.active == 'addMeal') {
       this.active = 'home';
     }
   }
