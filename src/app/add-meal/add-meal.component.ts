@@ -143,6 +143,16 @@ export class AddMealComponent implements OnInit {
       }
     });
 
+    let customJsonDefinition: string = "";
+    tmpChosenIngredients.forEach((value, key) => {
+      customJsonDefinition += `"${key}": ${value},`;
+    });
+    customJsonDefinition = customJsonDefinition.substring(0, customJsonDefinition.length - 1);
+    customJsonDefinition = `{${customJsonDefinition}}`;
+    console.log(customJsonDefinition);
+    
+    return JSON.parse(customJsonDefinition);
+
     return tmpChosenIngredients;
   }
 }

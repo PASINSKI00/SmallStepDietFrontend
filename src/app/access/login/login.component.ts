@@ -23,9 +23,12 @@ export class LoginComponent implements OnInit {
   login() {
     this.accessService.login(this.loginForm).subscribe(
       (response) => {
-        console.log(response.status);
-        // this._sharedService.setToken(response.headers.get('Authorization'));
-        // this._sharedService.setLoggedIn(true);
+        if(response.status == 200){
+          alert('Login successful');
+          this._sharedService.setIsLoggedIn(true);
+        }
+        else
+          alert('Wrong email or password');
       }
     );
   }
