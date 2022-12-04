@@ -95,10 +95,12 @@ export class AddMealComponent implements OnInit {
       image: this.addMealForm.value.image!,
       timeToPrepare: this.addMealForm.value.timeToPrepare!,
     });
-    console.log(this.addMealForm.value);
-    console.log(this.finalForm.value);
     this.dietService.addMeal(this.finalForm).subscribe((response) => {
-      console.log(response);
+      if (response.status == 200) {
+        alert("Meal added successfully!");
+      } else {
+        alert("Something went wrong :(");
+      }
     });
   }
 
@@ -149,10 +151,7 @@ export class AddMealComponent implements OnInit {
     });
     customJsonDefinition = customJsonDefinition.substring(0, customJsonDefinition.length - 1);
     customJsonDefinition = `{${customJsonDefinition}}`;
-    console.log(customJsonDefinition);
     
     return JSON.parse(customJsonDefinition);
-
-    return tmpChosenIngredients;
   }
 }
