@@ -3,7 +3,9 @@ import { FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { Ingredient } from '../diet/ingredient';
 import { Category } from '../diet/category';
 import { DietService } from '../diet/diet.service';
-import { faAdd, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faL, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { ImageService } from '../image.service';
+import { interval, lastValueFrom, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-add-meal',
@@ -13,6 +15,7 @@ import { faAdd, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 export class AddMealComponent implements OnInit {
   addIcon = faAdd;
   deleteIcon = faTrashAlt;
+  selectedImage: File | undefined = undefined;
 
   finalForm = this.formBuilder.group({
     name: '',
@@ -52,8 +55,13 @@ export class AddMealComponent implements OnInit {
   ingredients: Ingredient[] = [];
   categories: Category[] = [];
   
-  constructor(private formBuilder: FormBuilder, private dietService: DietService) { }
+  constructor(private formBuilder: FormBuilder, private dietService: DietService, private imageService: ImageService) { }
   
+  onImageChanged(event: Event) {
+    this.selectedImage = (event.target as HTMLInputElement).files![(event.target as HTMLInputElement).files!.length - 1];
+    console.log(this.selectedImage);
+  }
+
   ngOnInit(): void {
     this.getIngredientsFromBackend();
     this.getCategoriesFromBackend();
@@ -95,13 +103,72 @@ export class AddMealComponent implements OnInit {
       image: this.addMealForm.value.image!,
       timeToPrepare: this.addMealForm.value.timeToPrepare!,
     });
-    this.dietService.addMeal(this.finalForm).subscribe((response) => {
-      if (response.status == 200) {
-        alert("Meal added successfully!");
+
+    this.dietService.addMeal(this.finalForm).subscribe(async (response) => {
+      console.log('response.status: '+ response.status);
+      if (response.status == 201) {
+        window.alert("Meal added successfully!");
+        
+        let result: boolean = false;
+        let idMeal: number = response.body;
+        await this.uploadMealImage(idMeal).then((value) => {
+          result = value;
+        });
+        if(result == false) {
+          alert("Reverting upload due to image upload failure!");
+          this.dietService.deleteMeal(idMeal).subscribe((response) => {
+            if (response.status == 200 || response.status == 204) {
+              window.alert("Meal deleted successfully!");
+            } else {
+              window.alert("Meal wasn't deleted :(");
+            }
+          });
+        }
+
       } else {
-        alert("Something went wrong :(");
+        window.alert("Something went wrong :(");
       }
     });
+  }
+
+  private checkMealImage(): boolean {
+    if (this.selectedImage == undefined){ 
+      return false;
+    }
+    else
+      return true;
+  }
+
+  private async uploadMealImage(idMeal: number): Promise<boolean> {
+    let isSuccess : boolean = false;
+
+    const response = await lastValueFrom(this.imageService.uploadMealImage(this.selectedImage!, idMeal));
+    if (response.status == 200) {
+      alert("Image uploaded successfully!");
+      isSuccess = true;
+    } else {
+      alert("Image wasn't uploaded :(");
+    }
+    // if(this.checkMealImage()){
+    //   this.imageService.uploadMealImage(this.selectedImage!).pipe(lastValueFrom()).subscribe((response) => {
+    //     if (response.status == 200) {
+    //       alert("Image uploaded successfully!");
+    //       isSuccess = true;
+    //     } else {
+    //       alert("Image wasn't uploaded :(");
+    //     }
+    //   });
+
+    //   return isSuccess;
+    // }
+
+    return isSuccess;
+  }
+
+  async execute() {
+    const source$ = interval(2000);
+    const firstNumber = await firstValueFrom(source$);
+    console.log(`The first number is ${firstNumber}`);
   }
 
   private getCategoriesFromBackend() {

@@ -25,9 +25,12 @@ export class DietService {
   }
 
   addMeal(mealForm: FormGroup) : Observable<any> {
-    console.log(this.sharedService.getAuthHeader());
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
-    console.log(headers);
     return this.http.post(this.address + '/api/meal', mealForm.value, { observe: 'response', headers: headers, responseType: 'text' as 'json' });
+  }
+
+  deleteMeal(idMeal: number) : Observable<any> {
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    return this.http.delete(this.address + '/api/meal', { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });
   }
 }

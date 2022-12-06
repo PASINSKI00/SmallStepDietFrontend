@@ -36,8 +36,12 @@
 
         <textarea class="super-super-small-text" formControlName="recipe" id="recipe" type="text" placeholder="Recipe...">
         </textarea>
+
+        <input type="file" class="super-small-text" (change)="onImageChanged($event)">
+        
+
         <div id="add-meal-btn-container">
-            <button class="btn btn-primary-green" (click)="uploadMeal()">Upload</button>
+            <button class="btn btn-primary-green normal-text upload-button" (click)="uploadMeal()">Upload</button>
         </div>
     </div>
 
