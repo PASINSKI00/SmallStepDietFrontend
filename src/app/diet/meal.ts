@@ -23,15 +23,12 @@ export class Meal {
         this.image = image;
     }
 
-    extendMeal(recipe: string, timeToPrepare: number, proteinRatio: number, carbsRatio: number, fatsRatio
-: number, reviews: Array<Review>) {
+    extendMeal(recipe: string, timeToPrepare: number, proteinRatio: number, carbsRatio: number, fatsRatio: number, reviews: Array<Review>) {
         this.recipe = recipe;
         this.timeToPrepare = timeToPrepare;
         this.proteinRatio = proteinRatio;
         this.carbsRatio = carbsRatio;
-        this.fatsRatio
- = fatsRatio
-;
+        this.fatsRatio = fatsRatio;
         this.reviews = reviews;
     }
 
