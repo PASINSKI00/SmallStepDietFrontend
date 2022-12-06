@@ -6,8 +6,8 @@
         </p>
     </div>
 
-    <div class="final-day">
-        <p class="big-text">Day 1</p>
+    <div class="final-day" *ngFor="let day of diet; let i = index">
+        <p class="big-text">Day {{i+1}}</p>
         <span class="final-day-content">
             <div class="day-info">
                 <p class="go-center normal-wide-text">100%</p>
@@ -25,9 +25,9 @@
                 </span>
             </div>
             <div class="final-meals">
-                <div class="final-meal">
+                <div class="final-meal" *ngFor="let meal of diet[i]">
                     <div class="meal-title">
-                            <p class="small-wide-text">Meal title</p>
+                            <p class="small-wide-text">{{meal.name}}</p>
                             <span class="input-percent">
                                 <input class="super-small-wide-text" type="number" min="0" value="100" max="100">%
                             </span>

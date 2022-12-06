@@ -15,6 +15,7 @@ export class DietComponent implements OnInit {
   addIcon = faAdd;
   filterIcon = faAnglesDown;
   returnIcon = faAngleLeft;
+
   meals: Array<Meal> = [];
   diet: Array<Array<Meal>> = [];
   chosenDayIndex: number = 0;
@@ -22,6 +23,7 @@ export class DietComponent implements OnInit {
   sortCriterias: Array<string> = ["ranking", "protein%", "popularity"];
   categories: Array<Category> = [];
   filtersVisible: boolean = false;
+
   singleMealVisible: boolean = false;
   singleMeal: Meal|undefined = undefined;
 
@@ -58,7 +60,7 @@ export class DietComponent implements OnInit {
   }
 
   continue() {
-    console.log(this.diet);
+    this.dietService.setDiet(this.diet);
   }
 
   chosenMealBackground(image: string) {
