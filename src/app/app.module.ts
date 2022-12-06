@@ -17,6 +17,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from './footer/footer.component';
 import { AddMealComponent } from './add-meal/add-meal.component';
 import { FormsModule } from '@angular/forms';
+import { FinalDietComponent } from './final-diet/final-diet.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { FormsModule } from '@angular/forms';
     SignupComponent,
     BaseComponent,
     FooterComponent,
-    AddMealComponent
+    AddMealComponent,
+    FinalDietComponent
   ],
   imports: [
     BrowserModule,
