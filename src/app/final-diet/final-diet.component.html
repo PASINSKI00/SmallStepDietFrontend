@@ -1,3 +1,71 @@
 <div id="container">
-    <p>final-diet works!</p>
+    <div id="banner">
+        <p class="normal-text">
+            Here is your <span class="normal-wide-text">intitial diet plan</span><br>
+            You can adjust the meal ratio's and ingredients weights however you want!
+        </p>
+    </div>
+
+    <div class="final-day">
+        <p class="big-text">Day 1</p>
+        <span class="final-day-content">
+            <div class="day-info">
+                <p class="go-center normal-wide-text">100%</p>
+                <span class="macro first-macro">
+                    <p class="super-small-wide-text">kcal:</p><p>134 g</p>
+                </span>
+                <span class="macro">
+                    <p class="super-small-wide-text">carbs:</p><p>134 g</p>
+                </span>
+                <span class="macro">
+                    <p class="super-small-wide-text">protein:</p><p>134 g</p>
+                </span>
+                <span class="macro">
+                    <p class="super-small-wide-text">fats:</p><p>134 g</p>
+                </span>
+            </div>
+            <div class="final-meals">
+                <div class="final-meal">
+                    <div class="meal-title">
+                            <p class="small-wide-text">Meal title</p>
+                            <span class="input-percent">
+                                <input class="super-small-wide-text" type="number" min="0" value="100" max="100">%
+                            </span>
+                    </div>
+                    <span class="meal-details">
+                        <div class="meal-ingredients">
+                            <div class="meal-ingredient super-small-wide-text">
+                                <p>Ingredient 1</p>
+                                <span class="super-small-text ingredient-hub">
+                                    <span class="weight-input super-small-wide-text">
+                                        <input class="super-small-wide-text" type="number" value="100" min="0">g
+                                    </span>
+                                    <fa-icon [icon]="deleteIcon"></fa-icon>
+                                </span>
+                            </div>
+                            <fa-icon [icon]="addIcon"></fa-icon>
+                        </div>
+                        <div class="meal-ratio">
+                            <span class="macro">
+                                <p class="super-small-wide-text">kcal:</p><p>134 g</p>
+                            </span>
+                            <span class="macro">
+                                <p class="super-small-wide-text">carbs:</p><p>134 g</p>
+                            </span>
+                            <span class="macro">
+                                <p class="super-small-wide-text">protein:</p><p>134 g</p>
+                            </span>
+                            <span class="macro">
+                                <p class="super-small-wide-text">fats:</p><p>134 g</p>
+                            </span>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </span>
+    </div>
+    <div id="button-box">
+        <button class="btn btn-primary-red">Return</button>
+        <button class="btn btn-primary-green" routerLink="/diet/final">Continue</button>
+    </div>
 </div>
