@@ -4,7 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { DietComponent } from './diet/diet.component';
 import { WallComponent } from './wall/wall.component';
 import { AddMealComponent } from './add-meal/add-meal.component';
-import { FinalDietComponent } from './final-diet/final-diet.component';
+import { FinalDietComponent } from './diet/final-diet/final-diet.component';
 
 const routes: Routes = [
   {
