@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { SharedService } from '../shared.service';
 import { Meal } from './meal';
+import { Ingredient } from './ingredient';
 
 @Injectable({
   providedIn: 'root'
@@ -74,5 +75,9 @@ export class DietService {
   deleteMeal(idMeal: number) : Observable<any> {
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
     return this.http.delete(this.address + '/api/meal', { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });
+  }
+
+  getIngredientsByNames(ingredientsNames: String[]): Observable<any> {
+    return this.http.get(this.address + '/api/ingredient/byNames', { observe: 'response', responseType: 'text' as 'json' });
   }
 }

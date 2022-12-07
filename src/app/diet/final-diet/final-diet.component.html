@@ -6,39 +6,39 @@
         </p>
     </div>
 
-    <div class="final-day" *ngFor="let day of diet; let i = index">
-        <p class="big-text">Day {{i+1}}</p>
+    <div class="final-day" *ngFor="let day of diet; let dayIndex = index">
+        <p class="big-text">Day {{dayIndex+1}}</p>
         <span class="final-day-content">
             <div class="day-info">
-                <p class="go-center normal-wide-text">100%</p>
+                <p class="go-center normal-wide-text">{{calculateDayPercent(dayIndex)}}%</p>
                 <span class="macro first-macro">
-                    <p class="super-small-wide-text">kcal:</p><p>134 g</p>
+                    <p class="super-small-wide-text">kcal:</p><p>{{calculateDayKcal(dayIndex)}} g</p>
                 </span>
                 <span class="macro">
-                    <p class="super-small-wide-text">carbs:</p><p>134 g</p>
+                    <p class="super-small-wide-text">carbs:</p><p>{{calculateDayCarbs(dayIndex)}} g</p>
                 </span>
                 <span class="macro">
-                    <p class="super-small-wide-text">protein:</p><p>134 g</p>
+                    <p class="super-small-wide-text">protein:</p><p>{{calculateDayProtein(dayIndex)}} g</p>
                 </span>
                 <span class="macro">
-                    <p class="super-small-wide-text">fats:</p><p>134 g</p>
+                    <p class="super-small-wide-text">fats:</p><p>{{calculateDayFats(dayIndex)}} g</p>
                 </span>
             </div>
             <div class="final-meals">
-                <div class="final-meal" *ngFor="let meal of diet[i]">
+                <div class="final-meal" *ngFor="let meal of diet[dayIndex];let mealIndex = index">
                     <div class="meal-title">
-                            <p class="small-wide-text">{{meal.name}}</p>
+                            <p class="meal-actual-title small-wide-text">{{meal.name}}</p>
                             <span class="input-percent">
-                                <input class="super-small-wide-text" type="number" min="0" value="100" max="100">%
+                                <input class="super-small-wide-text" type="number" min="0" value="{{getPercentOfMealInADay(dayIndex, mealIndex)}}" max="100">%
                             </span>
                     </div>
                     <span class="meal-details">
                         <div class="meal-ingredients">
-                            <div class="meal-ingredient super-small-wide-text">
-                                <p>Ingredient 1</p>
+                            <div class="meal-ingredient super-small-wide-text" *ngFor="let ingredient of meal.ingredients">
+                                <p>{{ingredient.name}}</p>
                                 <span class="super-small-text ingredient-hub">
                                     <span class="weight-input super-small-wide-text">
-                                        <input class="super-small-wide-text" type="number" value="100" min="0">g
+                                        <input class="super-small-wide-text" type="number" value="{{ingredient.weight}}" min="0">g
                                     </span>
                                     <fa-icon [icon]="deleteIcon"></fa-icon>
                                 </span>
