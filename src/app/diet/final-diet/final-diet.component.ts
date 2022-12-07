@@ -29,7 +29,7 @@ export class FinalDietComponent implements OnInit {
       let finalDay: FinalMeal[] = [];
       day.forEach(meal => {
         let ingredients: Array<Ingredient> = [];
-        this.dietService.getIngredientsByNames(meal.ingredientsNames).subscribe(response => {
+        this.dietService.getIngredientsByName(meal.ingredientsNames).subscribe(response => {
           ingredients = response.body;
         });
         let finalMeal: FinalMeal = new FinalMeal(meal.idMeal, meal.name,ingredients);
