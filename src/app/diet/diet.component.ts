@@ -29,8 +29,14 @@ export class DietComponent implements OnInit {
 
   constructor(private dietService: DietService) {}
 
-  ngOnInit(): void {
-    this.addDayToDiet();
+  async ngOnInit() {
+    let tmpDiet = await this.dietService.getDiet();
+    if(tmpDiet.length > 0) {
+      this.diet = tmpDiet;
+      this.maxDayIndex = this.diet.length - 1;
+    } else 
+      this.addDayToDiet();
+
     this.getMealsFromBackend();
     this.getCategoriesFromBackend();
   }
