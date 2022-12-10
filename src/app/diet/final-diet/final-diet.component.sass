@@ -112,6 +112,7 @@
 
 .meal-ingredient
     display: flex
+    margin-bottom: 5px
     gap: 20px
     justify-content: space-between
     align-items: center
@@ -120,6 +121,12 @@
 .meal-ingredient p
     margin: 0
     padding: 0
+    overflow: hidden
+    text-overflow: ellipsis
+    display: -webkit-box
+    -webkit-line-clamp: 1
+    line-clamp: 1
+    -webkit-box-orient: vertical
 
 .meal-ingredient input
     width: 50px
@@ -150,6 +157,7 @@
     background-color: $color-yellow
     padding: 5px
     border-radius: 20px
+    min-width: 70px
 
 .ingredient-hub
     display: flex
