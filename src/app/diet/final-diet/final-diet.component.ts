@@ -17,16 +17,18 @@ export class FinalDietComponent implements OnInit {
 
   constructor(private dietService: DietService) { }
 
-  ngOnInit(): void {
-    let simpleDiet = this.dietService.getDiet();
+  async ngOnInit() {
+    let simpleDiet: Array<Array<Meal>> = await this.dietService.getDiet();
     this.diet = this.convertToFinalDiet(simpleDiet);
     console.log(this.diet);
   }
 
-  convertToFinalDiet(simpleDiet: Meal[][]): FinalMeal[][] {
+   convertToFinalDiet(simpleDiet: Array<Array<Meal>>): FinalMeal[][] {
     let finalDiet: FinalMeal[][] = [];
+
     simpleDiet.forEach(day => {
       let finalDay: FinalMeal[] = [];
+
       day.forEach(meal => {
         let ingredients: Array<Ingredient> = [];
         this.dietService.getIngredientsForMeal(meal.idMeal).subscribe(response => {
@@ -35,12 +37,12 @@ export class FinalDietComponent implements OnInit {
         let finalMeal: FinalMeal = new FinalMeal(meal.idMeal, meal.name, ingredients);
         finalDay.push(finalMeal);
       });
+
       finalDiet.push(finalDay);
     });  
 
     this.setIngredientsWeights(finalDiet);
 
-    console.log(finalDiet);
     return finalDiet;
   }
 

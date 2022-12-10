@@ -11,7 +11,8 @@ import { Ingredient } from './ingredient';
 })
 export class DietService {
   address = 'http://localhost:8080';
-  diet: Array<Array<Meal>> = [];
+  diet: Array<Array<Meal>> = new Array<Array<Meal>>();
+  tmpMeals: Array<Meal> = [];
 
   constructor(private http: HttpClient, private sharedService: SharedService) { }
 
@@ -19,39 +20,7 @@ export class DietService {
     this.diet = diet;
   }
 
-  getDiet() : Array<Array<Meal>> {
-    let meals: Array<Meal> = [];
-    meals.push(new Meal(1, "White rice with vegetables and some other stuff", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(2, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(3, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(4, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(5, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(6, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(7, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(8, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(9, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(10, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(11, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-    meals.push(new Meal(12, "White rice with vegetables", ["white rice", "cucumber", "tomato", "onion"], 7, "/assets/images/Hot_meal_header.png" ));
-
-    this.diet.push([]);
-    this.diet.push([]);
-    this.diet.push([]);
-    this.diet.push([]);
-
-    this.diet[0].push(meals[0]);
-    this.diet[0].push(meals[1]);
-    this.diet[0].push(meals[2]);
-    this.diet[0].push(meals[3]);
-    this.diet[1].push(meals[4]);
-    this.diet[1].push(meals[5]);
-    this.diet[1].push(meals[6]);
-    this.diet[1].push(meals[7]);
-    this.diet[2].push(meals[8]);
-    this.diet[2].push(meals[9]);
-    this.diet[2].push(meals[10]);
-    this.diet[3].push(meals[11]);
-
+  async getDiet() : Promise<Array<Array<Meal>>> {
     return this.diet;
   }
 
