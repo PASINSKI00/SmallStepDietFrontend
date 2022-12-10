@@ -32,7 +32,10 @@ export class FinalDietComponent implements OnInit {
       day.forEach(meal => {
         let ingredients: Array<Ingredient> = [];
         this.dietService.getIngredientsForMeal(meal.idMeal).subscribe(response => {
-          ingredients = response.body;
+          let ingredientsJSON: Array<any> = JSON.parse(response.body);
+          ingredientsJSON.forEach((ingredientJSON: any) => {
+          ingredients.push(Object.assign(new Ingredient(ingredientJSON.id, ingredientJSON.name), ingredientJSON));
+      });
         });
         let finalMeal: FinalMeal = new FinalMeal(meal.idMeal, meal.name, ingredients);
         finalDay.push(finalMeal);
