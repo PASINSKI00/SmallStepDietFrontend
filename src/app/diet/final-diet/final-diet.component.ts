@@ -29,10 +29,10 @@ export class FinalDietComponent implements OnInit {
       let finalDay: FinalMeal[] = [];
       day.forEach(meal => {
         let ingredients: Array<Ingredient> = [];
-        this.dietService.getIngredientsByName(meal.ingredientsNames).subscribe(response => {
+        this.dietService.getIngredientsForMeal(meal.idMeal).subscribe(response => {
           ingredients = response.body;
         });
-        let finalMeal: FinalMeal = new FinalMeal(meal.idMeal, meal.name,ingredients);
+        let finalMeal: FinalMeal = new FinalMeal(meal.idMeal, meal.name, ingredients);
         finalDay.push(finalMeal);
       });
       finalDiet.push(finalDay);
@@ -40,6 +40,7 @@ export class FinalDietComponent implements OnInit {
 
     this.setIngredientsWeights(finalDiet);
 
+    console.log(finalDiet);
     return finalDiet;
   }
 

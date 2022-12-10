@@ -77,7 +77,8 @@ export class DietService {
     return this.http.delete(this.address + '/api/meal', { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });
   }
 
-  getIngredientsByName(ingredientsNames: String[]): Observable<any> {
-    return this.http.get(this.address + '/api/ingredient/all/byName', { observe: 'response', responseType: 'text' as 'json' });
+  getIngredientsForMeal(idMeal: number): Observable<any> {
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    return this.http.get(this.address + '/api/ingredient/all/meal', { observe: 'response', params:{idMeal},headers: headers, responseType: 'text' as 'json' });
   }
 }
