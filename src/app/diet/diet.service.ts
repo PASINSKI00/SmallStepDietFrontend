@@ -11,17 +11,16 @@ import { Ingredient } from './ingredient';
 })
 export class DietService {
   address = 'http://localhost:8080';
-  diet: Array<Array<Meal>> = new Array<Array<Meal>>();
   tmpMeals: Array<Meal> = [];
 
   constructor(private http: HttpClient, private sharedService: SharedService) { }
 
   setDiet(diet: Array<Array<Meal>>) {
-    this.diet = diet;
+    this.sharedService.setDiet(diet);
   }
 
   async getDiet() : Promise<Array<Array<Meal>>> {
-    return this.diet;
+    return this.sharedService.getDiet();
   }
 
   getMeals() : Observable<any> {
