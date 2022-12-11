@@ -11,6 +11,8 @@ export class FinalMeal {
     carbs: number = 0;
     fats: number = 0;
 
+    weightMultiplier: number = 1;
+
     constructor(id: number, name: string, ingredients: Array<Ingredient>) {
         this.idMeal = id;
         this.name = name;
