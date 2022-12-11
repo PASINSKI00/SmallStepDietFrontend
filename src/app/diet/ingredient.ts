@@ -11,11 +11,11 @@ export class Ingredient {
     constructor(id: number, name: string, protein?: number, carbs?: number, fats?: number, calories?: number, weight?: number, initialRatioInMeal?: number) {
         this.idIngredient = id;
         this.name = name;
-        this.initialRatioInMeal = initialRatioInMeal;
         this.protein = protein;
         this.carbs = carbs;
         this.fats = fats;
         this.calories = calories;
         this.weight = weight ? weight : 1;
+        this.initialRatioInMeal = initialRatioInMeal;
     }
 }
