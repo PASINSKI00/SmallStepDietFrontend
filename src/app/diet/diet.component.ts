@@ -5,6 +5,8 @@ import { Category } from './category';
 import { Review } from './review';
 import { DietService } from './diet.service';
 import { SharedService } from '../shared.service';
+import { lastValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-diet',
@@ -28,7 +30,7 @@ export class DietComponent implements OnInit {
   singleMealVisible: boolean = false;
   singleMeal: Meal|undefined = undefined;
 
-  constructor(private dietService: DietService, private sharedService: SharedService) {}
+  constructor(private dietService: DietService, private sharedService: SharedService, private router: Router) {}
 
   async ngOnInit() {
     this.addDayToDiet();
@@ -88,16 +90,18 @@ export class DietComponent implements OnInit {
     this.singleMeal = meal;
   }
 
-  continue() {
-    this.dietService.uploadDiet(this.diet).subscribe((response) => {
-      if(response.status != 201) {
-        console.log("Something went wrong");
-        return;
-      }
+  async continue() {
+    const response$ = this.dietService.uploadDiet(this.diet);
+    const lastValue$ = await lastValueFrom(response$);
 
-      console.log("Diet uploaded");
-      this.sharedService.setActiveDietId(response.body);
-    });
+    if(lastValue$.status != 201) {
+      alert("Diet wasn't uploaded. Please try again.");
+      return;
+    }
+
+    this.sharedService.activeDietId = JSON.parse(lastValue$.body);
+
+    this.router.navigate(['/diet/final']);
   }
 
   private getMealsFromBackend() {
