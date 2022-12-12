@@ -60,18 +60,6 @@ export class DietComponent implements OnInit {
     this.diet[this.chosenDayIndex].splice(this.diet[this.chosenDayIndex].indexOf(meal), 1);
   }
 
-  continue() {
-    this.dietService.uploadDiet(this.diet).subscribe((response) => {
-      if(response.status != 201) {
-        console.log("Something went wrong");
-        return;
-      }
-
-      console.log("Diet uploaded");
-      this.sharedService.setActiveDietId(response.body);
-    });
-  }
-
   chosenMealBackground(image: string) {
     return {
       'background-image': 'url(' + image + ')',
@@ -98,6 +86,18 @@ export class DietComponent implements OnInit {
     console.log(meal);
     this.singleMealVisible = !this.singleMealVisible;
     this.singleMeal = meal;
+  }
+
+  continue() {
+    this.dietService.uploadDiet(this.diet).subscribe((response) => {
+      if(response.status != 201) {
+        console.log("Something went wrong");
+        return;
+      }
+
+      console.log("Diet uploaded");
+      this.sharedService.setActiveDietId(response.body);
+    });
   }
 
   private getMealsFromBackend() {
