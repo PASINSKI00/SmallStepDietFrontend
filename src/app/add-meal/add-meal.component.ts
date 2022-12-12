@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { Ingredient } from '../diet/ingredient';
 import { Category } from '../diet/category';
 import { DietService } from '../diet/diet.service';
-import { faAdd, faL, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { ImageService } from '../image.service';
-import { interval, lastValueFrom, firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
+import { base64ToFile, ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-add-meal',
@@ -15,7 +16,15 @@ import { interval, lastValueFrom, firstValueFrom } from 'rxjs';
 export class AddMealComponent implements OnInit {
   addIcon = faAdd;
   deleteIcon = faTrashAlt;
-  selectedImage: File | undefined = undefined;
+
+  @ViewChild('cropper', { static: false }) cropper: ImageCropperComponent = undefined!;
+
+  ingredients: Ingredient[] = [];
+  categories: Category[] = [];
+
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  // base64Image: any = '';
 
   finalForm = this.formBuilder.group({
     name: '',
@@ -51,15 +60,20 @@ export class AddMealComponent implements OnInit {
   get categoriesArray() {
     return this.addMealForm.get('categoriesArray') as FormArray;
   }
-
-  ingredients: Ingredient[] = [];
-  categories: Category[] = [];
   
   constructor(private formBuilder: FormBuilder, private dietService: DietService, private imageService: ImageService) { }
   
-  onImageChanged(event: Event) {
-    this.selectedImage = (event.target as HTMLInputElement).files![(event.target as HTMLInputElement).files!.length - 1];
-    console.log(this.selectedImage);
+  fileChangeEvent(event: any): void {
+    this.imageChangedEvent = event;
+  }
+
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = event.base64;
+    console.log("Image cropped!");
+  }
+
+  loadImageFailed() {
+    console.error("Image load failed!");
   }
 
   ngOnInit(): void {
@@ -94,7 +108,12 @@ export class AddMealComponent implements OnInit {
     this.categoriesArray.removeAt(index);
   }  
 
-  uploadMeal() {
+  async upload() {
+    if (!this.checkMealImage()){
+      console.error("Please choose an image!");
+      return;
+    }
+
     this.finalForm.setValue({
       name: this.addMealForm.value.name!,
       recipe: this.addMealForm.value.recipe!,
@@ -103,72 +122,70 @@ export class AddMealComponent implements OnInit {
       image: this.addMealForm.value.image!,
       timeToPrepare: this.addMealForm.value.timeToPrepare!,
     });
+  
+    const uploadedMealId: number | undefined = await this.uploadMeal();
+    if (uploadedMealId == undefined) {
+      console.error("Meal wasn't created :(");
+      return;
+    }
 
-    this.dietService.addMeal(this.finalForm).subscribe(async (response) => {
-      console.log('response.status: '+ response.status);
-      if (response.status == 201) {
-        window.alert("Meal added successfully!");
-        
-        let result: boolean = false;
-        let idMeal: number = response.body;
-        await this.uploadMealImage(idMeal).then((value) => {
-          result = value;
-        });
-        if(result == false) {
-          alert("Reverting upload due to image upload failure!");
-          this.dietService.deleteMeal(idMeal).subscribe((response) => {
-            if (response.status == 200 || response.status == 204) {
-              window.alert("Meal deleted successfully!");
-            } else {
-              window.alert("Meal wasn't deleted :(");
-            }
-          });
-        }
+    const imageName: string | undefined = await this.uploadMealImage(uploadedMealId);
+    if (imageName == undefined) {
+      console.error("Image wasn't uploaded :(");
+      this.dietService.deleteMeal(uploadedMealId).subscribe((response) => {
+        if (response.status != 200)
+          console.error("Meal wasn't deleted :(");
+      });
 
-      } else {
-        window.alert("Something went wrong :(");
-      }
-    });
+      console.log("Meal was successfully created!");
+      return;
+    }
   }
 
   private checkMealImage(): boolean {
-    if (this.selectedImage == undefined){ 
+    this.cropper.crop();
+    if(this.croppedImage == '' || this.croppedImage == undefined || this.croppedImage == null)
       return false;
-    }
-    else
-      return true;
+
+    console.log("Image is ok!");
+    console.log("croppedImage: " + this.croppedImage);
+    console.log("base64: " + this.croppedImage.base64);
+    console.log("base64tofile: " + base64ToFile(this.croppedImage));
+    console.log("file: ", this.croppedImage.file)
+
+    return true;
   }
 
-  private async uploadMealImage(idMeal: number): Promise<boolean> {
-    let isSuccess : boolean = false;
+  private async uploadMeal() : Promise<number | undefined> {
+    let idMeal: number | undefined = undefined;
 
-    const response = await lastValueFrom(this.imageService.uploadMealImage(this.selectedImage!, idMeal));
-    if (response.status == 200) {
-      alert("Image uploaded successfully!");
-      isSuccess = true;
-    } else {
-      alert("Image wasn't uploaded :(");
-    }
-    // if(this.checkMealImage()){
-    //   this.imageService.uploadMealImage(this.selectedImage!).pipe(lastValueFrom()).subscribe((response) => {
-    //     if (response.status == 200) {
-    //       alert("Image uploaded successfully!");
-    //       isSuccess = true;
-    //     } else {
-    //       alert("Image wasn't uploaded :(");
-    //     }
-    //   });
+    const response$ = this.dietService.addMeal(this.finalForm);
+    const lastValue$ = await lastValueFrom(response$);
 
-    //   return isSuccess;
-    // }
+    if (lastValue$.status != 201)
+      return;
 
-    return isSuccess;
+    idMeal = lastValue$.body;
+
+    return idMeal;
   }
 
-  async execute() {
-    const source$ = interval(2000);
-    const firstNumber = await firstValueFrom(source$);
-    console.log(`The first number is ${firstNumber}`);
+  private async uploadMealImage(idMeal: number): Promise<string | undefined> {
+    let imageName : string | undefined = undefined;
+
+    const response$ = this.imageService.uploadMealImage(this.croppedImage, idMeal);
+    const lastValue$ = await lastValueFrom(response$);
+
+    if (lastValue$.status != 200)
+      return;
+
+    imageName = lastValue$.body;
+
+    return imageName;
+  }
+
+  getCroppedImageAsBase64() : any {
+    return this.cropper.imageBase64;
   }
 
   private getCategoriesFromBackend() {

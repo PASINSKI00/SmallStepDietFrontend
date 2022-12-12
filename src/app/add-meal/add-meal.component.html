@@ -37,11 +37,28 @@
         <textarea class="super-super-small-text" formControlName="recipe" id="recipe" type="text" placeholder="Recipe...">
         </textarea>
 
-        <input type="file" class="super-small-text" (change)="onImageChanged($event)">
-        
+        <input type="file" class="super-small-text" (change)="fileChangeEvent($event)">
+
+        <div *ngIf="imageChangedEvent" id="image-cropper-container">
+            <image-cropper id="image-cropper"
+                #cropper
+                [imageChangedEvent]="imageChangedEvent"
+                [maintainAspectRatio]="true"
+                [aspectRatio]="840 / 320"
+                format="jpeg"
+                (imageCropped)="imageCropped($event)"
+                (loadImageFailed)="loadImageFailed()"
+                [resizeToWidth]="840"
+                [resizeToHeight]="320"
+                [onlyScaleDown]="true"
+            ></image-cropper>
+
+            <img *ngIf="croppedImage" [src]="croppedImage" width="420" height="160"/>
+        </div>
+
 
         <div id="add-meal-btn-container">
-            <button class="btn btn-primary-green normal-text upload-button" (click)="uploadMeal()">Upload</button>
+            <button class="btn btn-primary-green normal-text upload-button" (click)="upload()">Upload</button>
         </div>
     </div>
 

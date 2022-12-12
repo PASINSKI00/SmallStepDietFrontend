@@ -12,12 +12,11 @@ export class ImageService {
 
   constructor(private http: HttpClient, private sharedService: SharedService) { }
 
-  uploadMealImage(image: File, idMeal: number) : Observable<any> {
-    const formData = new FormData();
-    formData.set('image', image);
+  uploadMealImage(image: string, idMeal: number) : Observable<any> {
 
-    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    let headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    headers.append('Content-Type', 'application/json');
 
-    return this.http.post(this.address + '/api/image/meal', formData, { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });
+    return this.http.post(this.address + '/api/image/meal', image, { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });
   }
 }
