@@ -4,6 +4,7 @@ import { faTrashAlt, faAdd, faAnglesDown, faAngleLeft } from '@fortawesome/free-
 import { Category } from './category';
 import { Review } from './review';
 import { DietService } from './diet.service';
+import { SharedService } from '../shared.service';
 
 @Component({
   selector: 'app-diet',
@@ -27,16 +28,10 @@ export class DietComponent implements OnInit {
   singleMealVisible: boolean = false;
   singleMeal: Meal|undefined = undefined;
 
-  constructor(private dietService: DietService) {}
+  constructor(private dietService: DietService, private sharedService: SharedService) {}
 
   async ngOnInit() {
-    let tmpDiet = await this.dietService.getDiet();
-    if(tmpDiet.length > 0) {
-      this.diet = tmpDiet;
-      this.maxDayIndex = this.diet.length - 1;
-    } else 
-      this.addDayToDiet();
-
+    this.addDayToDiet();
     this.getMealsFromBackend();
     this.getCategoriesFromBackend();
   }
@@ -66,7 +61,15 @@ export class DietComponent implements OnInit {
   }
 
   continue() {
-    this.dietService.setDiet(this.diet);
+    this.dietService.uploadDiet(this.diet).subscribe((response) => {
+      if(response.status != 201) {
+        console.log("Something went wrong");
+        return;
+      }
+
+      console.log("Diet uploaded");
+      this.sharedService.setActiveDietId(response.body);
+    });
   }
 
   chosenMealBackground(image: string) {

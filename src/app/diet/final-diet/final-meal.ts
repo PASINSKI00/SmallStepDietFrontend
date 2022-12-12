@@ -1,34 +1,24 @@
-import { Ingredient } from "../ingredient";
+import { FinalIngredient } from './final-ingredient';
 
 export class FinalMeal {
-    idMeal: number;
+    idFinalMeal: number;
     name: string;
-    ingredients: Array<Ingredient>;
+    finalIngredients: Array<FinalIngredient>;
     
-    weight: number = 0;
-    calories: number = 0;
-    protein: number = 0;
-    carbs: number = 0;
-    fats: number = 0;
+    calories: number;
+    protein: number;
+    fats: number;
+    carbs: number;
+    percentOfDay: number;
 
-    weightMultiplier: number = 1;
-
-    constructor(id: number, name: string, ingredients: Array<Ingredient>) {
-        this.idMeal = id;
+    constructor(id: number, name: string, finalIngredients: Array<FinalIngredient>, calories: number, protein: number, fats: number, carbs: number, percentOfDay: number) {
+        this.idFinalMeal = id;
         this.name = name;
-        this.ingredients = ingredients;
+        this.finalIngredients = finalIngredients;
+        this.calories = calories;
+        this.protein = protein;
+        this.fats = fats;
+        this.carbs = carbs;
+        this.percentOfDay = percentOfDay;
     }
-
-    calculateWeight() {
-        let weight: number = 0;
-    }
-
-    calculateProteinAmount() {
-        let protein: number = 0;
-        this.ingredients.forEach(ingredient => {
-            protein += ingredient.protein!/ingredient.weight;
-        });
-        return protein;
-    }
-
 }

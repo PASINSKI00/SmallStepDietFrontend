@@ -10,22 +10,9 @@ export class SharedService {
   private emitChangeSource = new Subject<any>();
   changeEmitted$ = this.emitChangeSource.asObservable();
   isLoggedIn: boolean = false;
-  diet: Array<Array<Meal>> = new Array<Array<Meal>>();
+  activeDietId: number = 1;
 
   constructor(private cookieService: CookieService) { }
-
-  setDiet(diet: Array<Array<Meal>>) {
-    this.diet = diet;
-    this.cookieService.set('diet', JSON.stringify(diet));
-  }
-
-  getDiet() : Array<Array<Meal>> {
-    if (this.diet.length == 0) {
-      this.diet = JSON.parse(this.cookieService.get('diet'));
-    }
-    
-    return this.diet;
-  }
 
   emitChange(change: any) {
     this.emitChangeSource.next(change);
@@ -41,5 +28,9 @@ export class SharedService {
 
   setIsLoggedIn(isLoggedIn: boolean) {
     this.isLoggedIn = isLoggedIn;
+  }
+
+  setActiveDietId(id: number) {
+    
   }
 }

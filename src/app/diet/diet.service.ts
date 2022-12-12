@@ -15,12 +15,25 @@ export class DietService {
 
   constructor(private http: HttpClient, private sharedService: SharedService) { }
 
-  setDiet(diet: Array<Array<Meal>>) {
-    this.sharedService.setDiet(diet);
+  uploadDiet(diet: Meal[][]) : Observable<any> {
+    // create 2d array of meal ids
+    let dietIds: number[][] = [];
+
+    diet.forEach(day => {
+      let dayIds: number[] = [];
+      day.forEach(meal => {
+        dayIds.push(meal.idMeal);
+      });
+      dietIds.push(dayIds);
+    });
+
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    return this.http.post(this.address + '/api/diet', dietIds, { headers: headers, observe: 'response', responseType: 'text' as 'json' })
   }
 
-  async getDiet() : Promise<Array<Array<Meal>>> {
-    return this.sharedService.getDiet();
+  getDiet(idDiet: number): Observable<any> {
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    return this.http.get(this.address + '/api/diet', { observe: 'response', params: {idDiet}, headers: headers, responseType: 'text' as 'json' })
   }
 
   getMeals() : Observable<any> {

@@ -4,6 +4,9 @@ import { DietService } from '../diet.service';
 import { Ingredient } from '../ingredient';
 import { Meal } from '../meal';
 import { FinalMeal } from './final-meal';
+import { FinalDay } from './final-day';
+import { SharedService } from 'src/app/shared.service';
+import { FinalDiet } from './final-diet';
 
 @Component({
   selector: 'app-final-diet',
@@ -13,91 +16,32 @@ import { FinalMeal } from './final-meal';
 export class FinalDietComponent implements OnInit {
   addIcon = faAdd;
   deleteIcon = faTrashAlt;
-  diet: Array<Array<FinalMeal>> = [];
+  diet: FinalDiet = null!;
+  dailyCaloriesIntake: number = 3000;
 
-  constructor(private dietService: DietService) { }
+  constructor(private dietService: DietService, sharedService: SharedService) { 
+    this.dietService.getDiet(sharedService.activeDietId).subscribe((response) => {
+      if(response.status != 200) {
+        alert("Something went wrong");
+        return;
+      }
 
-  async ngOnInit() {
-    let simpleDiet: Array<Array<Meal>> = await this.dietService.getDiet();
-    this.diet = this.convertToFinalDiet(simpleDiet);
-    console.log(this.diet);
-  }
+      console.log(response.body);
 
-   convertToFinalDiet(simpleDiet: Array<Array<Meal>>): FinalMeal[][] {
-    let finalDiet: FinalMeal[][] = [];
-
-    simpleDiet.forEach(day => {
-      let finalDay: FinalMeal[] = [];
-
-      day.forEach(meal => {
-        let ingredients: Array<Ingredient> = [];
-        this.dietService.getIngredientsForMeal(meal.idMeal).subscribe(response => {
-          let ingredientsJSON: Array<any> = JSON.parse(response.body);
-          ingredientsJSON.forEach((ingredientJSON: any) => {
-          ingredients.push(Object.assign(new Ingredient(ingredientJSON.id, ingredientJSON.name), ingredientJSON));
-      });
-        });
-        let finalMeal: FinalMeal = new FinalMeal(meal.idMeal, meal.name, ingredients);
-        finalDay.push(finalMeal);
-      });
-
-      finalDiet.push(finalDay);
-    });  
-
-    this.setIngredientsWeights(finalDiet);
-
-    return finalDiet;
-  }
-
-  setIngredientsWeights(finalDiet: FinalMeal[][]) {
-    finalDiet.forEach(day => {
-      day.forEach(meal => {
-        meal.ingredients.forEach(ingredient => {
-          ingredient.weight = this.calculateIngredientWeight(ingredient, meal);
-        });
-      });
+      this.diet = JSON.parse(response.body);
+      console.log(this.diet);
     });
   }
-
-  calculateIngredientWeight(ingredient: Ingredient, meal: FinalMeal): number {
-    let weight: number = 0;
-    
-    return weight;
+  
+  ngOnInit() {
   }
 
-  calculateDayPercent(dayIndex: number): number {
-    let percent: number = 0;
-    //TODO
-    return percent;
-  }
+  calculateDayPercentage(day: FinalDay) {
+    let sum: number = 0;
+    day.finalMeals.forEach(meal => {
+      sum += meal.percentOfDay;
+    });
 
-  calculateDayKcal(dayIndex: number): number {
-    let kcal: number = 0;
-    //TODO
-    return kcal;
-  }
-
-  calculateDayProtein(dayIndex: number): number {
-    let protein: number = 0;
-    //TODO
-    return protein;
-  }
-
-  calculateDayCarbs(dayIndex: number): number {
-    let carbs: number = 0;
-    //TODO
-    return carbs;
-  }
-
-  calculateDayFats(dayIndex: number): number {
-    let fat: number = 0;
-    //TODO
-    return fat;
-  }
-
-  getPercentOfMealInADay(dayIndex: number, mealIndex: number) {
-    let percent: number = 0;
-    //TODO
-    return percent;
+    return sum;
   }
 }
