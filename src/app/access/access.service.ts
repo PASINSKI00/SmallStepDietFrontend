@@ -16,7 +16,7 @@ export class AccessService {
   login(form: FormGroup) : Observable<any> {
     var buf = Buffer.from(form.value.email + ':' + form.value.password);
     const headers = new HttpHeaders({Authorization: 'Basic ' + buf.toString('base64')});
-    this.sharedService.setAuthHeader('Basic ' + buf.toString('base64'));
+    this.sharedService.setAuthHeaderValue('Basic ' + buf.toString('base64'));
     return this.http.get(this.address + '/api/login', { observe: 'response', headers: headers, responseType: 'text' as 'json' });
   }
 

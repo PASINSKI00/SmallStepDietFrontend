@@ -27,12 +27,12 @@ export class DietService {
       dietIds.push(dayIds);
     });
 
-    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.post(this.address + '/api/diet', dietIds, { headers: headers, observe: 'response', responseType: 'text' as 'json' })
   }
 
   getDiet(idDiet: number): Observable<any> {
-    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.get(this.address + '/api/diet', { observe: 'response', params: {idDiet}, headers: headers, responseType: 'text' as 'json' })
   }
 
@@ -49,17 +49,17 @@ export class DietService {
   }
 
   addMeal(mealForm: FormGroup) : Observable<any> {
-    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.post(this.address + '/api/meal', mealForm.value, { observe: 'response', headers: headers, responseType: 'text' as 'json' });
   }
 
   deleteMeal(idMeal: number) : Observable<any> {
-    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.delete(this.address + '/api/meal', { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });
   }
 
   getIngredientsForMeal(idMeal: number): Observable<any> {
-    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeader()});
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.get(this.address + '/api/ingredient/all/meal', { observe: 'response', params:{idMeal},headers: headers, responseType: 'text' as 'json' });
   }
 }

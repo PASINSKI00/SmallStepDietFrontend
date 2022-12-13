@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
       (response) => {
         if(response.status == 200){
           alert('Login successful');
-          this._sharedService.setIsLoggedIn(true);
+          this._sharedService.isLoggedIn = true;
         }
         else
           alert('Wrong email or password');
