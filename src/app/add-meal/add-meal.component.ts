@@ -17,14 +17,11 @@ export class AddMealComponent implements OnInit {
   addIcon = faAdd;
   deleteIcon = faTrashAlt;
 
-  @ViewChild('cropper', { static: false }) cropper: ImageCropperComponent = undefined!;
-
   ingredients: Ingredient[] = [];
   categories: Category[] = [];
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
-  // base64Image: any = '';
 
   finalForm = this.formBuilder.group({
     name: '',
@@ -143,7 +140,6 @@ export class AddMealComponent implements OnInit {
   }
 
   private checkMealImage(): boolean {
-    this.cropper.crop();
     if(this.croppedImage == '' || this.croppedImage == undefined || this.croppedImage == null)
       return false;
 
@@ -182,10 +178,6 @@ export class AddMealComponent implements OnInit {
     imageName = lastValue$.body;
 
     return imageName;
-  }
-
-  getCroppedImageAsBase64() : any {
-    return this.cropper.imageBase64;
   }
 
   private getCategoriesFromBackend() {
