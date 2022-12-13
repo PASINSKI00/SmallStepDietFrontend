@@ -245,12 +245,6 @@ export class AddMealComponent implements OnInit {
     if(this.croppedImage == '' || this.croppedImage == undefined || this.croppedImage == null)
       return false;
 
-    console.log("Image is ok!");
-    console.log("croppedImage: " + this.croppedImage);
-    console.log("base64: " + this.croppedImage.base64);
-    console.log("base64tofile: " + base64ToFile(this.croppedImage));
-    console.log("file: ", this.croppedImage.file)
-
     return true;
   }
 
