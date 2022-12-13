@@ -17,8 +17,17 @@ export class AddMealComponent implements OnInit {
   addIcon = faAdd;
   deleteIcon = faTrashAlt;
 
+  nameOk: boolean = true;
+  timeOk: boolean = true;
+  ingredientsOk: boolean = true;
+  ingredientOk: boolean[] = [];
+  weightOk: boolean[] = [];
+  categoryOk: boolean[] = [];
+  recipeOk: boolean = true;
+
   ingredients: Ingredient[] = [];
   categories: Category[] = [];
+  mealNames: string[] = [];
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
@@ -76,21 +85,106 @@ export class AddMealComponent implements OnInit {
   ngOnInit(): void {
     this.getIngredientsFromBackend();
     this.getCategoriesFromBackend();
+    this.getMealNamesFromBackend();
+    this.addIngredientField();
     this.addIngredientField();
     this.addCategoryField();
+  }
+
+  checkMealName(event: any) {
+    const mealName = event.target.value;
+    if (this.mealNames.includes(mealName)) {
+      console.error("Meal with this name already exists!");
+      this.nameOk = false;
+      return;
+    }
+
+    this.nameOk = true;
+  }
+
+  checkTimeToPrepare(event: any) {
+    const timeToPrepare = event.target.value;
+    if (timeToPrepare < 1 || timeToPrepare > 300) {
+      console.error("Time to prepare must be between 1 and 300 minutes!");
+      this.timeOk = false;
+      return;
+    }
+
+    this.timeOk = true;
+  }
+
+  checkIngredients() {
+    if (this.ingredientsArray.length < 2) {
+      console.error("Meal must have at least two ingredients!");
+      this.ingredientsOk = false;
+      return;
+    }
+
+    this.ingredientsOk = true;
+  }
+
+  checkIngredientName(index: number) {
+    const ingredientName = this.ingredientsArray.at(index).value.name;
+    if (ingredientName == "" || !this.ingredients.map(ingredient => ingredient.name).includes(ingredientName)) {
+      console.error("Wrong ingredient name!");
+      this.ingredientOk[index] = false;
+      return;
+    }
+
+    this.ingredientOk[index] = true;
+  }
+
+  checkIngredientWeight(index: number) {
+    const ingredientWeight = this.ingredientsArray.at(index).value.weight;
+    if (ingredientWeight < 1 || Number.isInteger(ingredientWeight) == false) {
+      console.error("Ingredient weight must be at least 1gram and a natural number!");
+      this.weightOk[index] = false;
+      return;
+    }
+
+    this.weightOk[index] = true;
+  }
+
+  checkCategory(index: number) {
+    const categoryName = this.categoriesArray.at(index).value.name;
+    if (categoryName == "" || !this.categories.map(category => category.name).includes(categoryName)) {
+      console.error("Category name cannot be empty and has to be from one of the provided ones!");
+      this.categoryOk[index] = false;
+      return;
+    }
+
+    this.categoryOk[index] = true;
+  }
+
+  checkRecipe(event: any) {
+    const recipe = event.target.value;
+    const words = recipe.split(/\s+/);
+    if (words.length < 10) {
+      console.error("Recipe must be 10 words or longer!");
+      this.recipeOk = false;
+      return;
+    }
+
+    this.recipeOk = true;
   }
 
   addIngredientField() {
     const ingredientForm = this.formBuilder.group({
       name: '',
-      weight: 100
+      weight: null
     });
 
     this.ingredientsArray.push(ingredientForm);
+    this.ingredientOk.push(true);
+    this.weightOk.push(true);
+    this.checkIngredients();
   }
 
   deleteIngredientField(index: number) {
     this.ingredientsArray.removeAt(index);
+    this.checkIngredients();
+    this.ingredientOk.splice(index, 1);
+    this.weightOk.splice(index, 1);
   }
 
   addCategoryField() {
@@ -99,15 +193,18 @@ export class AddMealComponent implements OnInit {
     });
 
     this.categoriesArray.push(categoryForm);
+    this.categoryOk.push(true);
   }
 
   deleteCategoryField(index: number) {
     this.categoriesArray.removeAt(index);
+    this.categoryOk.splice(index, 1);
   }  
 
   async upload() {
-    if (!this.checkMealImage()){
-      console.error("Please choose an image!");
+    if (this.checkAllFields() == false){
+      console.error("Please check your inputs!");
+      alert("You didn't fill every field correctly! Please check your inputs and try again.");
       return;
     }
 
@@ -123,6 +220,11 @@ export class AddMealComponent implements OnInit {
     const uploadedMealId: number | undefined = await this.uploadMeal();
     if (uploadedMealId == undefined) {
       console.error("Meal wasn't created :(");
+      return;
+    }
+
+    if(!this.checkMealImage()) {
+      console.log("Meal was successfully created! Picture not provided.");
       return;
     }
 
@@ -150,6 +252,10 @@ export class AddMealComponent implements OnInit {
     console.log("file: ", this.croppedImage.file)
 
     return true;
+  }
+
+  private checkAllFields(): boolean {
+    return this.nameOk && this.timeOk && this.ingredientsOk && this.recipeOk && this.categoryOk.every((value) => value == true) && this.ingredientOk.every((value) => value == true) && this.weightOk.every((value) => value == true);
   }
 
   private async uploadMeal() : Promise<number | undefined> {
@@ -229,5 +335,14 @@ export class AddMealComponent implements OnInit {
     customJsonDefinition = `{${customJsonDefinition}}`;
     
     return JSON.parse(customJsonDefinition);
+  }
+
+  private getMealNamesFromBackend() {
+    this.dietService.getMeals().subscribe((response) => {
+      let mealsJSON: Array<any> = JSON.parse(response.body);
+      mealsJSON.forEach((mealJSON: any) => {
+        this.mealNames.push(mealJSON.name);
+      });
+    });
   }
 }

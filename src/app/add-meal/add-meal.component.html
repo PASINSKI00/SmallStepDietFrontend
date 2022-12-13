@@ -3,20 +3,20 @@
         <p class="normal-text">Add a new meal</p>
         <div class="input-container">
             <p class="super-small-wide-text">Name of Your meal</p>
-            <input class="input" formControlName="name" id="name" type="text" placeholder="Chicken soup...">
+            <input class="input" formControlName="name" [ngClass]="{'wrong-input': !nameOk}" (keyup)="checkMealName($event)" id="name" type="text" placeholder="Chicken soup...">
         </div>
 
         <div class="input-container">
             <p class="super-small-wide-text">Time to prepare in minutes</p>
-            <input class="input" formControlName="timeToPrepare" id="time-to-prepare" type="number" min="1">
+            <input class="input" formControlName="timeToPrepare" step=1 [ngClass]="{'wrong-input': !timeOk}" (keyup)="checkTimeToPrepare($event)" id="time-to-prepare" type="number" min="1">
         </div>
 
-        <div id="ingredients" class="input-container" formArrayName="ingredientsArray">
+        <div id="ingredients" class="input-container" [ngClass]="{'wrong-input': !ingredientsOk}" formArrayName="ingredientsArray">
             <p class="super-small-wide-text">Ingredients with weight [g]</p>
             <div class="ingredient-with-weight" *ngFor="let ingredientForm of ingredientsArray.controls; let i = index">
                 <div class="ingredient-form" [formGroupName]="i">
-                    <input class="input ingredient-input" list="ingredients-list" formControlName="name" placeholder="Choose ingredient...">
-                    <input class="input weight-input" type="number" formControlName="weight" min="0" placeholder="Weight">
+                    <input class="input ingredient-input" list="ingredients-list" [ngClass]="{'wrong-input': !ingredientOk[i]}" (keyup)="checkIngredientName(i)" formControlName="name" placeholder="Choose ingredient...">
+                    <input class="input weight-input" type="number" [ngClass]="{'wrong-input': !weightOk[i]}" (keyup)="checkIngredientWeight(i)" formControlName="weight" min="1" step=1 placeholder="Weight">
                     <fa-icon class="btn" [icon]="deleteIcon" (click)="deleteIngredientField(i)"></fa-icon>
                 </div>
             </div>
@@ -27,14 +27,14 @@
             <p class="super-small-wide-text">Categories</p>
             <div *ngFor="let categoryForm of categoriesArray.controls; let i = index">
                 <div class="category-form" [formGroupName]="i">
-                    <input class="input" list="categories-list" formControlName="name" placeholder="Choose category...">
+                    <input class="input" [ngClass]="{'wrong-input': !categoryOk[i]}" (keyup)="checkCategory(i)" list="categories-list" formControlName="name" placeholder="Choose category...">
                     <fa-icon class="btn" [icon]="deleteIcon" (click)="deleteCategoryField(i)"></fa-icon>
                 </div>
             </div>
             <fa-icon class="add-icon btn" [icon]="addIcon" (click)="addCategoryField()"></fa-icon>
         </div>  
 
-        <textarea class="super-super-small-text" formControlName="recipe" id="recipe" type="text" placeholder="Recipe...">
+        <textarea class="super-super-small-text" [ngClass]="{'wrong-input': !recipeOk}" (focusout)="checkRecipe($event)" formControlName="recipe" id="recipe" type="text" placeholder="Recipe...">
         </textarea>
 
         <input type="file" class="super-small-text" (change)="fileChangeEvent($event)">
