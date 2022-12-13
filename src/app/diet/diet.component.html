@@ -22,12 +22,12 @@
                 </div>
             </div>
             <div *ngFor="let meal of meals" class="meal" (click)="showSingleMeal(meal)">
-                <img src="{{meal.image}}" alt="meal image" />
+                <img src="{{meal.imageUrl}}" alt="meal image" />
                 <div class="meal-info">
                     <span>
                         <p class="meal-name super-small-wide-text">{{meal.name}}</p>
                         <div class="ingredients-names">
-                            <p class="small-text">
+                            <p class="super-super-small-wide-text">
                                 {{meal.getIngredientsNames()}}
                             </p>
                         </div>
@@ -43,7 +43,7 @@
                 <p class="small-wide-text">return</p>
             </div>
             <div id="single-meal-info">
-                <img src="{{singleMeal?.image}}" alt="meal image" />
+                <img src="{{singleMeal?.imageUrl}}" alt="meal image" />
                 <div id="single-meal-specific-info-and-reviews">
                     <span>
                         <div id="single-meal-title" class="normal-text">{{singleMeal?.name}}</div>
@@ -99,7 +99,7 @@
             </span>
         </div>
         <div id="chosen-meals">
-            <div *ngFor="let meal of diet[chosenDayIndex]" [ngStyle]="chosenMealBackground(meal.image)" class="chosen-meal">
+            <div *ngFor="let meal of diet[chosenDayIndex]" [ngStyle]="chosenMealBackground(meal.imageUrl)" class="chosen-meal">
                 <div class="background-darkener">
                     <p class="chosen-meal-name super-small-wide-text">{{meal.name}}</p>
                     <fa-icon class="btn btn-small-red" [icon]="deleteIcon" (click)="removeMealFromDiet(meal)"></fa-icon>

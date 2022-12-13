@@ -4,7 +4,7 @@ export class Meal {
     idMeal: number;
     name: string;
     rating: number;
-    image: string;
+    imageUrl: string;
     ingredientsNames: Array<String>;
     
     recipe: string = "";
@@ -15,12 +15,12 @@ export class Meal {
     reviews: Array<Review> = [];
     categoriesNames: Array<String> = [];
 
-    constructor(idMeal: number, name: string, ingredientsNames: Array<String>, rating: number, image: string) {
+    constructor(idMeal: number, name: string, ingredientsNames: Array<String>, rating: number, imageUrl: string) {
         this.idMeal = idMeal;
         this.name = name;
         this.ingredientsNames = ingredientsNames;
         this.rating = rating;
-        this.image = image;
+        this.imageUrl = imageUrl;
     }
 
     extendMeal(recipe: string, timeToPrepare: number, proteinRatio: number, carbsRatio: number, fatsRatio: number, reviews: Array<Review>) {
