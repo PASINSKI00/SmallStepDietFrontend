@@ -14,6 +14,11 @@ import { SignupComponent } from './access/signup/signup.component';
 import { BaseComponent } from './access/base/base.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FooterComponent } from './footer/footer.component';
+import { AddMealComponent } from './add-meal/add-meal.component';
+import { FormsModule } from '@angular/forms';
+import { FinalDietComponent } from './diet/final-diet/final-diet.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
   declarations: [
@@ -24,7 +29,10 @@ import { ReactiveFormsModule } from '@angular/forms';
     WallComponent,
     LoginComponent,
     SignupComponent,
-    BaseComponent
+    BaseComponent,
+    FooterComponent,
+    AddMealComponent,
+    FinalDietComponent
   ],
   imports: [
     BrowserModule,
@@ -33,6 +41,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     OverlayModule,
     HttpClientModule,
     ReactiveFormsModule,
+    FormsModule,
+    ImageCropperModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,4 +1,5 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -7,9 +8,14 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 })
 export class NavbarComponent implements OnInit {
   @Output() accessEvent = new EventEmitter<string>();
-  active: string = 'home';
+  active: string = '';
 
-  constructor() { }
+  constructor(private router: Router) { 
+    this.active = window.location.pathname.split('/')[1];
+    if (this.active == '' || this.active == 'addMeal') {
+      this.active = 'home';
+    }
+  }
 
   ngOnInit(): void {
   }

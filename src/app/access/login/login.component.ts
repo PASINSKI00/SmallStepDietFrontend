@@ -10,12 +10,12 @@ import { AccessService } from '../access.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) { }
-
   loginForm = this.formBuilder.group({
     email: '',
     password: ''
   });
+
+  constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
   }
@@ -23,9 +23,12 @@ export class LoginComponent implements OnInit {
   login() {
     this.accessService.login(this.loginForm).subscribe(
       (response) => {
-        console.log(response.status);
-        // this._sharedService.setToken(response.headers.get('Authorization'));
-        // this._sharedService.setLoggedIn(true);
+        if(response.status == 200){
+          alert('Login successful');
+          this._sharedService.isLoggedIn = true;
+        }
+        else
+          alert('Wrong email or password');
       }
     );
   }

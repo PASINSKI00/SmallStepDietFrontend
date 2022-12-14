@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Buffer } from 'buffer';
+import { SharedService } from '../shared.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,11 +11,12 @@ import { Buffer } from 'buffer';
 export class AccessService {
   address = 'http://localhost:8080';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private sharedService: SharedService) { }
 
   login(form: FormGroup) : Observable<any> {
     var buf = Buffer.from(form.value.email + ':' + form.value.password);
     const headers = new HttpHeaders({Authorization: 'Basic ' + buf.toString('base64')});
+    this.sharedService.setAuthHeaderValue('Basic ' + buf.toString('base64'));
     return this.http.get(this.address + '/api/login', { observe: 'response', headers: headers, responseType: 'text' as 'json' });
   }
 
