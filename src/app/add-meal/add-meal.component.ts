@@ -7,6 +7,7 @@ import { faAdd, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { ImageService } from '../image.service';
 import { lastValueFrom } from 'rxjs';
 import { base64ToFile, ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-meal',
@@ -67,7 +68,7 @@ export class AddMealComponent implements OnInit {
     return this.addMealForm.get('categoriesArray') as FormArray;
   }
   
-  constructor(private formBuilder: FormBuilder, private dietService: DietService, private imageService: ImageService) { }
+  constructor(private formBuilder: FormBuilder, private dietService: DietService, private imageService: ImageService, private router: Router) { }
   
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;
@@ -239,6 +240,9 @@ export class AddMealComponent implements OnInit {
       console.log("Meal was successfully created!");
       return;
     }
+
+    alert("Meal was successfully created!");
+    this.router.navigate(['/diet']);
   }
 
   private checkMealImage(): boolean {
