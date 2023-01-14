@@ -21,6 +21,10 @@ import { FinalDietComponent } from './diet/final-diet/final-diet.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { GroceriesComponent } from './diet/groceries/groceries.component';
 import { FinishedComponent } from './diet/finished/finished.component';
+import { DietHistoryComponent } from './account/diet-history/diet-history.component';
+import { BodyInfoComponent } from './account/body-info/body-info.component';
+import { UserInfoComponent } from './account/user-info/user-info.component';
+import { ReviewComponent } from './account/review/review.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +40,11 @@ import { FinishedComponent } from './diet/finished/finished.component';
     AddMealComponent,
     FinalDietComponent,
     GroceriesComponent,
-    FinishedComponent
+    FinishedComponent,
+    DietHistoryComponent,
+    BodyInfoComponent,
+    UserInfoComponent,
+    ReviewComponent
   ],
   imports: [
     BrowserModule,
