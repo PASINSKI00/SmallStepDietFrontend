@@ -19,6 +19,7 @@ import { AddMealComponent } from './add-meal/add-meal.component';
 import { FormsModule } from '@angular/forms';
 import { FinalDietComponent } from './diet/final-diet/final-diet.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { GroceriesComponent } from './diet/groceries/groceries.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     BaseComponent,
     FooterComponent,
     AddMealComponent,
-    FinalDietComponent
+    FinalDietComponent,
+    GroceriesComponent
   ],
   imports: [
     BrowserModule,
