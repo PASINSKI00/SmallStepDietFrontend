@@ -29,5 +29,4 @@ export class GroceriesComponent implements OnInit {
 
     this.ingredients = JSON.parse(lastValue$.body);
   }
-
 }
