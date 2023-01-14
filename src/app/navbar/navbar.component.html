@@ -6,6 +6,7 @@
         <a [className]="active === 'wall' ? 'selected' : ''" routerLink="/wall" (click)="active='wall'" routerLinkActive="active">Wall</a>
     </nav>
     <div id="button-container">
-        <button class="btn btn-primary-green" (click)="access()">Join Us</button>
+        <button class="btn btn-primary-green" [ngClass]="{'display-none': isLoggedIn}" (click)="access()">Join Us</button>
+        <button class="btn green-text small-wide-text bg-none" [ngClass]="{'display-none': !isLoggedIn}" routerLink="/account">Your account</button>
     </div>
 </div>
