@@ -1,1 +1,16 @@
-<p>groceries works!</p>
+<div id="container">
+    <div class="ingredients">
+        <div class="ingredient" *ngFor="let ingredient of ingredients">
+            <div class="ingredient-info">
+                <p class="super-small-wide-text">{{ingredient.name}}</p>
+                <p class="super-small-wide-text">{{ingredient.weight}} g</p>
+            </div>
+            <fa-icon [icon]="deleteIcon"></fa-icon>
+        </div>
+    </div>
+
+    <div id="button-box">
+        <button class="btn btn-primary-red" routerLink="/diet/final">Return</button>
+        <button class="btn btn-primary-green" routerLink="/diet/finished">Continue</button>
+    </div>
+</div>
