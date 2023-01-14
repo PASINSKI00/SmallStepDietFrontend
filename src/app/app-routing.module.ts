@@ -6,6 +6,7 @@ import { WallComponent } from './wall/wall.component';
 import { AddMealComponent } from './add-meal/add-meal.component';
 import { FinalDietComponent } from './diet/final-diet/final-diet.component';
 import { GroceriesComponent } from './diet/groceries/groceries.component';
+import { FinishedComponent } from './diet/finished/finished.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
   {
     path: 'diet/final/groceries',
     component: GroceriesComponent,
+  },
+  {
+    path: 'diet/finished',
+    component: FinishedComponent,
   },
 ];
 
