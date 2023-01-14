@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SharedService } from 'src/app/shared.service';
 
 @Component({
   selector: 'app-finished',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FinishedComponent implements OnInit {
 
-  constructor() { }
+  constructor(private sharedService: SharedService) { }
 
   ngOnInit(): void {
+    this.sharedService.activeDietId = -1;
+    this.sharedService.activeDiet = [];
   }
 
 }

@@ -19,17 +19,14 @@ export class FinalDietComponent implements OnInit {
   diet: FinalDiet = null!;
   dailyCaloriesIntake: number = 3000;
 
-  constructor(private dietService: DietService, sharedService: SharedService) { 
-    this.dietService.getDiet(sharedService.activeDietId).subscribe((response) => {
+  constructor(private dietService: DietService, private sharedService: SharedService) { 
+    this.dietService.getDiet(this.sharedService.activeDietId).subscribe((response) => {
       if(response.status != 200) {
         alert("Something went wrong");
         return;
       }
 
-      console.log(response.body);
-
       this.diet = JSON.parse(response.body);
-      console.log(this.diet);
     });
   }
   

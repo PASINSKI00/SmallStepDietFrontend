@@ -33,9 +33,14 @@ export class DietComponent implements OnInit {
   constructor(private dietService: DietService, private sharedService: SharedService, private router: Router) {}
 
   async ngOnInit() {
-    this.addDayToDiet();
     this.getMealsFromBackend();
     this.getCategoriesFromBackend();
+    if(this.sharedService.activeDietId == -1) {
+      this.addDayToDiet();
+    } else {
+      this.diet = this.sharedService.activeDiet;
+      this.maxDayIndex = this.diet.length - 1;
+    }
   }
 
   addDayToDiet() {
@@ -91,16 +96,31 @@ export class DietComponent implements OnInit {
   }
 
   async continue() {
-    const response$ = this.dietService.uploadDiet(this.diet);
-    const lastValue$ = await lastValueFrom(response$);
+    // Update diet if active diet
+    if(this.sharedService.activeDietId != -1) {
+      const response$ = this.dietService.updateDiet(this.diet);
+      const lastValue$ = await lastValueFrom(response$);
 
-    if(lastValue$.status != 201) {
-      alert("Diet wasn't uploaded. Please try again.");
-      return;
+      if(lastValue$.status != 200) {
+        alert("Diet wasn't updated. Please try again.");
+        return;
+      }
     }
 
-    this.sharedService.activeDietId = JSON.parse(lastValue$.body);
+    // Create diet if no active diet
+    if(this.sharedService.activeDietId == -1) {
+      const response$ = this.dietService.uploadDiet(this.diet);
+      const lastValue$ = await lastValueFrom(response$);
 
+      if(lastValue$.status != 201) {
+        alert("Diet wasn't created. Please try again.");
+        return;
+      }
+
+      this.sharedService.activeDietId = JSON.parse(lastValue$.body);
+    }
+
+    this.sharedService.activeDiet = this.diet;
     this.router.navigate(['/diet/final']);
   }
 
@@ -110,8 +130,6 @@ export class DietComponent implements OnInit {
       mealsJSON.forEach((mealJSON: any) => {
         this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image), mealJSON));
       });
-
-      this.addMealToDiet(this.meals[0]);
   
       this.meals[0].extendMeal("This is a recipe sadsdsad asdasdsad sad sadsadsa asdsadsad saddsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n ds sad sa da dad as dsa da d a adsada \n dsfadsadsa \n dsadsadsads \nfor meal dsadsad sad sad sa da dad as dsa da d a adsada \n ds dsadsad sad sad sa da dad as dsa da d a adsada \n ds 0", 20, 20, 20, 60, new Array<Review>());
       this.singleMeal = this.meals[0];

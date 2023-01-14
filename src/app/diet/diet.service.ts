@@ -16,7 +16,6 @@ export class DietService {
   constructor(private http: HttpClient, private sharedService: SharedService) { }
 
   uploadDiet(diet: Meal[][]) : Observable<any> {
-    // create 2d array of meal ids
     let dietIds: number[][] = [];
 
     diet.forEach(day => {
@@ -29,6 +28,22 @@ export class DietService {
 
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.post(this.address + '/api/diet', dietIds, { headers: headers, observe: 'response', responseType: 'text' as 'json' })
+  }
+
+  updateDiet(diet: Meal[][]) : Observable<any> {
+    let dietIds: number[][] = [];
+
+    diet.forEach(day => {
+      let dayIds: number[] = [];
+      day.forEach(meal => {
+        dayIds.push(meal.idMeal);
+      });
+      dietIds.push(dayIds);
+    });
+
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
+    const params = {idDiet: this.sharedService.activeDietId.toString()};
+    return this.http.put(this.address + '/api/diet', dietIds, { headers: headers, observe: 'response', responseType: 'text' as 'json', params: params })
   }
 
   getDiet(idDiet: number): Observable<any> {
@@ -64,7 +79,7 @@ export class DietService {
   }
 
   getGroceries(): Observable<any> {
-    const idDiet = 1;
+    const idDiet = this.sharedService.activeDietId;
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.get(this.address + '/api/diet/groceries', { observe: 'response', params:{idDiet},headers: headers, responseType: 'text' as 'json' });
   }
