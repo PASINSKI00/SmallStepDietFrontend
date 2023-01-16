@@ -20,9 +20,10 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isLoggedIn = this.sharedService.isLoggedIn();
     this.sharedService.changeEmitted$.subscribe(
       (change) => {
-        this.isLoggedIn = change;
+        this.isLoggedIn = this.sharedService.isLoggedIn();
       }
     );
   }
