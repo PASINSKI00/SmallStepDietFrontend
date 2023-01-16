@@ -11,8 +11,8 @@ export class FinishedComponent implements OnInit {
   constructor(private sharedService: SharedService) { }
 
   ngOnInit(): void {
-    this.sharedService.activeDietId = -1;
-    this.sharedService.activeDiet = [];
+    this.sharedService.setActiveDietId(-1);
+    this.sharedService.setActiveDiet([]);
   }
 
 }

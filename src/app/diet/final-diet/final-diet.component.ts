@@ -20,7 +20,7 @@ export class FinalDietComponent implements OnInit {
   dailyCaloriesIntake: number = 3000;
 
   constructor(private dietService: DietService, private sharedService: SharedService) { 
-    this.dietService.getDiet(this.sharedService.activeDietId).subscribe((response) => {
+    this.dietService.getDiet(this.sharedService.getActiveDietId()).subscribe((response) => {
       if(response.status != 200) {
         alert("Something went wrong");
         return;

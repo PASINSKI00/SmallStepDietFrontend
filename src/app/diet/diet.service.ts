@@ -42,7 +42,7 @@ export class DietService {
     });
 
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
-    const params = {idDiet: this.sharedService.activeDietId.toString()};
+    const params = {idDiet: this.sharedService.getActiveDietId().toString()};
     return this.http.put(this.address + '/api/diet', dietIds, { headers: headers, observe: 'response', responseType: 'text' as 'json', params: params })
   }
 
@@ -79,7 +79,7 @@ export class DietService {
   }
 
   getGroceries(): Observable<any> {
-    const idDiet = this.sharedService.activeDietId;
+    const idDiet = this.sharedService.getActiveDietId();
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.get(this.address + '/api/diet/groceries', { observe: 'response', params:{idDiet},headers: headers, responseType: 'text' as 'json' });
   }

@@ -35,10 +35,11 @@ export class DietComponent implements OnInit {
   async ngOnInit() {
     this.getMealsFromBackend();
     this.getCategoriesFromBackend();
-    if(this.sharedService.activeDietId == -1) {
+    console.log(this.sharedService.getActiveDietId());
+    if(this.sharedService.getActiveDietId() == -1) {
       this.addDayToDiet();
     } else {
-      this.diet = this.sharedService.activeDiet;
+      this.diet = this.sharedService.getActiveDiet();
       this.maxDayIndex = this.diet.length - 1;
     }
   }
@@ -97,7 +98,7 @@ export class DietComponent implements OnInit {
 
   async continue() {
     // Update diet if active diet
-    if(this.sharedService.activeDietId != -1) {
+    if(this.sharedService.getActiveDietId() != -1) {
       const response$ = this.dietService.updateDiet(this.diet);
       const lastValue$ = await lastValueFrom(response$);
 
@@ -108,7 +109,7 @@ export class DietComponent implements OnInit {
     }
 
     // Create diet if no active diet
-    if(this.sharedService.activeDietId == -1) {
+    if(this.sharedService.getActiveDietId() == -1) {
       const response$ = this.dietService.uploadDiet(this.diet);
       const lastValue$ = await lastValueFrom(response$);
 
@@ -117,10 +118,10 @@ export class DietComponent implements OnInit {
         return;
       }
 
-      this.sharedService.activeDietId = JSON.parse(lastValue$.body);
+      this.sharedService.setActiveDietId(JSON.parse(lastValue$.body));
     }
 
-    this.sharedService.activeDiet = this.diet;
+    this.sharedService.setActiveDiet(this.diet);
     this.router.navigate(['/diet/final']);
   }
 
