@@ -25,4 +25,23 @@ export class DietHistoryComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  downloadMyFile(fileUrl: string, number: number) {
+    console.log(fileUrl);
+    const now = new Date();
+    const link = document.createElement('a');
+    link.setAttribute('target', '_blank');
+    link.setAttribute('href', fileUrl);
+    link.setAttribute('download', 'diet' + number + '_' + now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + '.pdf');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+}
+
+  chosenMealBackground(image: string) {
+    return {
+      'background-image': 'url(' + image + ')',
+      'background-size': 'cover',
+      'background-position': 'center'
+    }
+  }
 }
