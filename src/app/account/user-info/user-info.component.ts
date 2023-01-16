@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SharedService } from 'src/app/shared.service';
 
 @Component({
   selector: 'app-user-info',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserInfoComponent implements OnInit {
 
-  constructor() { }
+  constructor(private sharedService: SharedService) { }
 
   ngOnInit(): void {
   }
 
+  logout() {
+    this.sharedService.logout();
+  }
 }
