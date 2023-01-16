@@ -1,1 +1,14 @@
-<p>diet-history works!</p>
+<div class="diet" *ngFor="let diet of diets">
+    Diet
+    <div class="day" *ngFor="let day of diet.finalDays">
+        Day
+        <div class="meal" let meal of day.finalMeals>
+            meal
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button>Download Diet</button>
+        <button>Download Shopping List</button>
+    </div>
+</div>

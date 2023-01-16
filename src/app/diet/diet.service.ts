@@ -83,4 +83,9 @@ export class DietService {
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.get(this.address + '/api/diet/groceries', { observe: 'response', params:{idDiet},headers: headers, responseType: 'text' as 'json' });
   }
+
+  getMyDiets(): Observable<any> {
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
+    return this.http.get(this.address + '/api/diet/mine', { observe: 'response', headers: headers, responseType: 'text' as 'json' });
+  }
 }
