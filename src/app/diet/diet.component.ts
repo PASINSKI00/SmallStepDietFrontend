@@ -97,6 +97,27 @@ export class DietComponent implements OnInit {
   }
 
   async continue() {
+    // Check if diet is empty
+    if(this.diet.length == 0) {
+      alert("You can't continue with an empty diet");
+      return;
+    }
+
+    // Check if diet is valid
+    for(let i = 0; i < this.diet.length; i++) {
+      if(this.diet[i].length == 0) {
+        alert("You can't continue with empty days");
+        return;
+      }
+    }
+
+    // Check if logged in and save diet if not
+    if(!this.sharedService.isLoggedIn()) {
+      this.sharedService.setActiveDiet(this.diet);
+      alert("You need to be logged in to continue");
+      return;
+    }
+
     // Update diet if active diet
     if(this.sharedService.getActiveDietId() != -1) {
       const response$ = this.dietService.updateDiet(this.diet);
