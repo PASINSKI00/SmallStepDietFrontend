@@ -1,1 +1,40 @@
-<p>review works!</p>
+<div id="meals" [ngClass]="{'display-none': reviewing}">
+    <div *ngFor="let meal of meals" class="meal">
+        <img src="{{meal.imageUrl}}" alt="meal image" />
+        <div class="meal-info">
+            <span>
+                <p class="meal-name super-small-wide-text">{{meal.name}}</p>
+                <div class="ingredients-names">
+                    <p class="super-super-small-wide-text">
+                        {{meal.getIngredientsNames()}}
+                    </p>
+                </div>
+            </span>
+            <button class="btn btn-small-green" (click)="review(meal)">review</button>
+        </div>
+    </div>
+</div>
+
+<div id="review" [formGroup]="reviewForm" [ngClass]="{'display-none': !reviewing}">
+    <div id="return-button" (click)="reviewing = false">
+        <fa-icon class="filter-icon" [icon]="returnIcon"></fa-icon>
+        <p class="small-wide-text">return</p>
+    </div>
+
+    <div id="review-meal-info">
+        <img src="{{mealForReview?.imageUrl}}" alt="meal image" />
+        <div id="review-meal-specific-info-and-reviews">
+            <span>
+                <div id="review-meal-title" class="normal-text">{{mealForReview?.name}}</div>
+            </span>
+        </div>
+    </div>
+
+    <div id="rating-container" class="small-wide-text">
+        <p>Rating: </p>
+        <input type="number" class="small-wide-text" id="review-rating" placeholder="0-10" formControlName="rating" min="0" max="10" step="1"/>
+    </div>
+
+    <textarea id="review-content" class="small-text" placeholder="Write your review here..." formControlName="comment"></textarea>
+    <button id="submit-review" class="btn btn-primary-green" (click)="submitReview()">Submit</button>
+</div>
