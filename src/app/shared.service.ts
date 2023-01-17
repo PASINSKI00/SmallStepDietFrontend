@@ -33,6 +33,11 @@ export class SharedService {
     this.cookieService.delete('authHeaderValue');
     this.cookieService.delete('activeDietId');
     this.cookieService.delete('activeDiet');
+
+    if( this.cookieService.check('authHeaderValue') || this.cookieService.check('activeDietId') || this.cookieService.check('activeDiet')) {
+      alert('Something went wrong with the logout. Please try again.');
+    }
+    
     this.emitChange(false);
   }
 
