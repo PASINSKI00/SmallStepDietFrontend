@@ -60,4 +60,9 @@ export class SharedService {
   checkActiveDiet() {
     return this.cookieService.check('activeDiet');
   }
+
+  clearActiveDiet() {
+    this.cookieService.delete('activeDiet');
+    this.cookieService.delete('activeDietId');
+  }
 }
