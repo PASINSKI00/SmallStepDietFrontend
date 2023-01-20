@@ -5,18 +5,20 @@
                 <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible == true}" (click)="showFilters()"></fa-icon>
                 <p class="small-wide-text" (click)="showFilters()">Show Filters</p>
             </div>
-            <input id="search-bar" class="normal-text-light" placeholder="Search..."/>
+
+            <!-- <input id="search-bar" class="normal-text-light" (focusout)="applySearch(#" placeholder="Search..."/> -->
         </div>
 
         <div id="meals" [ngClass]="{'display-none' : singleMealVisible === true}">
-            <div id="filters" [ngClass]="{'display-none' : filtersVisible === false}" class="grey-bg display-none">
+            <div id="filters" [ngClass]="{'display-none' : filtersVisible === false}" class="grey-bg">
                 <div id="sort-box">
-                    <p class="small-wide-text green-text">Sort by:</p>
-                    <p class="super-small-wide-text" *ngFor="let sort of sortCriterias">{{sort}}</p>
+                    <p class="normal-text">Sort by:</p>
+                    <p [ngClass]="{'active': sortActive[i]}" class="super-small-text sort left-cut" (click)="invertSort(sort)" *ngFor="let sort of sortCriterias; let i = index">{{sort}}</p>
                 </div>
+
                 <div id="categories-box">
-                    <p class="small-wide-text green-text box-title">Choose categories</p>
-                    <p class="category super-small-wide-text" *ngFor="let category of categories">{{category.name}}</p>
+                    <p class="normal-text box-title">Choose categories</p>
+                    <p [ngClass]="{'active': categoryActive[i]}" class="category super-small-text left-cut" (click)="invertCategory(category, i)" *ngFor="let category of categories; let i = index">{{category.name}}</p>
                 </div>
             </div>
 

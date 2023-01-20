@@ -33,54 +33,62 @@
 #utility-bar #show-filter:hover
     color: $color-yellow 
 
-#utility-bar #show-filter .filter-icon
+.filter-icon
     padding-right: 10px
 
-#meals #filters
+#filters
     display: flex
     flex-direction: row
-    box-shadow: 0 0 10px $color-black-o07
+    box-shadow: 0 3px 10px $color-black-o07
     width: 100%
     height: fit-content
     color: $color-white
     padding-bottom: 10px
 
-#meals #filters #sort-box
+#sort-box
     display: flex
     flex-direction: column
-    width: fit-content
-    padding: 0 50px
-    padding-top: 10px
+    width: 500px
+    gap: 5px
+    padding: 30px
     border-right: 1px solid $color-black-o06
 
-#meals #filters #sort-box p
+#sort-box p
     margin: 0
+
+#sort-box p:first-child
+    margin-top: 0
     margin-bottom: 10px
 
-#meals #filters #sort-box p:first-child
-    margin-top: 0
-    margin-bottom: 20px
-    
-#meals #filters #sort-box p:hover
+.sort:hover, .sort.active
     color: $color-yellow
+    cursor: pointer
 
-#meals #filters #categories-box
+
+#categories-box
     display: flex
     flex-direction: row
     height: fit-content
-    padding: 0 50px
-    padding-top: 10px
+    gap: 5px
+    padding: 30px
     flex-wrap: wrap
 
-#meals #filters #categories-box .category
-    width: 120px
-    margin: 0
+#categories-box p:first-child
+    margin-top: 0
     margin-bottom: 10px
 
-#meals #filters #categories-box .box-title
+.category
+    width: 120px
+    margin: 0
+
+.category:hover, .category.active
+    color: $color-yellow
+    cursor: pointer
+
+.box-title
     width: 100%
     margin: 0
-    margin-bottom: 20px
+    // margin-bottom: 20px
 
 #utility-bar input
     width: 75%
@@ -306,6 +314,9 @@
 // ---------------------------- GENERAL CLASSES ----------------------------
 .non-active-day
     opacity: 0.5
+
+.active
+    color: $color-yellow
 
 .display-none
     display: none !important

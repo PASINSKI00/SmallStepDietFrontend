@@ -21,15 +21,19 @@ export class DietComponent implements OnInit {
   returnIcon = faAngleLeft;
 
   meals: Array<Meal> = [];
+
   diet: Array<Array<Meal>> = [];
   chosenDayIndex: number = 0;
   maxDayIndex: number = -1;
-  sortCriterias: Array<string> = ["ranking", "protein%", "popularity"];
+
+  filtersVisible: boolean = true;
+  sortCriterias: Array<string> = ["Rank", "Protein percent", "Popularity"];
+  sortActive: boolean[] = [false, false, false];
   categories: Array<Category> = [];
-  filtersVisible: boolean = false;
+  categoryActive: Array<boolean> = [];
 
   singleMealVisible: boolean = false;
-  singleMeal: Meal = new Meal(0,'',[],0,'');
+  singleMeal: Meal = new Meal(0,'',[],0,'',0,0,0);
   
   isBodyInfoSet: any;
 
@@ -96,6 +100,110 @@ export class DietComponent implements OnInit {
 
   showFilters() {
     this.filtersVisible = !this.filtersVisible;
+  }
+
+  invertSort(sort: string){
+    // sort meals based on avgRating
+    if(sort == "Rank") {
+      this.sortActive[0] = !this.sortActive[0];
+      
+      if(this.sortActive[0])
+        this.meals.sort((a, b) => {
+          if(a.avgRating > b.avgRating) return -1;
+          if(a.avgRating < b.avgRating) return 1;
+          return 0;
+        });
+    }
+
+    // sort meals based on proteinRatio
+    if(sort == "Protein percent") {
+      this.sortActive[1] = !this.sortActive[1];
+      
+      if(this.sortActive[1])  
+        this.meals.sort((a, b) => {
+          if(a.proteinRatio > b.proteinRatio) return -1;
+          if(a.proteinRatio < b.proteinRatio) return 1;
+          return 0;
+        });
+    }
+
+    // sort meals based on popularity
+    if(sort == "Popularity") {
+      this.sortActive[2] = !this.sortActive[2];
+      
+      if(this.sortActive[2])
+        this.meals.sort((a, b) => {
+          if(a.timesUsed > b.timesUsed) return -1;
+          if(a.timesUsed < b.timesUsed) return 1;
+          return 0;
+        });
+    }
+  }
+
+  async invertCategory(category: Category, index: number) {
+    if(this.categoryActive.includes(true) && !this.categoryActive[index]) {
+      alert("You can't filter by more than one category at once");
+      return;
+    }
+
+    this.categoryActive[index] = !this.categoryActive[index];
+
+    if(this.categoryActive[index]) {
+      await this.getMealsFromBackend();
+
+      // get indexes of active categories
+      let activeCategories: Array<number> = [];
+      for(let i = 0; i < this.categoryActive.length; i++) {
+        if(this.categoryActive[i])
+          activeCategories.push(i);
+      }
+
+      // filter meals based on active categories
+      this.meals = this.meals.filter(meal => {
+        for(let i = 0; i < activeCategories.length; i++) {
+          if(meal.categoriesNames.includes(this.categories[activeCategories[i]].name))
+            return true;
+        }
+        return false;
+      });
+
+      console.log(this.meals);
+
+      // sort meals based on active sort criterias
+      for(let i = 0; i < this.sortActive.length; i++) {
+        if(this.sortActive[i]){
+          this.sortActive[i] = !this.sortActive[i];
+          this.invertSort(this.sortCriterias[i]);
+        }
+      }
+    } else {
+      await this.getMealsFromBackend();
+    }
+  }
+
+  applySearch(event: any) {
+    let search = event.target.value;
+
+    if(search == "") {
+      this.getMealsFromBackend();
+      // apply sort criterias
+      for(let i = 0; i < this.sortActive.length; i++) {
+        if(this.sortActive[i]){
+          this.sortActive[i] = !this.sortActive[i];
+          this.invertSort(this.sortCriterias[i]);
+        }
+      }
+
+      //apply categories
+      for(let i = 0; i < this.categoryActive.length; i++) {
+        if(this.categoryActive[i]){
+          this.categoryActive[i] = !this.categoryActive[i];
+          this.invertCategory(this.categories[i], i);
+        }
+      }
+      return;
+    }
+
   }
 
   async showSingleMeal(meal: Meal){
@@ -167,16 +275,28 @@ export class DietComponent implements OnInit {
 
       this.sharedService.setActiveDietId(JSON.parse(lastValue$.body));
     }
+
     this.router.navigate(['/diet/final']);
   }
 
-  private getMealsFromBackend() {
-    this.dietService.getMeals().subscribe((response) => {
-      let mealsJSON: Array<any> = JSON.parse(response.body);
-      mealsJSON.forEach((mealJSON: any) => {
-        this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image), mealJSON));
-      });
+  private async getMealsFromBackend() : Promise<void> {
+    const response$ = this.dietService.getMeals();
+    const lastValue$ = await lastValueFrom(response$);
+
+    if(lastValue$.status != 200)
+      return;
+
+    let mealsJSON: Array<any> = JSON.parse(lastValue$.body);
+    mealsJSON.forEach((mealJSON: any) => {
+      this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed), mealJSON));
     });
+
+    // this.dietService.getMeals().subscribe((response) => {
+    //   let mealsJSON: Array<any> = JSON.parse(response.body);
+    //   mealsJSON.forEach((mealJSON: any) => {
+    //     this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed), mealJSON));
+    //   });
+    // });
   }
 
   private getCategoriesFromBackend() {
@@ -184,6 +304,7 @@ export class DietComponent implements OnInit {
       let categoriesJSON: Array<any> = JSON.parse(response.body);
       categoriesJSON.forEach((categoryJSON: any) => {
         this.categories.push(Object.assign(new Category(categoryJSON.id, categoryJSON.name), categoryJSON));
+        this.categoryActive.push(false);
       });
     });
   }
