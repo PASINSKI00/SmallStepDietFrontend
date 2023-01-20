@@ -23,6 +23,5 @@ export class AccountHomeComponent implements OnInit {
 
   checkActiveLink() {
     this.activeLink = window.location.pathname.split('/')[2];
-    console.log(this.activeLink);
   }
 }
