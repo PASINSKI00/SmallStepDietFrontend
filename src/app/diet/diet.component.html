@@ -1,10 +1,12 @@
 <div id="container">
     <div id="bar-and-meals">
         <div id="utility-bar">
-            <div id="show-filter">
-                <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible == true}" (click)="showFilters()"></fa-icon>
-                <p class="small-wide-text" (click)="showFilters()">Show Filters</p>
+            <div id="show-filter" (click)="showFilters()">
+                <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible == true}"></fa-icon>
+                <p class="small-wide-text" >Show Filters</p>
             </div>
+
+            <div class="line-vr"></div>
 
             <!-- <input id="search-bar" class="normal-text-light" (focusout)="applySearch(#" placeholder="Search..."/> -->
         </div>

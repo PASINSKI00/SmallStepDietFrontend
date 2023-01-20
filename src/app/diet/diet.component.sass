@@ -14,27 +14,29 @@
 #utility-bar
     display: flex
     flex-direction: row
-    justify-content: space-between
+    justify-content: flex-start
     align-items: center
     height: 50px
     background-color: $color-white
     box-shadow: 0 0 10px $color-black-o07
 
-#utility-bar #show-filter 
+#show-filter 
     display: flex
     flex-direction: row
     align-items: center
     justify-content: center
     cursor: pointer
-    height: 60%
+    height: 100%
     width: 25%
-    border-right: 1px solid $color-black-o06
+    transition: all 0.3s ease-in-out
 
-#utility-bar #show-filter:hover
-    color: $color-yellow 
+#show-filter:hover
+    background-color: $color-yellow
+    // color: $color-yellow 
 
 .filter-icon
     padding-right: 10px
+    transition: all 0.5s ease-in-out
 
 #filters
     display: flex
@@ -44,6 +46,7 @@
     height: fit-content
     color: $color-white
     padding-bottom: 10px
+    transition: all 0.5s ease-in-out !important
 
 #sort-box
     display: flex
@@ -317,9 +320,6 @@
 
 .active
     color: $color-yellow
-
-.display-none
-    display: none !important
 
 #return-button
     height: fit-content !important
