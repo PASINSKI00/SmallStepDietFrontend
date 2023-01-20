@@ -55,6 +55,10 @@ export class DietService {
     return this.http.get(this.address + '/api/meal/search', { observe: 'response', responseType: 'text' as 'json' })
   }
 
+  extendMeal(idMeal: number) : Observable<any> {
+    return this.http.get(this.address + '/api/meal/extend', { observe: 'response', params: {idMeal}, responseType: 'text' as 'json' })
+  }
+
   getUnreviewedMealsFromMyDiets() : Observable<any> {
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.get(this.address + '/api/diet/mine/meals/unreviewed', { observe: 'response', headers: headers, responseType: 'text' as 'json' })

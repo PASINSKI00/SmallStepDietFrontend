@@ -29,7 +29,8 @@ export class DietComponent implements OnInit {
   filtersVisible: boolean = false;
 
   singleMealVisible: boolean = false;
-  singleMeal: Meal|undefined = undefined;
+  singleMeal: Meal = new Meal(0,'',[],0,'');
+  
   isBodyInfoSet: any;
 
   constructor(private bodyInfoService: BodyInfoService, private dietService: DietService, private sharedService: SharedService, private router: Router) {}
@@ -37,16 +38,18 @@ export class DietComponent implements OnInit {
   async ngOnInit() {
     this.getMealsFromBackend();
     this.getCategoriesFromBackend();
-    if(this.sharedService.getActiveDietId() == -1) {
+    if(!this.sharedService.checkActiveDiet()) {
       this.addDayToDiet();
     } else {
       this.diet = this.sharedService.getActiveDiet();
       this.maxDayIndex = this.diet.length - 1;
     }
 
-    const response$ = this.bodyInfoService.getBodyInfo();
-    const lastValue$ = await lastValueFrom(response$);
-    this.isBodyInfoSet = lastValue$.status == 200;
+    try {
+      const response$ = this.bodyInfoService.getBodyInfo();
+      const lastValue$ = await lastValueFrom(response$);
+      this.isBodyInfoSet = lastValue$.status == 200;
+    } catch (error) {}
   }
 
   addDayToDiet() {
@@ -95,15 +98,24 @@ export class DietComponent implements OnInit {
     this.filtersVisible = !this.filtersVisible;
   }
 
-  showSingleMeal(meal: Meal){
+  async showSingleMeal(meal: Meal){
     console.log(meal);
-    this.singleMealVisible = !this.singleMealVisible;
+    const response$ = this.dietService.extendMeal(meal.idMeal);
+    const lastValue$ = await lastValueFrom(response$);
+
+    if(lastValue$.status != 200) 
+      return;
+
+    let value = JSON.parse(lastValue$.body);
+
+    meal.extendMeal(value.recipe, value.timeToPrepare, value.proteinRatio, value.carbsRatio, value.fatsRatio, value.reviews);
+
     this.singleMeal = meal;
+    this.singleMealVisible = !this.singleMealVisible;
   }
 
   async continue() {
     this.sharedService.setActiveDiet(this.diet);
-    this.sharedService.setActiveDietId(-1);
 
     // Check if diet is empty
     if(this.diet.length == 0) {
@@ -164,11 +176,6 @@ export class DietComponent implements OnInit {
       mealsJSON.forEach((mealJSON: any) => {
         this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image), mealJSON));
       });
-  
-      this.meals[0].extendMeal("This is a recipe sadsdsad asdasdsad sad sadsadsa asdsadsad saddsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n ds sad sa da dad as dsa da d a adsada \n dsfadsadsa \n dsadsadsads \nfor meal dsadsad sad sad sa da dad as dsa da d a adsada \n ds dsadsad sad sad sa da dad as dsa da d a adsada \n ds 0", 20, 20, 20, 60, new Array<Review>());
-      this.singleMeal = this.meals[0];
-      this.singleMeal.reviews.push(new Review("/assets/images/Hot_meal_header.png", "Charlie", 7, "Good meal"));
-      this.singleMeal.reviews.push(new Review("/assets/images/Hot_meal_header.png", "Katy", 6));
     });
   }
 
