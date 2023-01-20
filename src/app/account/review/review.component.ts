@@ -32,7 +32,7 @@ export class ReviewComponent implements OnInit {
     this.dietService.getUnreviewedMealsFromMyDiets().subscribe(response => {
       let mealsJSON: Array<any> = JSON.parse(response.body);
       mealsJSON.forEach((mealJSON: any) => {
-        this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image), mealJSON));
+        this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed), mealJSON));
       });
       console.log(this.meals);
     });
