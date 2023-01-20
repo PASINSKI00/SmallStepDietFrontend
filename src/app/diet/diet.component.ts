@@ -7,6 +7,7 @@ import { DietService } from './diet.service';
 import { SharedService } from '../shared.service';
 import { lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { BodyInfoService } from '../account/body-info/body-info.service';
 
 @Component({
   selector: 'app-diet',
@@ -29,19 +30,23 @@ export class DietComponent implements OnInit {
 
   singleMealVisible: boolean = false;
   singleMeal: Meal|undefined = undefined;
+  isBodyInfoSet: any;
 
-  constructor(private dietService: DietService, private sharedService: SharedService, private router: Router) {}
+  constructor(private bodyInfoService: BodyInfoService, private dietService: DietService, private sharedService: SharedService, private router: Router) {}
 
   async ngOnInit() {
     this.getMealsFromBackend();
     this.getCategoriesFromBackend();
-    console.log(this.sharedService.getActiveDietId());
     if(this.sharedService.getActiveDietId() == -1) {
       this.addDayToDiet();
     } else {
       this.diet = this.sharedService.getActiveDiet();
       this.maxDayIndex = this.diet.length - 1;
     }
+
+    const response$ = this.bodyInfoService.getBodyInfo();
+    const lastValue$ = await lastValueFrom(response$);
+    this.isBodyInfoSet = lastValue$.status == 200;
   }
 
   addDayToDiet() {
@@ -97,6 +102,9 @@ export class DietComponent implements OnInit {
   }
 
   async continue() {
+    this.sharedService.setActiveDiet(this.diet);
+    this.sharedService.setActiveDietId(-1);
+
     // Check if diet is empty
     if(this.diet.length == 0) {
       alert("You can't continue with an empty diet");
@@ -113,8 +121,14 @@ export class DietComponent implements OnInit {
 
     // Check if logged in and save diet if not
     if(!this.sharedService.isLoggedIn()) {
-      this.sharedService.setActiveDiet(this.diet);
       alert("You need to be logged in to continue");
+      return;
+    }
+
+    // Check if user provided bodyinfo
+    if(!this.isBodyInfoSet) {
+      alert("You need to provide your body information to continue. You will be redirected.");
+      this.router.navigate(['/account/bodyinfo']);
       return;
     }
 
@@ -141,8 +155,6 @@ export class DietComponent implements OnInit {
 
       this.sharedService.setActiveDietId(JSON.parse(lastValue$.body));
     }
-
-    this.sharedService.setActiveDiet(this.diet);
     this.router.navigate(['/diet/final']);
   }
 
