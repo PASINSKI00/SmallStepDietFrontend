@@ -46,7 +46,7 @@ export class SharedService {
   }
 
   getActiveDietId() {
-    return parseInt(this.cookieService.get('activeDietId')? this.cookieService.get('activeDietId') : '-1');
+    return parseInt(this.cookieService.check('activeDietId')? this.cookieService.get('activeDietId') : '-1');
   }
 
   setActiveDiet(diet: Array<Array<Meal>>) {
@@ -55,5 +55,9 @@ export class SharedService {
 
   getActiveDiet() {
     return JSON.parse(this.cookieService.get('activeDiet') ? this.cookieService.get('activeDiet') : '[]');
+  }
+
+  checkActiveDiet() {
+    return this.cookieService.check('activeDiet');
   }
 }
