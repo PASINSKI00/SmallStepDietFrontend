@@ -26,7 +26,7 @@ export class DietComponent implements OnInit {
   chosenDayIndex: number = 0;
   maxDayIndex: number = -1;
 
-  filtersVisible: boolean = true;
+  filtersVisible: boolean = false;
   sortCriterias: Array<string> = ["Rank", "Protein percent", "Popularity"];
   sortActive: boolean[] = [false, false, false];
   categories: Array<Category> = [];
