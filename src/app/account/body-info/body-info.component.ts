@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { lastValueFrom } from 'rxjs';
 import { BodyInfoService } from './body-info.service';
 
 @Component({
@@ -8,13 +9,15 @@ import { BodyInfoService } from './body-info.service';
   styleUrls: ['./body-info.component.sass']
 })
 export class BodyInfoComponent implements OnInit {
+  BEE: number = 0;
+  TDEE: number = 0;
+  caloriesGoal: number = 0;
+  
 
   constructor(private formBuilder: FormBuilder, private bodyInfoService: BodyInfoService) { }
 
   ngOnInit(): void {
-    this.bodyInfoService.getBodyInfo().subscribe(response => {
-      this.bodyInfoForm.patchValue(JSON.parse(response.body));
-    });
+    this.getBodyInfo();
   }
 
   bodyInfoForm = this.formBuilder.group({
@@ -23,16 +26,38 @@ export class BodyInfoComponent implements OnInit {
     weight: new FormControl('', [Validators.required]),
     age: new FormControl('', [Validators.required]),
     pal: new FormControl('', [Validators.required, Validators.min(1.4), Validators.max(2.4)]),
+    additionalCalories: 0
   });
 
-  onSubmit() {
-    this.bodyInfoService.saveBodyInfo(this.bodyInfoForm).subscribe(response => {
-      if(response.status != 201) {
-        alert('Error');
-        console.log(response);
-      }
+  async getBodyInfo() {
+    const response$ = this.bodyInfoService.getBodyInfo();
+    const lastValue$ = await lastValueFrom(response$);
+
+    let result = JSON.parse(lastValue$.body);
+    
+    this.bodyInfoForm.patchValue({
+      goal: result.goal,
+      height: result.height,
+      weight: result.weight,
+      age: result.age,
+      pal: result.pal,
+      additionalCalories: result.additionalCalories
     });
+
+    this.BEE = result.bee;
+    this.TDEE = result.tdee;
+    this.caloriesGoal = result.caloriesGoal;
   }
 
+  async onSubmit() {
+    const response$ = this.bodyInfoService.saveBodyInfo(this.bodyInfoForm);
+    const lastValue$ = await lastValueFrom(response$);
 
+    if(lastValue$.status != 201) {
+      alert('Error');
+      console.log(lastValue$);
+    }
+
+    this.getBodyInfo();
+  }
 }
