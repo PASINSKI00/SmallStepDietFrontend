@@ -8,42 +8,51 @@
 
     <div class="final-day" *ngFor="let finalDay of diet.finalDays; let dayIndex = index">
         <p class="big-text">Day {{dayIndex+1}}</p>
+        
         <span class="final-day-content">
             <div class="day-info">
                 <p class="go-center normal-wide-text">{{this.calculateDayPercentage(finalDay)}}%</p>
+
                 <span class="macro first-macro">
                     <p class="super-small-wide-text">calories:</p><p>{{finalDay.calories}} kcal</p>
                 </span>
+
                 <span class="macro">
                     <p class="super-small-wide-text">carbs:</p><p>{{finalDay.carbs}} g</p>
                 </span>
+
                 <span class="macro">
                     <p class="super-small-wide-text">protein:</p><p>{{finalDay.protein}} g</p>
                 </span>
+
                 <span class="macro">
                     <p class="super-small-wide-text">fats:</p><p>{{finalDay.fats}} g</p>
                 </span>
+
+                <button class="btn btn-primary-green apply-changes-button" *ngIf="finalDay.modified" (click)="applyChanges()">Apply changes</button>
             </div>
+
             <div class="final-meals">
                 <div class="final-meal" *ngFor="let finalMeal of finalDay.finalMeals;let mealIndex = index">
                     <div class="meal-title">
                             <p class="meal-actual-title small-wide-text">{{finalMeal.name}}</p>
                             <span class="input-percent">
-                                <input class="super-small-wide-text" type="number" min="0" value="{{finalMeal.percentOfDay}}" max="100">%
+                                <input class="super-small-wide-text" type="number" min="0" (input)="finalMeal.percentModified = true; finalDay.modified = true" [(ngModel)]="finalMeal.percentOfDay" max="100">%
                             </span>
                     </div>
+
                     <span class="meal-details">
                         <div class="meal-ingredients">
-                            <div class="meal-ingredient super-small-wide-text" *ngFor="let ingredient of finalMeal.finalIngredients">
+                            <div [ngClass]="{'display-none': ingredient.remove}" class="meal-ingredient super-small-wide-text" *ngFor="let ingredient of finalMeal.finalIngredients">
                                 <p>{{ingredient.name}}</p>
                                 <span class="super-small-text ingredient-hub">
                                     <span class="weight-input super-small-wide-text">
-                                        <input class="super-small-wide-text" type="number" value="{{ingredient.weight}}" min="0">g
+                                        <input class="super-small-wide-text" type="number" (input)="ingredient.modified = true; finalDay.modified = true" [(ngModel)]="ingredient.weight" min="0">g
                                     </span>
-                                    <fa-icon [icon]="deleteIcon"></fa-icon>
+                                    <fa-icon [icon]="deleteIcon" (click)="ingredient.remove = true; ingredient.modified = true; finalDay.modified = true"></fa-icon>
                                 </span>
                             </div>
-                            <fa-icon [icon]="addIcon"></fa-icon>
+                            <!-- <fa-icon [icon]="addIcon"></fa-icon> -->
                         </div>
                         <div class="meal-ratio">
                             <span class="macro">
@@ -64,8 +73,9 @@
             </div>
         </span>
     </div>
+    
     <div id="button-box">
         <button class="btn btn-primary-red" routerLink="/diet">Return</button>
-        <button class="btn btn-primary-green" routerLink="/diet/final/groceries">Continue</button>
+        <button class="btn btn-primary-green" (click)="continue()">Continue</button>
     </div>
 </div>
