@@ -1,3 +1,53 @@
 <div id="container">
-    <p>wall works!</p>
+    <div id="side-bar" *ngIf="!addPostActive">
+        <button id="add-post-button" class="btn btn-primary-gray" (click)="addPostActive = !addPostActive">Add Post</button>
+    </div>
+
+    <div id="posts" *ngIf="!addPostActive">
+        <div class="post" *ngFor="let post of posts">
+            <div class="user">
+                <img class="avatar" src="{{post.userImageUrl!}}" />
+                
+                <span>
+                    <div class="name small-super-wide-text">{{post.username}}</div>
+                    <div class="date super-super-small-wide-text">{{post.postDate}}</div>
+                </span>
+            </div>
+
+            <div class="content">
+                <div class="text">{{post.content}}</div>
+                <img class="image" *ngIf="post.imageUrl" src="{{post.imageUrl!}}" />
+            </div>
+        </div>
+    </div>
+
+    <div id="add-post-container" *ngIf="addPostActive">
+        <div id="return-button" class="bigger-on-hover" (click)="addPostActive = !addPostActive">
+            <fa-icon class="filter-icon" [icon]="returnIcon"></fa-icon>
+            <p class="small-wide-text">return</p>
+        </div>
+
+        <textarea id="add-post-text" placeholder="What's on your mind?" [(ngModel)]="postContent"></textarea>
+
+        <input type="file" class="super-small-text" (change)="fileChangeEvent($event)">
+
+        <div *ngIf="imageChangedEvent" id="image-cropper-container">
+            <image-cropper id="image-cropper"
+                #cropper
+                [imageChangedEvent]="imageChangedEvent"
+                [maintainAspectRatio]="true"
+                [aspectRatio]="1/1"
+                format="jpeg"
+                (imageCropped)="imageCropped($event)"
+                (loadImageFailed)="loadImageFailed()"
+                [resizeToWidth]="500"
+                [resizeToHeight]="500"
+                [onlyScaleDown]="true"
+            ></image-cropper>
+
+            <img *ngIf="croppedImage" [src]="croppedImage" width="150" height="150"/>
+        </div>
+ 
+        <button class="btn btn-primary-green normal-text upload-button" (click)="upload()">Upload</button>
+    </div>
 </div>
