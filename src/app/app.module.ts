@@ -26,6 +26,7 @@ import { BodyInfoComponent } from './account/body-info/body-info.component';
 import { UserInfoComponent } from './account/user-info/user-info.component';
 import { ReviewComponent } from './account/review/review.component';
 import { AccountHomeComponent } from './account/account-home/account-home.component';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,7 @@ import { AccountHomeComponent } from './account/account-home/account-home.compon
     FormsModule,
     ImageCropperModule
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
