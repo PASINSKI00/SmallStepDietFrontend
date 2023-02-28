@@ -36,11 +36,6 @@ export class DietService {
     return this.http.get(this.address + '/api/ingredient/all', { observe: 'response', responseType: 'text' as 'json' })
   }
 
-  getIngredientsForMeal(idMeal: number): Observable<any> {
-    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
-    return this.http.get(this.address + '/api/ingredient/all/meal', { observe: 'response', params:{idMeal},headers: headers, responseType: 'text' as 'json' });
-  }
-
   getGroceries(): Observable<any> {
     const idDiet = this.sharedService.getActiveDietId();
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
