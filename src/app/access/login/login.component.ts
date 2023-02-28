@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { lastValueFrom } from 'rxjs';
 import { SharedService } from 'src/app/shared.service';
 import { AccessService } from '../access.service';
 
@@ -26,8 +27,10 @@ export class LoginComponent implements OnInit {
         if(response.status == 200){
           alert('Login successful');
         }
-        else
-          alert('Wrong email or password');
+      },
+      (error) => {
+        alert('Login failed');
+        this._sharedService.deleteAuthHeaderValue();
       }
     );
   }

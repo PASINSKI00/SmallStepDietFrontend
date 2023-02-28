@@ -25,6 +25,10 @@ export class SharedService {
     return this.cookieService.get('authHeaderValue');
   }
 
+  deleteAuthHeaderValue() {
+    this.cookieService.delete('authHeaderValue');
+  }
+
   isLoggedIn() {
     return this.cookieService.check('authHeaderValue');
   }
