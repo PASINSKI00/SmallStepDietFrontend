@@ -18,11 +18,4 @@ export class ImageService {
 
     return this.http.post(this.address + '/api/image/meal', image, { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });
   }
-
-  uploadPostImage(image: string, idPost: number) : Observable<any> {
-    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
-    headers.append('Content-Type', 'application/json');
-
-    return this.http.post(this.address + '/api/image/post', image, { observe: 'response', params: {idPost}, headers: headers, responseType: 'text' as 'json' });
-  }
 }

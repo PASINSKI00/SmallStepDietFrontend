@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { DietComponent } from './diet/diet.component';
-import { WallComponent } from './wall/wall.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { LoginComponent } from './access/login/login.component';
@@ -34,7 +33,6 @@ import { DatePipe } from '@angular/common';
     NavbarComponent,
     HomeComponent,
     DietComponent,
-    WallComponent,
     LoginComponent,
     SignupComponent,
     BaseComponent,
