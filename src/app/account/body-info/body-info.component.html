@@ -21,6 +21,22 @@
             </div>
         </div>
 
+        <div class="multi-input">
+            <label for="gender"><b>I am...</b></label>
+
+            <div class="multi-input-choices">
+                <div [ngClass]="{'chosen': bodyInfoForm.value.gender === 'MALE'}" class="single-input bigger-on-hover">
+                    <input type="radio" id="male" formControlName="gender" name="gender" value="MALE">
+                    <label for="male">MALE</label>
+                </div>
+
+                <div [ngClass]="{'chosen': bodyInfoForm.value.gender === 'FEMALE'}" class="single-input bigger-on-hover">
+                    <input type="radio" id="female" formControlName="gender" name="gender" value="FEMALE">
+                    <label for="female">FEMALE</label>
+                </div>
+            </div>
+        </div>
+
         <div class="line-hr"></div>
 
         <div class="single-input">

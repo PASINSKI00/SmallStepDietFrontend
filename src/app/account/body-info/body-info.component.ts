@@ -22,6 +22,7 @@ export class BodyInfoComponent implements OnInit {
 
   bodyInfoForm = this.formBuilder.group({
     goal: 'LOSE_WEIGHT',
+    gender: '',
     height: new FormControl('', [Validators.required]),
     weight: new FormControl('', [Validators.required]),
     age: new FormControl('', [Validators.required]),
@@ -37,6 +38,7 @@ export class BodyInfoComponent implements OnInit {
     
     this.bodyInfoForm.patchValue({
       goal: result.goal,
+      gender: result.gender,
       height: result.height,
       weight: result.weight,
       age: result.age,
@@ -50,14 +52,18 @@ export class BodyInfoComponent implements OnInit {
   }
 
   async onSubmit() {
-    const response$ = this.bodyInfoService.saveBodyInfo(this.bodyInfoForm);
-    const lastValue$ = await lastValueFrom(response$);
-
-    if(lastValue$.status != 201) {
-      alert('Error');
-      console.log(lastValue$);
-    }
-
-    this.getBodyInfo();
+    this.bodyInfoService.saveBodyInfo(this.bodyInfoForm).subscribe(
+      (response) => {
+        if(response.status != 201) {
+          alert('Error while saving body info');
+        } else {
+          this.getBodyInfo();
+        }
+      },
+      (error) => {
+        alert('Server Error while saving body info');
+        console.log(error);
+      }
+    );
   }
 }
