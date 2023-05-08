@@ -1,9 +1,9 @@
 <app-base>
     <div [formGroup]="loginForm" id="login-container">
-        <p>Sign in to your account</p>
+        <p [ngClass]="{'red-text': loginFailed, 'green-text': loginSuccessfull}">{{message}}</p>
         <input formControlName="email" id="email" placeholder="email">
         <input formControlName="password" id="password" type="password" placeholder="password">
-        <button id="login-button" (click)="login()">Log in</button>
+        <button id="login-button" [ngClass]="{'dimmed': !loginForm.valid}" (click)="login()" [disabled]="!loginForm.valid">Log in</button>
         <div id="divider">
             <hr>
             <p>or</p>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { lastValueFrom } from 'rxjs';
 import { SharedService } from 'src/app/shared.service';
 import { AccessService } from '../access.service';
@@ -10,10 +10,13 @@ import { AccessService } from '../access.service';
   styleUrls: ['./login.component.sass']
 })
 export class LoginComponent implements OnInit {
+  message: string = 'Sign in to Your Account';
+  loginFailed: boolean = false;
+  loginSuccessfull: boolean = false;
 
   loginForm = this.formBuilder.group({
-    email: '',
-    password: ''
+    email: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required])
   });
 
   constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) { }
@@ -24,19 +27,23 @@ export class LoginComponent implements OnInit {
   login() {
     this.accessService.login(this.loginForm).subscribe(
       (response) => {
-        if(response.status == 200){
-          alert('Login successful');
-        }
+        this.loginFailed = false;
+        this.loginSuccessfull = true;
+        this.message = 'Login successful. Welcome!';
+        setTimeout(() => {
+          this._sharedService.emitChange('closeAccess');
+        }, 2000);
       },
       (error) => {
-        alert('Login failed');
         this._sharedService.deleteAuthHeaderValue();
+        this.loginFailed = true;
+        this.loginSuccessfull = false;
+        this.message = 'Bad email or password. Please try again.';
       }
     );
   }
 
   signup() {
-    console.log('signup');
     this._sharedService.emitChange('signup');
   }
 }
