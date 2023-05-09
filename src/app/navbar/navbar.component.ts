@@ -13,10 +13,7 @@ export class NavbarComponent implements OnInit {
   isLoggedIn: boolean = false;
 
   constructor(private sharedService: SharedService) { 
-    this.active = window.location.pathname.split('/')[1];
-    if (this.active == '' || this.active == 'addMeal') {
-      this.active = 'home';
-    }
+    this.setCorrectActive();
   }
 
   ngOnInit(): void {
@@ -30,5 +27,12 @@ export class NavbarComponent implements OnInit {
 
   access() {
     this.accessEvent.next('access');
+  }
+
+  setCorrectActive() {
+    this.active = window.location.pathname.split('/')[1];
+    if (this.active == '' || this.active == 'addMeal') {
+      this.active = 'home';
+    }
   }
 }
