@@ -40,9 +40,11 @@ export class SharedService {
 
     if( this.cookieService.check('authHeaderValue') || this.cookieService.check('activeDietId') || this.cookieService.check('activeDiet')) {
       alert('Something went wrong with the logout. Please try again.');
+      return false;
     }
     
     this.emitChange(false);
+    return true;
   }
 
   setActiveDietId(id: number) {

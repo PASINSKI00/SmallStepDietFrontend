@@ -23,7 +23,7 @@ export class UserInfoComponent implements OnInit {
   }
 
   logout() {
-    this.sharedService.logout();
+    this.sharedService.logout() ? this.sharedService.logout() : null;
     this.router.navigate(['/home']);
   }
 }
