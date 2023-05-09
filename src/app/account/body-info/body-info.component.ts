@@ -21,8 +21,8 @@ export class BodyInfoComponent implements OnInit {
   }
 
   bodyInfoForm = this.formBuilder.group({
-    goal: 'LOSE_WEIGHT',
-    gender: '',
+    goal: new FormControl('LOSE_WEIGHT', [Validators.required]),
+    gender: new FormControl('MALE', [Validators.required]),
     height: new FormControl('', [Validators.required]),
     weight: new FormControl('', [Validators.required]),
     age: new FormControl('', [Validators.required]),
@@ -54,14 +54,10 @@ export class BodyInfoComponent implements OnInit {
   async onSubmit() {
     this.bodyInfoService.saveBodyInfo(this.bodyInfoForm).subscribe(
       (response) => {
-        if(response.status != 201) {
-          alert('Error while saving body info');
-        } else {
           this.getBodyInfo();
-        }
       },
       (error) => {
-        alert('Server Error while saving body info');
+        alert('Error while saving. Please check the values and try again.');
         console.log(error);
       }
     );
