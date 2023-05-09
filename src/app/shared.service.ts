@@ -34,9 +34,9 @@ export class SharedService {
   }
 
   logout() {
-    this.cookieService.delete('authHeaderValue');
-    this.cookieService.delete('activeDietId');
-    this.cookieService.delete('activeDiet');
+    this.cookieService.check('authHeaderValue') ? this.cookieService.delete('authHeaderValue') : null;
+    this.cookieService.check('activeDietId') ? this.cookieService.delete('activeDietId') : null;
+    this.cookieService.check('activeDiet') ? this.cookieService.delete('activeDiet') : null;
 
     if( this.cookieService.check('authHeaderValue') || this.cookieService.check('activeDietId') || this.cookieService.check('activeDiet')) {
       alert('Something went wrong with the logout. Please try again.');
