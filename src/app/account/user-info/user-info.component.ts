@@ -27,8 +27,7 @@ export class UserInfoComponent implements OnInit {
   }
 
   logout() {
-    this.sharedService.logout() ? this.sharedService.logout() : null;
-    this.router.navigate(['/home']);
+    this.sharedService.logout() ? this.router.navigate(['/home']) : null;
   }
 
   fileChangeEvent(event: any): void {
