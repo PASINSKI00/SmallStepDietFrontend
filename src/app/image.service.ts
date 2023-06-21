@@ -13,10 +13,16 @@ export class ImageService {
   constructor(private http: HttpClient, private sharedService: SharedService) { }
 
   uploadMealImage(image: string, idMeal: number) : Observable<any> {
-
     let headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     headers.append('Content-Type', 'application/json');
 
     return this.http.post(this.address + '/api/image/meal', image, { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });
+  }
+
+  uploadUserImage(image: string) : Observable<any> {
+    let headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
+    headers.append('Content-Type', 'application/json');
+
+    return this.http.post(this.address + '/api/image/user/mine', image, { observe: 'response', headers: headers, responseType: 'text' as 'json' });
   }
 }

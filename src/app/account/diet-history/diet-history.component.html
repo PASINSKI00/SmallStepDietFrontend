@@ -1,0 +1,18 @@
+<div class="diet" *ngFor="let diet of diets; let dietIndex = index">
+    <span class="normal-wide-text">Diet {{dietIndex + 1}}</span>
+    <div class="days">
+        <div class="day" *ngFor="let day of diet.finalDays; let dayIndex = index">
+            Day {{dayIndex + 1}}
+            <div *ngFor="let meal of day.finalMeals" [ngStyle]="chosenMealBackground(meal.imageUrl!)" class="chosen-meal">
+                <div class="background-darkener">
+                    <p class="chosen-meal-name super-small-wide-text">{{meal.name}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button class="btn btn-primary-gray" (click)="downloadMyFile(diet.dietFileUrl!, dietIndex)">Download Diet</button>
+        <button class="btn btn-primary-gray" (click)="downloadMyFile(diet.shoppingListFileUrl!, dietIndex)">Download Shopping List</button>
+    </div>
+</div>

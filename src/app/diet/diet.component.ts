@@ -7,6 +7,7 @@ import { DietService } from './diet.service';
 import { SharedService } from '../shared.service';
 import { lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { BodyInfoService } from '../account/body-info/body-info.service';
 
 @Component({
   selector: 'app-diet',
@@ -20,22 +21,39 @@ export class DietComponent implements OnInit {
   returnIcon = faAngleLeft;
 
   meals: Array<Meal> = [];
+
   diet: Array<Array<Meal>> = [];
   chosenDayIndex: number = 0;
   maxDayIndex: number = -1;
-  sortCriterias: Array<string> = ["ranking", "protein%", "popularity"];
-  categories: Array<Category> = [];
+
   filtersVisible: boolean = false;
+  sortCriterias: Array<string> = ["Rank", "Protein percent", "Popularity"];
+  sortActive: boolean[] = [false, false, false];
+  categories: Array<Category> = [];
+  categoryActive: Array<boolean> = [];
 
   singleMealVisible: boolean = false;
-  singleMeal: Meal|undefined = undefined;
+  singleMeal: Meal = new Meal(0,'',[],0,'',0,0,0);
+  
+  isBodyInfoSet: any;
 
-  constructor(private dietService: DietService, private sharedService: SharedService, private router: Router) {}
+  constructor(private bodyInfoService: BodyInfoService, private dietService: DietService, private sharedService: SharedService, private router: Router) {}
 
   async ngOnInit() {
-    this.addDayToDiet();
     this.getMealsFromBackend();
     this.getCategoriesFromBackend();
+    if(!this.sharedService.checkActiveDiet()) {
+      this.addDayToDiet();
+    } else {
+      this.diet = this.sharedService.getActiveDiet();
+      this.maxDayIndex = this.diet.length - 1;
+    }
+
+    try {
+      const response$ = this.bodyInfoService.getBodyInfo();
+      const lastValue$ = await lastValueFrom(response$);
+      this.isBodyInfoSet = lastValue$.status == 200;
+    } catch (error) {}
   }
 
   addDayToDiet() {
@@ -84,40 +102,201 @@ export class DietComponent implements OnInit {
     this.filtersVisible = !this.filtersVisible;
   }
 
-  showSingleMeal(meal: Meal){
-    console.log(meal);
-    this.singleMealVisible = !this.singleMealVisible;
-    this.singleMeal = meal;
+  invertSort(sort: string){
+    // sort meals based on avgRating
+    if(sort == "Rank") {
+      this.sortActive[0] = !this.sortActive[0];
+      
+      if(this.sortActive[0])
+        this.meals.sort((a, b) => {
+          if(a.avgRating > b.avgRating) return -1;
+          if(a.avgRating < b.avgRating) return 1;
+          return 0;
+        });
+    }
+
+    // sort meals based on proteinRatio
+    if(sort == "Protein percent") {
+      this.sortActive[1] = !this.sortActive[1];
+      
+      if(this.sortActive[1])  
+        this.meals.sort((a, b) => {
+          if(a.proteinRatio > b.proteinRatio) return -1;
+          if(a.proteinRatio < b.proteinRatio) return 1;
+          return 0;
+        });
+    }
+
+    // sort meals based on popularity
+    if(sort == "Popularity") {
+      this.sortActive[2] = !this.sortActive[2];
+      
+      if(this.sortActive[2])
+        this.meals.sort((a, b) => {
+          if(a.timesUsed > b.timesUsed) return -1;
+          if(a.timesUsed < b.timesUsed) return 1;
+          return 0;
+        });
+    }
   }
 
-  async continue() {
-    const response$ = this.dietService.uploadDiet(this.diet);
-    const lastValue$ = await lastValueFrom(response$);
-
-    if(lastValue$.status != 201) {
-      alert("Diet wasn't uploaded. Please try again.");
+  async invertCategory(category: Category, index: number) {
+    if(this.categoryActive.includes(true) && !this.categoryActive[index]) {
+      alert("You can't filter by more than one category at once");
       return;
     }
 
-    this.sharedService.activeDietId = JSON.parse(lastValue$.body);
+    this.categoryActive[index] = !this.categoryActive[index];
+
+    if(this.categoryActive[index]) {
+      await this.getMealsFromBackend();
+
+      // get indexes of active categories
+      let activeCategories: Array<number> = [];
+      for(let i = 0; i < this.categoryActive.length; i++) {
+        if(this.categoryActive[i])
+          activeCategories.push(i);
+      }
+
+      // filter meals based on active categories
+      this.meals = this.meals.filter(meal => {
+        for(let i = 0; i < activeCategories.length; i++) {
+          if(meal.categoriesNames.includes(this.categories[activeCategories[i]].name))
+            return true;
+        }
+        return false;
+      });
+
+      console.log(this.meals);
+
+      // sort meals based on active sort criterias
+      for(let i = 0; i < this.sortActive.length; i++) {
+        if(this.sortActive[i]){
+          this.sortActive[i] = !this.sortActive[i];
+          this.invertSort(this.sortCriterias[i]);
+        }
+      }
+    } else {
+      await this.getMealsFromBackend();
+    }
+  }
+
+  applySearch(event: any) {
+    let search = event.target.value;
+
+    if(search == "") {
+      this.getMealsFromBackend();
+      // apply sort criterias
+      for(let i = 0; i < this.sortActive.length; i++) {
+        if(this.sortActive[i]){
+          this.sortActive[i] = !this.sortActive[i];
+          this.invertSort(this.sortCriterias[i]);
+        }
+      }
+
+      //apply categories
+      for(let i = 0; i < this.categoryActive.length; i++) {
+        if(this.categoryActive[i]){
+          this.categoryActive[i] = !this.categoryActive[i];
+          this.invertCategory(this.categories[i], i);
+        }
+      }
+      return;
+    }
+
+  }
+
+  async showSingleMeal(meal: Meal){
+    console.log(meal);
+    const response$ = this.dietService.extendMeal(meal.idMeal);
+    const lastValue$ = await lastValueFrom(response$);
+
+    if(lastValue$.status != 200) 
+      return;
+
+    let value = JSON.parse(lastValue$.body);
+
+    meal.extendMeal(value.recipe, value.timeToPrepare, value.proteinRatio, value.carbsRatio, value.fatsRatio, value.reviews);
+
+    this.singleMeal = meal;
+    this.singleMealVisible = !this.singleMealVisible;
+  }
+
+  async continue() {
+    this.sharedService.setActiveDiet(this.diet);
+
+    // Check if diet is empty
+    if(this.diet.length == 0) {
+      alert("You can't continue with an empty diet");
+      return;
+    }
+
+    // Check if diet is valid
+    for(let i = 0; i < this.diet.length; i++) {
+      if(this.diet[i].length == 0) {
+        alert("You can't continue with empty days");
+        return;
+      }
+    }
+
+    // Check if logged in and save diet if not
+    if(!this.sharedService.isLoggedIn()) {
+      alert("You need to be logged in to continue");
+      return;
+    }
+
+    // Check if user provided bodyinfo
+    if(!this.isBodyInfoSet) {
+      alert("You need to provide your body information to continue. You will be redirected.");
+      this.router.navigate(['/account/bodyinfo']);
+      return;
+    }
+
+    // Update diet if active diet
+    if(this.sharedService.getActiveDietId() != -1) {
+      const response$ = this.dietService.updateDiet(this.diet);
+      const lastValue$ = await lastValueFrom(response$);
+
+      if(lastValue$.status != 200) {
+        alert("Diet wasn't updated. Please try again.");
+        return;
+      }
+    }
+
+    // Create diet if no active diet
+    if(this.sharedService.getActiveDietId() == -1) {
+      const response$ = this.dietService.uploadDiet(this.diet);
+      const lastValue$ = await lastValueFrom(response$);
+
+      if(lastValue$.status != 201) {
+        alert("Diet wasn't created. Please try again.");
+        return;
+      }
+
+      this.sharedService.setActiveDietId(JSON.parse(lastValue$.body));
+    }
 
     this.router.navigate(['/diet/final']);
   }
 
-  private getMealsFromBackend() {
-    this.dietService.getMeals().subscribe((response) => {
-      let mealsJSON: Array<any> = JSON.parse(response.body);
-      mealsJSON.forEach((mealJSON: any) => {
-        this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image), mealJSON));
-      });
+  private async getMealsFromBackend() : Promise<void> {
+    const response$ = this.dietService.getMeals();
+    const lastValue$ = await lastValueFrom(response$);
 
-      this.addMealToDiet(this.meals[0]);
-  
-      this.meals[0].extendMeal("This is a recipe sadsdsad asdasdsad sad sadsadsa asdsadsad saddsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n dsdsadsad sad sad sa da dad as dsa da d a adsada \n ds sad sa da dad as dsa da d a adsada \n dsfadsadsa \n dsadsadsads \nfor meal dsadsad sad sad sa da dad as dsa da d a adsada \n ds dsadsad sad sad sa da dad as dsa da d a adsada \n ds 0", 20, 20, 20, 60, new Array<Review>());
-      this.singleMeal = this.meals[0];
-      this.singleMeal.reviews.push(new Review("/assets/images/Hot_meal_header.png", "Charlie", 7, "Good meal"));
-      this.singleMeal.reviews.push(new Review("/assets/images/Hot_meal_header.png", "Katy", 6));
+    if(lastValue$.status != 200)
+      return;
+
+    let mealsJSON: Array<any> = JSON.parse(lastValue$.body);
+    mealsJSON.forEach((mealJSON: any) => {
+      this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed), mealJSON));
     });
+
+    // this.dietService.getMeals().subscribe((response) => {
+    //   let mealsJSON: Array<any> = JSON.parse(response.body);
+    //   mealsJSON.forEach((mealJSON: any) => {
+    //     this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed), mealJSON));
+    //   });
+    // });
   }
 
   private getCategoriesFromBackend() {
@@ -125,6 +304,7 @@ export class DietComponent implements OnInit {
       let categoriesJSON: Array<any> = JSON.parse(response.body);
       categoriesJSON.forEach((categoryJSON: any) => {
         this.categories.push(Object.assign(new Category(categoryJSON.id, categoryJSON.name), categoryJSON));
+        this.categoryActive.push(false);
       });
     });
   }

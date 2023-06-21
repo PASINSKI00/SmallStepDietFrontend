@@ -1,0 +1,30 @@
+<div id="secondary-container">
+    <div id="user-info">
+        <div id="user-image-with-cropper">
+            <img class="img-circle" src="{{user.imageUrl}}" (click)="hideFileInput=!hideFileInput" />
+
+            <input [ngClass]="{'display-none': hideFileInput}" type="file" class="super-small-text" (change)="fileChangeEvent($event)">
+
+            <div *ngIf="imageChangedEvent && !hideFileInput" id="image-cropper-container">
+                <image-cropper id="image-cropper"
+                    #cropper
+                    [imageChangedEvent]="imageChangedEvent"
+                    [maintainAspectRatio]="true"
+                    [aspectRatio]="1 / 1"
+                    format="jpeg"
+                    (imageCropped)="imageCropped($event)"
+                    (loadImageFailed)="loadImageFailed()"
+                    [resizeToWidth]="400"
+                    [resizeToHeight]="400"
+                    [onlyScaleDown]="true"
+                ></image-cropper>
+
+                <button class="btn btn-primary-green normal-text upload-button" [disabled]="!croppedImage" (click)="uploadImage()">Upload</button>
+            </div>
+        </div>
+        
+        <p class="normal-text">{{user.name}}</p>
+    </div>
+
+    <button class="btn btn-primary-gray" (click)="logout()">Log Out</button>
+</div>

@@ -1,0 +1,93 @@
+<span class="flex-row">
+    <form (ngSubmit)="onSubmit()" [formGroup]="bodyInfoForm" class="small-wide-text">
+        <div class="multi-input">
+            <label for="goal"><b>I want to...</b></label>
+
+            <div class="multi-input-choices">
+                <div [ngClass]="{'chosen': bodyInfoForm.value.goal === 'LOSE_WEIGHT'}" class="single-input bigger-on-hover">
+                    <input type="radio" id="lose" formControlName="goal" name="goal" value="LOSE_WEIGHT">
+                    <label for="lose"><b>lose</b> weight</label>
+                </div>
+
+                <div [ngClass]="{'chosen': bodyInfoForm.value.goal === 'MAINTAIN_WEIGHT'}" class="single-input bigger-on-hover">
+                    <input type="radio" id="maintain" formControlName="goal" name="goal" value="MAINTAIN_WEIGHT">
+                    <label for="maintain"><b>maintain</b> weight</label>
+                </div>
+            
+                <div [ngClass]="{'chosen': bodyInfoForm.value.goal === 'GAIN_WEIGHT'}" class="single-input bigger-on-hover">
+                    <input type="radio" id="gain" formControlName="goal" name="goal" value="GAIN_WEIGHT">
+                    <label for="gain"><b>gain</b> weight</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="multi-input">
+            <label for="gender"><b>I am...</b></label>
+
+            <div class="multi-input-choices">
+                <div [ngClass]="{'chosen': bodyInfoForm.value.gender === 'MALE'}" class="single-input bigger-on-hover">
+                    <input type="radio" id="male" formControlName="gender" name="gender" value="MALE">
+                    <label for="male"><b>Male</b></label>
+                </div>
+
+                <div [ngClass]="{'chosen': bodyInfoForm.value.gender === 'FEMALE'}" class="single-input bigger-on-hover">
+                    <input type="radio" id="female" formControlName="gender" name="gender" value="FEMALE">
+                    <label for="female"><b>Female</b></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="line-hr"></div>
+
+        <div class="single-input">
+            <label for="height"><b>Height</b> (cm)</label>
+            <input class="small-wide-text" type="number" id="height" min="30" max="260" name="height" formControlName="height" />
+        </div>
+
+        <div class="single-input">
+            <label for="weight"><b>Weight</b> (kg)</label>
+            <input class="small-wide-text" type="number" id="weight" min="5" max="500" name="weight" formControlName="weight" />
+        </div>
+        
+        <div class="single-input">
+            <label for="age"><b>Age</b> (years)</label>
+            <input class="small-wide-text" type="number" id="age" min="0" max="150" name="age" formControlName="age" />
+        </div>
+        
+        <div class="single-input">
+            <label for="pal"><b>Physical Activity Level</b> (1.4 - 2.4)</label>
+            <input class="small-wide-text" type="number" id="pal" min="1.4" max="2.4" step="0.05" name="pal" formControlName="pal"  />
+        </div>
+
+        <div class="line-hr"></div>
+
+        <div class="single-input">
+            <label for="additional-calories"><b>Additional calories +/- </b></label>
+            <input class="small-wide-text" type="number" id="additional-calories" name="additional-calories" formControlName="additionalCalories" />
+        </div>
+
+
+        <button [ngClass]="{'dimmed': !bodyInfoForm.valid}" class="btn btn-primary-green bigger-on-hover" type="submit" [disabled]="!bodyInfoForm.valid">Submit</button>
+    </form>
+
+    <div class="line-vr"></div>
+
+    <div id="calculations">
+        <div class="single-calculation">
+            <p class="title normal-super-wide-text">Calories Goal</p>
+            <p class="value normal-super-wide-text">{{caloriesGoal}} kcal</p>
+        </div>
+
+        <div class="line-hr"></div>
+
+        <div class="single-calculation">
+            <p class="title">Total Daily Energy Expenditure</p>
+            <p class="value">{{TDEE}} kcal</p>
+        </div>
+
+        <div class="single-calculation">
+            <p class="title">Basal Energy Expenditure</p>
+            <p class="value">{{BEE}} kcal</p>
+        </div>
+    </div>
+</span>

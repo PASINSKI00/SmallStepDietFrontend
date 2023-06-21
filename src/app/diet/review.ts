@@ -1,11 +1,11 @@
 export class Review {
-    image: string;
+    imageUrl: string;
     name: string;
     rating: number;
     content: string|undefined;
 
-    constructor(image: string, name: string, rating: number, content?: string) {
-        this.image = image;
+    constructor(imageUrl: string, name: string, rating: number, content?: string) {
+        this.imageUrl = imageUrl;
         this.name = name;
         this.rating = rating;
         this.content = content;

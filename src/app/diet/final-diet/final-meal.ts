@@ -9,7 +9,10 @@ export class FinalMeal {
     protein: number;
     fats: number;
     carbs: number;
-    percentOfDay: number;
+    percentOfDay: number | null;
+    imageUrl: string | undefined;
+
+    percentModified: boolean = false;
 
     constructor(id: number, name: string, finalIngredients: Array<FinalIngredient>, calories: number, protein: number, fats: number, carbs: number, percentOfDay: number) {
         this.idFinalMeal = id;

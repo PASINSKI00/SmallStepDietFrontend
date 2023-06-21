@@ -1,11 +1,11 @@
 <div id="navbar">
-    <p id="logo" routerLink="/home" (click)="active='home'">Dieter</p>
+    <p id="logo" class="bigger-on-hover" routerLink="/home" (click)="active='home'">SmallStepDiet</p>
     <nav class="small-text">
-        <a [className]="active === 'home' ? 'selected' : ''" routerLink="/home" (click)="active='home'" routerLinkActive="active">Home</a>
-        <a [className]="active === 'diet' ? 'selected' : ''" routerLink="/diet" (click)="active='diet'" routerLinkActive="active">Diet</a>
-        <a [className]="active === 'wall' ? 'selected' : ''" routerLink="/wall" (click)="active='wall'" routerLinkActive="active">Wall</a>
+        <a [ngClass]="{'selected': active === 'home'}" class="bigger-on-hover" routerLink="/home" (click)="active='home'" routerLinkActive="active">Home</a>
+        <a [ngClass]="{'selected': active === 'diet'}" class="bigger-on-hover" routerLink="/diet" (click)="active='diet'" routerLinkActive="active">Diet</a>
     </nav>
     <div id="button-container">
-        <button class="btn btn-primary-green" (click)="access()">Join Us</button>
+        <button class="btn btn-primary-green" [ngClass]="{'display-none': isLoggedIn}" (click)="access()">Join Us</button>
+        <button class="btn green-text small-wide-text bg-none bigger-on-hover" [ngClass]="{'display-none': !isLoggedIn, 'selected': active === 'account'}" (click)="active='account'" routerLink="/account/user">Your account</button>
     </div>
 </div>

@@ -1,0 +1,138 @@
+@import 'src/variables.sass'
+
+:host 
+    display: block
+    width: calc(100% - 100px)
+    height: 100%
+    
+#meals
+    display: flex
+    flex-direction: row
+    justify-content: space-around
+    width: 100%
+    height: calc(100% - 50px)
+    flex-wrap: wrap
+    overflow-y: scroll
+
+#meals .meal
+    width: 32%
+    margin: 10px 0
+    border-radius: 20px
+    overflow: hidden
+    box-shadow: 0 0 5px 0 $color-black-o07
+    height: fit-content
+    cursor: pointer
+
+#meals .meal .meal-info
+    padding: 0px 10px
+    padding-bottom: 5px
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+
+#meals .meal .meal-info p
+    margin: 2px 0
+
+#meals .meal .meal-info span .meal-name
+    overflow: hidden
+    text-overflow: ellipsis
+    display: -webkit-box
+    -webkit-line-clamp: 1
+    line-clamp: 1
+    -webkit-box-orient: vertical
+
+#meals .meal img
+    width: 100%
+    aspect-ratio: 840/320
+
+#meals .meal .meal-info .btn-small-green
+    margin-top: auto
+    
+#meals .meal .meal-info .ingredients-names
+    overflow: hidden
+    text-overflow: ellipsis
+    display: -webkit-box
+    -webkit-line-clamp: 1
+    line-clamp: 1
+    -webkit-box-orient: vertical
+
+#review
+    display: flex
+    flex-direction: column
+    align-items: center
+    flex-wrap: nowrap
+    justify-content: flex-start
+
+#return-button
+    display: flex
+    flex-direction: row
+    align-items: center
+    justify-content: center
+    cursor: pointer
+    height: 50px
+    margin: 15px
+    margin-right: auto
+
+#return-button p
+    padding-left: 5px
+    margin: 0
+
+#return-button:hover
+    color: $color-yellow
+
+#single-meal ul
+    list-style-type: none
+    padding: 5px 10px
+
+
+#review-meal-info
+    display: flex
+    flex-direction: column
+    background-color: $color-yellow
+    width: 90%
+    border-radius: 20px
+    margin-bottom: 20px
+
+#review-meal-info img
+    border-radius: 20px 20px 0 0
+
+#review-meal-title
+    padding: 8px 12px
+
+#review-meal-specific-info-and-reviews
+    display: flex
+    flex-direction: row
+
+#review-meal-specific-info
+    display: flex
+    flex-direction: row
+    justify-content: space-around
+
+#review-content
+    display: flex
+    flex-direction: column
+    width: 90%
+    height: 150px
+    margin: 0 auto
+    padding: 10px
+    border: none
+    outline: none
+    border-radius: 20px
+
+#submit-review
+    margin: 20px 0px
+
+#rating-container
+    display: flex
+    flex-direction: row
+    justify-content: start
+    align-items: center
+    width: 90%
+    margin: 10px 0
+    gap: 10px
+
+#rating-container input
+    border: none
+    outline: none
+    padding: 5px
+    border-radius: 10px

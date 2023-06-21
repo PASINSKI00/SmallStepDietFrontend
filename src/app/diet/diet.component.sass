@@ -5,11 +5,6 @@
     flex-direction: row
     height: $height-without-navbar
 
-
-
-
-
-
 #bar-and-meals
     display: flex
     flex-direction: column
@@ -19,73 +14,84 @@
 #utility-bar
     display: flex
     flex-direction: row
-    justify-content: space-between
+    justify-content: flex-start
     align-items: center
     height: 50px
     background-color: $color-white
     box-shadow: 0 0 10px $color-black-o07
 
-#utility-bar #show-filter 
+#show-filter 
     display: flex
     flex-direction: row
     align-items: center
     justify-content: center
     cursor: pointer
-    height: 60%
+    height: 100%
     width: 25%
-    border-right: 1px solid $color-black-o06
+    transition: all 0.3s ease-in-out
 
-#utility-bar #show-filter:hover
-    color: $color-yellow 
+#show-filter:hover
+    background-color: $color-yellow
+    // color: $color-yellow 
 
-#utility-bar #show-filter .filter-icon
+.filter-icon
     padding-right: 10px
+    transition: all 0.5s ease-in-out
 
-.meals #filters
+#filters
     display: flex
     flex-direction: row
-    box-shadow: 0 0 10px $color-black-o07
+    box-shadow: 0 3px 10px $color-black-o07
     width: 100%
     height: fit-content
     color: $color-white
     padding-bottom: 10px
+    transition: all 0.5s ease-in-out !important
 
-.meals #filters #sort-box
+#sort-box
     display: flex
     flex-direction: column
-    width: fit-content
-    padding: 0 50px
-    padding-top: 10px
+    width: 500px
+    gap: 5px
+    padding: 30px
     border-right: 1px solid $color-black-o06
 
-.meals #filters #sort-box p
+#sort-box p
     margin: 0
+
+#sort-box p:first-child
+    margin-top: 0
     margin-bottom: 10px
 
-.meals #filters #sort-box p:first-child
-    margin-top: 0
-    margin-bottom: 20px
-    
-.meals #filters #sort-box p:hover
+.sort:hover, .sort.active
     color: $color-yellow
+    cursor: pointer
 
-.meals #filters #categories-box
+
+#categories-box
     display: flex
     flex-direction: row
     height: fit-content
-    padding: 0 50px
-    padding-top: 10px
+    gap: 5px
+    padding: 30px
     flex-wrap: wrap
 
-.meals #filters #categories-box .category
-    width: 120px
-    margin: 0
+#categories-box p:first-child
+    margin-top: 0
     margin-bottom: 10px
 
-.meals #filters #categories-box .box-title
+.category
+    width: 120px
+    margin: 0
+
+.category:hover, .category.active
+    color: $color-yellow
+    cursor: pointer
+
+.box-title
     width: 100%
     margin: 0
-    margin-bottom: 20px
+    // margin-bottom: 20px
 
 #utility-bar input
     width: 75%
@@ -100,7 +106,7 @@
 
 
 // ------------------ MEALS ------------------
-.meals
+#meals
     display: flex
     flex-direction: row
     justify-content: space-around
@@ -110,26 +116,29 @@
     overflow-y: scroll
 
 
-.meals .meal
+#meals .meal
     width: 32%
     margin: 10px 0
     border-radius: 20px
+    display: flex
+    flex-direction: column
     overflow: hidden
-    box-shadow: 0 0 5px 0 $color-black-o07
+    box-shadow: 1px 3px 15px $color-black-o04
     height: fit-content
     cursor: pointer
 
-.meals .meal .meal-info
+#meals .meal .meal-info
     padding: 0px 10px
     padding-bottom: 5px
     display: flex
     flex-direction: row
     justify-content: space-between
+    background-color: $color-white
 
-.meals .meal .meal-info p
+#meals .meal .meal-info p
     margin: 2px 0
 
-.meals .meal .meal-info span .meal-name
+#meals .meal .meal-info span .meal-name
     overflow: hidden
     text-overflow: ellipsis
     display: -webkit-box
@@ -137,14 +146,14 @@
     line-clamp: 1
     -webkit-box-orient: vertical
 
-.meals .meal img
+#meals .meal img
     width: 100%
     aspect-ratio: 840/320
 
-.meals .meal .meal-info .btn-small-green
+#meals .meal .meal-info .btn-small-green
     margin-top: auto
     
-.meals .meal .meal-info .ingredients-names
+#meals .meal .meal-info .ingredients-names
     overflow: hidden
     text-overflow: ellipsis
     display: -webkit-box
@@ -178,7 +187,7 @@
     flex-direction: row
     align-items: center
     width: 60%
-    height: 100%
+    height: 50px
     overflow: hidden
     overflow-x: overlay
     
@@ -234,15 +243,88 @@
 
 
 // ---------------------------- SINGLE MEAL  ----------------------------
-#single-meal
+#single-meal-container
+    margin: 20px
     display: flex
     flex-direction: column
     align-items: center
     flex-wrap: nowrap
     justify-content: flex-start
+    background-color: $color-white
+    border-radius: 20px
+    box-shadow: 3px 3px 10px $color-black-o04
+
+#single-meal
+    display: flex
+    flex-direction: column
+    background-color: $color-yellow
+    width: 90%
+    border-radius: 20px
+    margin-bottom: 20px
+    box-shadow: 3px 3px 10px $color-black-o04
+
+#single-meal img
+    border-radius: 20px 20px 0 0
+
+#single-meal-info
+    padding: 10px
+
+#single-meal-info p
+    margin: 10px 0px
+
+
+#reviews
+    // padding: 10px
+    display: flex
+    flex-direction: column
+    // background-color: $color-bg-white
+    border-radius: 20px
+    // box-shadow: 3px 3px 10px $color-black-o04
+
+.review
+    padding: 10px
+    display: flex
+    flex-direction: row
+    align-items: center
+    background-color: $color-white
+    border-radius: 20px
+    box-shadow: 3px 3px 10px $color-black-o04
+
+.review img
+    width: 50px
+    height: 50px
+    border-radius: 50%
+    margin-right: 10px
+
+.review .name-and-content
+    display: flex
+    flex-direction: row
+    gap: 20px
+
+.review .name-and-rating
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    align-items: center
+    gap: 5px
+
+
+.left-cut
+    margin-left: 20px !important
+    
+
+
+// ---------------------------- GENERAL CLASSES ----------------------------
+.non-active-day
+    opacity: 0.5
+
+.active
+    color: $color-yellow
 
 #return-button
+    height: fit-content !important
     display: flex
+    padding: 10px
     flex-direction: row
     align-items: center
     justify-content: center
@@ -250,94 +332,11 @@
     height: 50px
     margin: 15px
     margin-right: auto
+    border-radius: 20px
 
 #return-button p
     padding-left: 5px
     margin: 0
 
 #return-button:hover
-    color: $color-yellow
-
-#single-meal ul
-    list-style-type: none
-    padding: 5px 10px
-
-
-#single-meal-info
-    display: flex
-    flex-direction: column
     background-color: $color-yellow
-    width: 90%
-    border-radius: 20px
-    margin-bottom: 20px
-
-#single-meal-info img
-    border-radius: 20px 20px 0 0
-
-#single-meal-title
-    padding: 8px 12px
-
-#single-meal-specific-info-and-reviews
-    display: flex
-    flex-direction: row
-
-#single-meal-specific-info
-    display: flex
-    flex-direction: row
-    justify-content: space-around
-
-#reviews
-    width: 40%
-
-.review
-    background-color: $color-white
-    display: flex
-    flex-direction: row
-    align-items: center
-    margin-bottom: 10px
-    padding: 10px
-    border-radius: 20px
-
-.img-container
-    width: 30%
-    display: flex
-    align-items: center
-
-.review img
-    width: 100%
-    border-radius: 100% !important
-    aspect-ratio: 1/1
-    object-fit: cover
-
-.review p 
-    margin: 0
-    padding-left: 10px
-
-.name-and-rating
-    display: flex
-    flex-direction: row
-    align-items: center
-
-#single-meal-recipe
-    width: 90%
-
-#single-meal-recipe p 
-    margin: 0
-    margin-bottom: 10px
-
-.review-content
-    padding-left: 15px !important
-
-    
-    
-
-
-
-
-// ---------------------------- GENERAL CLASSES ----------------------------
-.non-active-day
-    opacity: 0.5
-
-.display-none
-    display: none !important
-

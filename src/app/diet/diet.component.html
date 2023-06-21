@@ -1,26 +1,29 @@
 <div id="container">
     <div id="bar-and-meals">
         <div id="utility-bar">
-            <div id="show-filter">
-                <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible == true}" (click)="showFilters()"></fa-icon>
-                <p class="small-wide-text" (click)="showFilters()">Show Filters</p>
+            <div id="show-filter" (click)="showFilters()">
+                <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible == true}"></fa-icon>
+                <p class="small-wide-text" >Show Filters</p>
             </div>
-            <input id="search-bar" class="normal-text-light" placeholder="Search..."/>
+
+            <div class="line-vr"></div>
+
+            <!-- <input id="search-bar" class="normal-text-light" (focusout)="applySearch(#" placeholder="Search..."/> -->
         </div>
 
-
-
-        <div class="meals" [ngClass]="{'display-none' : singleMealVisible === true}">
-            <div id="filters" [ngClass]="{'display-none' : filtersVisible === false}" class="grey-bg display-none">
+        <div id="meals" [ngClass]="{'display-none' : singleMealVisible === true}">
+            <div id="filters" [ngClass]="{'display-none' : filtersVisible === false}" class="grey-bg">
                 <div id="sort-box">
-                    <p class="small-wide-text green-text">Sort by:</p>
-                    <p class="super-small-wide-text" *ngFor="let sort of sortCriterias">{{sort}}</p>
+                    <p class="normal-text">Sort by:</p>
+                    <p [ngClass]="{'active': sortActive[i]}" class="super-small-text sort left-cut" (click)="invertSort(sort)" *ngFor="let sort of sortCriterias; let i = index">{{sort}}</p>
                 </div>
+
                 <div id="categories-box">
-                    <p class="small-wide-text green-text box-title">Choose categories</p>
-                    <p class="category super-small-wide-text" *ngFor="let category of categories">{{category.name}}</p>
+                    <p class="normal-text box-title">Choose categories</p>
+                    <p [ngClass]="{'active': categoryActive[i]}" class="category super-small-text left-cut" (click)="invertCategory(category, i)" *ngFor="let category of categories; let i = index">{{category.name}}</p>
                 </div>
             </div>
+
             <div *ngFor="let meal of meals" class="meal" (click)="showSingleMeal(meal)">
                 <img src="{{meal.imageUrl}}" alt="meal image" />
                 <div class="meal-info">
@@ -37,54 +40,51 @@
             </div>
         </div>
 
-        <div id="single-meal" class="meals" [ngClass]="{'display-none' : singleMealVisible === false}">
-            <div id="return-button" (click)="singleMealVisible = false">
+        <div id="single-meal-container" [ngClass]="{'display-none' : singleMealVisible === false}">
+            <div id="return-button" class="bigger-on-hover" (click)="singleMealVisible = false">
                 <fa-icon class="filter-icon" [icon]="returnIcon"></fa-icon>
                 <p class="small-wide-text">return</p>
             </div>
-            <div id="single-meal-info">
-                <img src="{{singleMeal?.imageUrl}}" alt="meal image" />
-                <div id="single-meal-specific-info-and-reviews">
-                    <span>
-                        <div id="single-meal-title" class="normal-text">{{singleMeal?.name}}</div>
-                        <div id="single-meal-specific-info" class="small-wide-text">
-                            <ul id="single-meal-ingredients" class="small-wide-text">
-                                <li *ngFor="let ingredient of singleMeal?.ingredientsNames">{{ingredient}}</li>
-                            </ul>
-                            <ul id="single-meal-nutrition" class="small-wide-text">
-                                <li>Protein: {{singleMeal?.proteinRatio}}%</li>
-                                <li>Carbs: {{singleMeal?.carbsRatio}}%</li>
-                                <li>Fats: {{singleMeal?.fatsRatio}}%</li>
-                            </ul>
+
+            <div id="single-meal">
+                <img src="{{singleMeal.imageUrl}}" alt="meal image" />
+
+                <div id="single-meal-info">
+                    <p class="normal-super-wide-text">{{singleMeal.name}}</p>
+                    <p class="small-wide-text left-cut">{{singleMeal!.getIngredientsNames()}}</p>
+
+                    <br>
+                    <p class="small-super-wide-text">Ratio:</p>
+                    <p class="left-cut">Protein: {{singleMeal.proteinRatio}}%</p>
+                    <p class="left-cut">Carbs: {{singleMeal.carbsRatio}}%</p>
+                    <p class="left-cut">Fats: {{singleMeal.fatsRatio}}%</p>
+                    
+                    
+                    <br>
+                    <div id="single-meal-recipe">
+                        <p class="small-super-wide-text">Recipe:</p>
+                        <p class="small-wide-text left-cut">{{singleMeal.recipe}}</p>
+                    </div>
+                    
+                    <br>
+                    <div id="reviews" *ngIf="singleMeal?.reviews?.length !== 0">
+                        <p class="small-super-wide-text">Reviews:</p>
+                        <div class="review" *ngFor="let review of singleMeal?.reviews">
+                            <img src="{{review?.imageUrl}}" alt="reviewer image" />
+                            
+                            <div class="name-and-content">
+                                <span class="name-and-rating">
+                                    <p class="small-wide-text">{{review?.name}}</p>
+                                    <p class="small-wide-text">{{review?.rating}}/10</p>
+                                </span>
+                                <p *ngIf="review?.content" class="review-content super-small-wide-text">{{review?.content}}</p>
+                            </div>
                         </div>
-                    </span>
-                    <div id="reviews">
-                        <ul id="single-meal-review" *ngIf="singleMeal?.reviews?.length !== 0">
-                            <li class="review" *ngFor="let review of singleMeal?.reviews">
-                                <div class="img-container">
-                                    <img src="{{review?.image}}" alt="reviewer image" />
-                                </div>
-                                <div class="name-and-content">
-                                    <span class="name-and-rating">
-                                        <p class="super-small-wide-text">{{review?.name}}</p>
-                                        <p class="super-super-small-text">{{review?.rating}}/10</p>
-                                    </span>
-                                    <p *ngIf="review?.content" class="review-content super-small-text">{{review?.content}}</p>
-                                </div>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
-            <div id="single-meal-recipe">
-                <p class="normal-text">Recipe:</p>
-                <p class="small-wide-text">{{singleMeal?.recipe}}</p>
-            </div>
         </div>
     </div>
-
-
-
 
     <div id="diet-planner">
         <div id="day-bar">
@@ -98,6 +98,7 @@
                 <fa-icon class="btn btn-small-red" [icon]="deleteIcon" (click)="removeDayFromDiet()"></fa-icon>
             </span>
         </div>
+
         <div id="chosen-meals">
             <div *ngFor="let meal of diet[chosenDayIndex]" [ngStyle]="chosenMealBackground(meal.imageUrl)" class="chosen-meal">
                 <div class="background-darkener">
@@ -106,6 +107,7 @@
                 </div>
             </div>
         </div>
+
         <div id="button-box">
             <button class="btn btn-primary-green" (click)="continue()">Continue</button>
         </div>
