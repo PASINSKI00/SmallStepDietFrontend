@@ -1,12 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormArray, FormControl } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormArray, FormControl, Validators, ValidatorFn, AbstractControl, FormGroup } from '@angular/forms';
 import { Ingredient } from '../diet/ingredient';
 import { Category } from '../diet/category';
 import { DietService } from '../diet/diet.service';
 import { faAdd, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { ImageService } from '../image.service';
 import { lastValueFrom } from 'rxjs';
-import { base64ToFile, ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,14 +18,6 @@ export class AddMealComponent implements OnInit {
   addIcon = faAdd;
   deleteIcon = faTrashAlt;
 
-  nameOk: boolean = true;
-  timeOk: boolean = true;
-  ingredientsOk: boolean = true;
-  ingredientOk: boolean[] = [];
-  weightOk: boolean[] = [];
-  categoryOk: boolean[] = [];
-  recipeOk: boolean = true;
-
   ingredients: Ingredient[] = [];
   categories: Category[] = [];
   mealNames: string[] = [];
@@ -33,31 +25,13 @@ export class AddMealComponent implements OnInit {
   imageChangedEvent: any = '';
   croppedImage: any = '';
 
-  finalForm = this.formBuilder.group({
-    name: '',
-    recipe: '',
-    ingredients: new FormControl<any>([]),
-    categoriesIds: new FormControl<any>([]),
-    image: '',
-    timeToPrepare: 0,
-  });
-
   addMealForm = this.formBuilder.group({
-    name: '',
-    recipe: '',
-    ingredientsArray: this.formBuilder.array([]),
-    categoriesArray: this.formBuilder.array([]),
+    name: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    recipe: new FormControl('', [Validators.required, Validators.minLength(10)]),
+    ingredientsArray: this.formBuilder.array([], [Validators.required, Validators.minLength(1)]),
+    categoriesArray: this.formBuilder.array([], [Validators.required, Validators.minLength(1)]),
     image: '',
-    timeToPrepare: 15,
-  });
-
-  ingredientForm = this.formBuilder.group({
-    name: '',
-    weight: 0,
-  });
-
-  categoryForm = this.formBuilder.group({
-    name: '',
+    timeToPrepare: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(999)])
   });
 
   get ingredientsArray() {
@@ -83,166 +57,95 @@ export class AddMealComponent implements OnInit {
     console.error("Image load failed!");
   }
 
-  ngOnInit(): void {
-    this.getIngredientsFromBackend();
-    this.getCategoriesFromBackend();
+  async ngOnInit(): Promise<void> {
+    await this.getIngredientsFromBackend();
+    await this.getCategoriesFromBackend();
     this.getMealNamesFromBackend();
-    this.addIngredientField();
     this.addIngredientField();
     this.addCategoryField();
   }
 
-  checkMealName(event: any) {
-    const mealName = event.target.value;
-    if (this.mealNames.includes(mealName)) {
-      console.error("Meal with this name already exists!");
-      this.nameOk = false;
-      return;
-    }
-
-    this.nameOk = true;
-  }
-
-  checkTimeToPrepare(event: any) {
-    const timeToPrepare = event.target.value;
-    if (timeToPrepare < 1 || timeToPrepare > 300) {
-      console.error("Time to prepare must be between 1 and 300 minutes!");
-      this.timeOk = false;
-      return;
-    }
-
-    this.timeOk = true;
-  }
-
-  checkIngredients() {
-    if (this.ingredientsArray.length < 2) {
-      console.error("Meal must have at least two ingredients!");
-      this.ingredientsOk = false;
-      return;
-    }
-
-    this.ingredientsOk = true;
-  }
-
-  checkIngredientName(index: number) {
-    const ingredientName = this.ingredientsArray.at(index).value.name;
-    if (ingredientName == "" || !this.ingredients.map(ingredient => ingredient.name).includes(ingredientName)) {
-      console.error("Wrong ingredient name!");
-      this.ingredientOk[index] = false;
-      return;
-    }
-
-    this.ingredientOk[index] = true;
-  }
-
-  checkIngredientWeight(index: number) {
-    const ingredientWeight = this.ingredientsArray.at(index).value.weight;
-    if (ingredientWeight < 1 || Number.isInteger(ingredientWeight) == false) {
-      console.error("Ingredient weight must be at least 1gram and a natural number!");
-      this.weightOk[index] = false;
-      return;
-    }
-
-    this.weightOk[index] = true;
-  }
-
-  checkCategory(index: number) {
-    const categoryName = this.categoriesArray.at(index).value.name;
-    if (categoryName == "" || !this.categories.map(category => category.name).includes(categoryName)) {
-      console.error("Category name cannot be empty and has to be from one of the provided ones!");
-      this.categoryOk[index] = false;
-      return;
-    }
-
-    this.categoryOk[index] = true;
-  }
-
-  checkRecipe(event: any) {
-    const recipe = event.target.value;
-    const words = recipe.split(/\s+/);
-    if (words.length < 10) {
-      console.error("Recipe must be 10 words or longer!");
-      this.recipeOk = false;
-      return;
-    }
-
-    this.recipeOk = true;
+  inArrayValidator(array: any[]): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const value = control.value;
+  
+      if (array.includes(value)) {
+        return null; // Value is valid, return null
+      }
+  
+      return { inArray: true }; // Value is not in the array, return an error object
+    };
   }
 
   addIngredientField() {
-    const ingredientForm = this.formBuilder.group({
-      name: '',
-      weight: null
+    let ingredientForm = this.formBuilder.group({
+      name: new FormControl('', [Validators.required, this.inArrayValidator(this.ingredients.map(ingredient => ingredient.name))]),
+      weight: new FormControl(null, [Validators.required, Validators.min(1), Validators.max(9999)])
     });
 
     this.ingredientsArray.push(ingredientForm);
-    this.ingredientOk.push(true);
-    this.weightOk.push(true);
-    this.checkIngredients();
   }
 
   deleteIngredientField(index: number) {
-    this.ingredientsArray.removeAt(index);
-    this.checkIngredients();
-    this.ingredientOk.splice(index, 1);
-    this.weightOk.splice(index, 1);
+    if(this.ingredientsArray.length > 1) {
+      this.ingredientsArray.removeAt(index);
+    }
   }
 
   addCategoryField() {
-    const categoryForm = this.formBuilder.group({
-      name: ''
+    let categoryForm = this.formBuilder.group({
+      name: new FormControl('', [Validators.required, this.inArrayValidator(this.categories.map(category => category.name))])
     });
 
     this.categoriesArray.push(categoryForm);
-    this.categoryOk.push(true);
   }
 
   deleteCategoryField(index: number) {
-    this.categoriesArray.removeAt(index);
-    this.categoryOk.splice(index, 1);
+    if(this.categoriesArray.length > 1) {
+      this.categoriesArray.removeAt(index);
+    }
   }  
 
   async upload() {
-    if (this.checkAllFields() == false){
-      console.error("Please check your inputs!");
-      alert("You didn't fill every field correctly! Please check your inputs and try again.");
-      return;
-    }
-
-    this.finalForm.setValue({
-      name: this.addMealForm.value.name!,
-      recipe: this.addMealForm.value.recipe!,
-      ingredients: this.getMapWithIngredientsIds(),
-      categoriesIds: this.getChosenCategoriesIds(),
-      image: this.addMealForm.value.image!,
-      timeToPrepare: this.addMealForm.value.timeToPrepare!,
+    new FormControl(this.addMealForm.value.timeToPrepare!, [Validators.required])
+    let finalForm = this.formBuilder.group({
+      name: new FormControl(this.addMealForm.value.name!, [Validators.required]),
+      recipe: new FormControl(this.addMealForm.value.recipe!, [Validators.required]),
+      ingredients: new FormControl(this.getMapWithIngredientsIds(), [Validators.required]),
+      categoriesIds: new FormControl(this.getChosenCategoriesIds(), [Validators.required]),
+      image: new FormControl(this.addMealForm.value.image!, [Validators.required]),
+      timeToPrepare: new FormControl(this.addMealForm.value.timeToPrepare!, [Validators.required]),
     });
   
-    const uploadedMealId: number | undefined = await this.uploadMeal();
+    const uploadedMealId: number | undefined = await this.uploadMeal(finalForm);
     if (uploadedMealId == undefined) {
-      console.error("Meal wasn't created :(");
+      alert("Meal wasn't created :( Please try again");
       return;
     }
 
     if(!this.checkMealImage()) {
-      console.log("Meal was successfully created! Picture not provided.");
+      alert("Meal without picture was successfully created! You'll be redirected");
+      setTimeout(() => {
+        this.router.navigate(['/diet']);
+      }, 3000);
       return;
     }
 
     const imageName: string | undefined = await this.uploadMealImage(uploadedMealId);
     if (imageName == undefined) {
-      console.error("Image wasn't uploaded :(");
+      alert("There were issues with uploading the image :( Please try again");
       this.dietService.deleteMeal(uploadedMealId).subscribe((response) => {
         if (response.status != 200)
           console.error("Meal wasn't deleted :(");
       });
 
-      console.log("Meal was successfully created!");
       return;
     }
 
-    alert("Meal was successfully created!");
-    this.router.navigate(['/diet']);
+    alert("Meal was successfully created! You'll be redirected");
+    setTimeout(() => {
+      this.router.navigate(['/diet']);
+    }, 3000);
   }
 
   private checkMealImage(): boolean {
@@ -252,14 +155,10 @@ export class AddMealComponent implements OnInit {
     return true;
   }
 
-  private checkAllFields(): boolean {
-    return this.nameOk && this.timeOk && this.ingredientsOk && this.recipeOk && this.categoryOk.every((value) => value == true) && this.ingredientOk.every((value) => value == true) && this.weightOk.every((value) => value == true);
-  }
-
-  private async uploadMeal() : Promise<number | undefined> {
+  private async uploadMeal(finalForm: FormGroup) : Promise<number | undefined> {
     let idMeal: number | undefined = undefined;
 
-    const response$ = this.dietService.addMeal(this.finalForm);
+    const response$ = this.dietService.addMeal(finalForm);
     const lastValue$ = await lastValueFrom(response$);
 
     if (lastValue$.status != 201)
@@ -284,12 +183,12 @@ export class AddMealComponent implements OnInit {
     return imageName;
   }
 
-  private getCategoriesFromBackend() {
-    this.dietService.getCategories().subscribe((response) => {
-      let categoriesJSON: Array<any> = JSON.parse(response.body);
-      categoriesJSON.forEach((categoryJSON: any) => {
-        this.categories.push(Object.assign(new Category(categoryJSON.id, categoryJSON.name), categoryJSON));
-      });
+  private async getCategoriesFromBackend() {
+    const response$ = this.dietService.getCategories();
+    const lastValue$ = await lastValueFrom(response$);
+
+    JSON.parse(lastValue$.body).forEach((categoryJSON: any) => {
+      this.categories.push(Object.assign(new Category(categoryJSON.id, categoryJSON.name), categoryJSON));
     });
   }
 
@@ -306,12 +205,12 @@ export class AddMealComponent implements OnInit {
     return ids;
   }
 
-  private getIngredientsFromBackend() {
-    this.dietService.getIngredients().subscribe((response) => {
-      let ingredientsJSON: Array<any> = JSON.parse(response.body);
-      ingredientsJSON.forEach((ingredientJSON: any) => {
-        this.ingredients.push(Object.assign(new Ingredient(ingredientJSON.id, ingredientJSON.name), ingredientJSON));
-      });
+  private async getIngredientsFromBackend() {
+    const response$ = this.dietService.getIngredients();
+    const lastValue$ = await lastValueFrom(response$);
+
+    JSON.parse(lastValue$.body).forEach((ingredientJSON: any) => {
+      this.ingredients.push(Object.assign(new Ingredient(ingredientJSON.id, ingredientJSON.name), ingredientJSON));
     });
   }
 
