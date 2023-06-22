@@ -107,7 +107,6 @@ export class AddMealComponent implements OnInit {
   }  
 
   async upload() {
-    new FormControl(this.addMealForm.value.timeToPrepare!, [Validators.required])
     let finalForm = this.formBuilder.group({
       name: new FormControl(this.addMealForm.value.name!, [Validators.required]),
       recipe: new FormControl(this.addMealForm.value.recipe!, [Validators.required]),
