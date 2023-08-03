@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { SharedService } from '../shared.service';
 import { Meal } from './meal';
@@ -17,6 +17,19 @@ export class DietService {
 
   getMeals() : Observable<any> {
     return this.http.get(this.address + '/api/meal/search', { observe: 'response', responseType: 'text' as 'json' })
+  }
+
+  getMealsAsArray(queryForm: FormGroup, pageNumber: number, pageSize: number) : Observable<Array<Meal>> {
+    const nameContains: string = queryForm.get('nameContains')?.value;
+    const sortBy: string = queryForm.get('sortBy')?.value;
+    const categories: Array<string> = queryForm.get('categories')?.value;
+    return this.http.get(this.address + '/api/meal/search', { observe: 'body', params: {nameContains, sortBy, categories, pageNumber, pageSize}, responseType: 'json'}).pipe(
+      map((body: any) => {
+        return body.map((meal: any) => {
+          return new Meal(meal.idMeal, meal.name, meal.ingredientsNames, meal.rating, meal.imageUrl, meal.avgRating, meal.proteinRatio, meal.timesUsed)
+        })
+      })
+    )
   }
 
   extendMeal(idMeal: number) : Observable<any> {
