@@ -1,28 +1,33 @@
 <div id="container">
     <div id="bar-and-meals">
-        <div id="utility-bar">
-            <div id="show-filter" (click)="showFilters()">
+        <div id="utility-bar" [formGroup]="mealQueryInput">
+            <div id="show-filter" (click)="this.filtersVisible = !this.filtersVisible">
                 <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible == true}"></fa-icon>
                 <p class="small-wide-text" >Show Filters</p>
             </div>
 
             <div class="line-vr"></div>
 
-            <!-- <input id="search-bar" class="normal-text-light" (focusout)="applySearch(#" placeholder="Search..."/> -->
+            <input id="search-bar" formControlName="nameContains" class="small-wide-text" placeholder="Meal name..."/>
+            <button id="search-button" class="btn btn-small-green" [ngClass]="{'display-none' : this.formUpdated === false}" (click)="searchClicked()">Search</button>
         </div>
 
         <div id="meals" [ngClass]="{'display-none' : singleMealVisible === true}">
-            <div id="filters" [ngClass]="{'display-none' : filtersVisible === false}" class="grey-bg">
+            <div id="filters" [formGroup]="mealQueryInput" [ngClass]="{'display-none' : filtersVisible === false}" class="grey-bg">
                 <div id="sort-box">
                     <p class="normal-text">Sort by:</p>
-                    <p [ngClass]="{'active': sortActive[i]}" class="super-small-text sort left-cut" (click)="invertSort(sort)" *ngFor="let sort of sortCriterias; let i = index">{{sort}}</p>
+                    <p [ngClass]="{'active': mealQueryInput.get('sortBy')?.value === sort}" class="super-small-text sort left-cut" (click)="toggleSortValue(sort)" 
+                    *ngFor="let sort of sortCriterias; let i = index">{{sort}}</p>
                 </div>
 
                 <div id="categories-box">
                     <p class="normal-text box-title">Choose categories</p>
-                    <p [ngClass]="{'active': categoryActive[i]}" class="category super-small-text left-cut" (click)="invertCategory(category, i)" *ngFor="let category of categories; let i = index">{{category.name}}</p>
+                    <p [ngClass]="{'active': mealQueryInput.get('categories')?.value?.includes(category.name)}" class="category super-small-text left-cut" 
+                    (click)="appendCategoryToQuery(category.name)" *ngFor="let category of categories; let i = index">{{category.name}}</p>
                 </div>
             </div>
+
+            <div style="opacity: 0; width: 100%" #infinityScrollStart></div>
 
             <div *ngFor="let meal of meals" class="meal" (click)="showSingleMeal(meal)">
                 <img src="{{meal.imageUrl}}" alt="meal image" />
@@ -38,6 +43,8 @@
                     <button class="btn btn-small-green" (click)="addMealToDiet(meal)" (click)="$event.stopPropagation()">add</button>
                 </div>
             </div>
+
+            <div style="opacity: 0; width: 100%; margin-bottom: 10px;" #infinityScrollEnd></div>
         </div>
 
         <div id="single-meal-container" [ngClass]="{'display-none' : singleMealVisible === false}">
@@ -89,7 +96,8 @@
     <div id="diet-planner">
         <div id="day-bar">
             <div id="days">
-                <div class="btn btn-round-white super-small-wide-text day" *ngFor="let day of diet; let i = index" [ngClass]="{'non-active-day' : i !== chosenDayIndex}" (click)="changeDay(i)">
+                <div class="btn btn-round-white super-small-wide-text day" *ngFor="let day of diet; let i = index" [ngClass]="{'non-active-day' : i !== chosenDayIndex}" 
+                (click)="this.chosenDayIndex = i">
                     {{i+1}}
                 </div>
             </div>

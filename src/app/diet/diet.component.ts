@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Meal } from './meal';
 import { faTrashAlt, faAdd, faAnglesDown, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { Category } from './category';
-import { Review } from './review';
 import { DietService } from './diet.service';
 import { SharedService } from '../shared.service';
 import { lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { BodyInfoService } from '../account/body-info/body-info.service';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-diet',
@@ -15,6 +15,12 @@ import { BodyInfoService } from '../account/body-info/body-info.service';
   styleUrls: ['./diet.component.sass']
 })
 export class DietComponent implements OnInit {
+  @ViewChild('infinityScrollStart', { static: true }) infinityScrollStart!: ElementRef;
+  @ViewChild('infinityScrollEnd', { static: true }) infinityScrollEnd!: ElementRef;
+
+  observerStart!: IntersectionObserver;
+  observerEnd!: IntersectionObserver;
+  
   deleteIcon = faTrashAlt;
   addIcon = faAdd;
   filterIcon = faAnglesDown;
@@ -27,7 +33,7 @@ export class DietComponent implements OnInit {
   maxDayIndex: number = -1;
 
   filtersVisible: boolean = false;
-  sortCriterias: Array<string> = ["Rank", "Protein percent", "Popularity"];
+  sortCriterias: Array<string> = ["Ranking", "Protein percent", "Popularity"];
   sortActive: boolean[] = [false, false, false];
   categories: Array<Category> = [];
   categoryActive: Array<boolean> = [];
@@ -36,24 +42,108 @@ export class DietComponent implements OnInit {
   singleMeal: Meal = new Meal(0,'',[],0,'',0,0,0);
   
   isBodyInfoSet: any;
+  formUpdated: boolean = false;
 
-  constructor(private bodyInfoService: BodyInfoService, private dietService: DietService, private sharedService: SharedService, private router: Router) {}
+  firstPageNumber: number = 0;
+  lastPageNumber: number = 2;
+  pageSize: number = 15;
+
+  mealQueryInput = this.formBuilder.group({
+    nameContains: '',
+    sortBy: '',
+    categories: this.formBuilder.array([]),
+  });
+
+  constructor(
+    private bodyInfoService: BodyInfoService, 
+    private dietService: DietService, 
+    private sharedService: SharedService, 
+    private router: Router, 
+    private formBuilder: FormBuilder) {}
 
   async ngOnInit() {
-    this.getMealsFromBackend();
+    this.getInitialMealsFromBackend();
     this.getCategoriesFromBackend();
-    if(!this.sharedService.checkActiveDiet()) {
-      this.addDayToDiet();
-    } else {
+    if(this.sharedService.checkActiveDiet()) {
       this.diet = this.sharedService.getActiveDiet();
       this.maxDayIndex = this.diet.length - 1;
+    } else {
+      this.addDayToDiet();
     }
 
-    try {
-      const response$ = this.bodyInfoService.getBodyInfo();
-      const lastValue$ = await lastValueFrom(response$);
-      this.isBodyInfoSet = lastValue$.status == 200;
-    } catch (error) {}
+    lastValueFrom(this.bodyInfoService.getBodyInfo())
+    .then(() => {
+      this.isBodyInfoSet = true;
+    }).catch(() => {
+      this.isBodyInfoSet = false;
+    });
+
+    this.mealQueryInput.valueChanges.subscribe(() => {
+      this.formUpdated = true;
+    });
+  }
+
+  ngAfterViewInit() {
+    this.initIntersectionObservers();
+  }
+
+  initIntersectionObservers() {
+    const options = {
+      root: null,
+      threshold: 0.01
+    };
+
+    this.observerStart = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          this.appendMealsAtTheStart();
+          console.log("start");
+        }
+      });
+    }, options);
+
+    this.observerEnd = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          this.appendMealsAtTheBack();
+          console.log("end");
+        }  
+      });
+    }, options);
+
+    this.observerStart.observe(this.infinityScrollStart.nativeElement);
+    this.observerEnd.observe(this.infinityScrollEnd.nativeElement);
+  }
+
+  appendMealsAtTheStart() {
+    if(this.firstPageNumber == 0)
+      return;
+
+    lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.firstPageNumber-1, this.pageSize)).then((array) => {
+      if(array.length == 0)
+        return;
+
+      this.meals.unshift(...array);
+      this.meals.splice(this.meals.length - array.length, array.length);
+      this.firstPageNumber--;
+      this.lastPageNumber--;
+    }).catch(() => {
+      alert("Couldn't load meals. Please refresh the page to try again.");
+    });
+  }
+
+  appendMealsAtTheBack() {
+    lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.lastPageNumber+1, this.pageSize)).then((array) => {
+      if(array.length == 0)
+        return;
+
+      this.meals.push(...array);
+      this.meals.splice(0, array.length);
+      this.firstPageNumber++;
+      this.lastPageNumber++;
+    }).catch(() => {
+      alert("Couldn't load meals. Please refresh the page to try again.");
+    });
   }
 
   addDayToDiet() {
@@ -91,119 +181,28 @@ export class DietComponent implements OnInit {
   removeDayFromDiet() {
     this.diet.splice(this.chosenDayIndex, 1);
     this.maxDayIndex--;
-    this.changeDay(this.maxDayIndex);
+    this.chosenDayIndex = this.maxDayIndex;
   }
 
-  changeDay(dayIndex: number) {
-    this.chosenDayIndex = dayIndex;
+  toggleSortValue(sort: string) {
+    const newValue = this.mealQueryInput.get('sortBy')?.value === sort ? '' : sort;
+    this.mealQueryInput.get('sortBy')?.setValue(newValue);
   }
 
-  showFilters() {
-    this.filtersVisible = !this.filtersVisible;
-  }
+  appendCategoryToQuery(name: string) {
+    const categoriesArray = this.mealQueryInput.get('categories') as FormArray;
+    const existingCategoryIndex = categoriesArray.value.indexOf(name);
 
-  invertSort(sort: string){
-    // sort meals based on avgRating
-    if(sort == "Rank") {
-      this.sortActive[0] = !this.sortActive[0];
-      
-      if(this.sortActive[0])
-        this.meals.sort((a, b) => {
-          if(a.avgRating > b.avgRating) return -1;
-          if(a.avgRating < b.avgRating) return 1;
-          return 0;
-        });
-    }
-
-    // sort meals based on proteinRatio
-    if(sort == "Protein percent") {
-      this.sortActive[1] = !this.sortActive[1];
-      
-      if(this.sortActive[1])  
-        this.meals.sort((a, b) => {
-          if(a.proteinRatio > b.proteinRatio) return -1;
-          if(a.proteinRatio < b.proteinRatio) return 1;
-          return 0;
-        });
-    }
-
-    // sort meals based on popularity
-    if(sort == "Popularity") {
-      this.sortActive[2] = !this.sortActive[2];
-      
-      if(this.sortActive[2])
-        this.meals.sort((a, b) => {
-          if(a.timesUsed > b.timesUsed) return -1;
-          if(a.timesUsed < b.timesUsed) return 1;
-          return 0;
-        });
-    }
-  }
-
-  async invertCategory(category: Category, index: number) {
-    if(this.categoryActive.includes(true) && !this.categoryActive[index]) {
-      alert("You can't filter by more than one category at once");
-      return;
-    }
-
-    this.categoryActive[index] = !this.categoryActive[index];
-
-    if(this.categoryActive[index]) {
-      await this.getMealsFromBackend();
-
-      // get indexes of active categories
-      let activeCategories: Array<number> = [];
-      for(let i = 0; i < this.categoryActive.length; i++) {
-        if(this.categoryActive[i])
-          activeCategories.push(i);
-      }
-
-      // filter meals based on active categories
-      this.meals = this.meals.filter(meal => {
-        for(let i = 0; i < activeCategories.length; i++) {
-          if(meal.categoriesNames.includes(this.categories[activeCategories[i]].name))
-            return true;
-        }
-        return false;
-      });
-
-      console.log(this.meals);
-
-      // sort meals based on active sort criterias
-      for(let i = 0; i < this.sortActive.length; i++) {
-        if(this.sortActive[i]){
-          this.sortActive[i] = !this.sortActive[i];
-          this.invertSort(this.sortCriterias[i]);
-        }
-      }
+    if (existingCategoryIndex !== -1) {
+      categoriesArray.removeAt(existingCategoryIndex);
     } else {
-      await this.getMealsFromBackend();
+      categoriesArray.push(new FormControl(name));
     }
   }
 
-  applySearch(event: any) {
-    let search = event.target.value;
-
-    if(search == "") {
-      this.getMealsFromBackend();
-      // apply sort criterias
-      for(let i = 0; i < this.sortActive.length; i++) {
-        if(this.sortActive[i]){
-          this.sortActive[i] = !this.sortActive[i];
-          this.invertSort(this.sortCriterias[i]);
-        }
-      }
-
-      //apply categories
-      for(let i = 0; i < this.categoryActive.length; i++) {
-        if(this.categoryActive[i]){
-          this.categoryActive[i] = !this.categoryActive[i];
-          this.invertCategory(this.categories[i], i);
-        }
-      }
-      return;
-    }
-
+  searchClicked(){
+    this.getInitialMealsFromBackend();
+    this.formUpdated = false;
   }
 
   async showSingleMeal(meal: Meal){
@@ -279,24 +278,12 @@ export class DietComponent implements OnInit {
     this.router.navigate(['/diet/final']);
   }
 
-  private async getMealsFromBackend() : Promise<void> {
-    const response$ = this.dietService.getMeals();
-    const lastValue$ = await lastValueFrom(response$);
-
-    if(lastValue$.status != 200)
-      return;
-
-    let mealsJSON: Array<any> = JSON.parse(lastValue$.body);
-    mealsJSON.forEach((mealJSON: any) => {
-      this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed), mealJSON));
+  private async getInitialMealsFromBackend() : Promise<void> {
+    lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, 0, this.pageSize*3)).then((array) => {
+      this.meals = array;
+    }).catch(() => {
+      alert("Couldn't load meals. Please refresh the page to try again.");
     });
-
-    // this.dietService.getMeals().subscribe((response) => {
-    //   let mealsJSON: Array<any> = JSON.parse(response.body);
-    //   mealsJSON.forEach((mealJSON: any) => {
-    //     this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed), mealJSON));
-    //   });
-    // });
   }
 
   private getCategoriesFromBackend() {
