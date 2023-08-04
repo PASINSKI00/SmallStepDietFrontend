@@ -16,9 +16,10 @@
     flex-direction: row
     justify-content: flex-start
     align-items: center
-    height: 50px
+    height: 52px
     background-color: $color-white
-    box-shadow: 0 0 10px $color-black-o07
+    box-shadow: 0 4px 6px $color-black-o07
+    z-index: 1
 
 #show-filter 
     display: flex
@@ -110,24 +111,22 @@
 
 // ------------------ MEALS ------------------
 #meals
-    display: flex
-    flex-direction: row
-    justify-content: space-around
-    width: 100%
     height: calc(100% - 50px)
-    flex-wrap: wrap
     overflow-y: scroll
+    padding: 8px
 
+#meals #meals-box
+    display: grid
+    grid-template-columns: repeat(3, 1fr)
+    gap: 8px
 
 #meals .meal
-    width: 32%
-    margin: 10px 0
+    width: 100%
     border-radius: 20px
     display: flex
     flex-direction: column
     overflow: hidden
     box-shadow: 1px 3px 15px $color-black-o04
-    height: fit-content
     cursor: pointer
 
 #meals .meal .meal-info
@@ -152,9 +151,7 @@
 #meals .meal img
     width: 100%
     aspect-ratio: 840/320
-
-#meals .meal .meal-info .btn-small-green
-    margin-top: auto
+    overflow: hidden
     
 #meals .meal .meal-info .ingredients-names
     overflow: hidden
@@ -174,41 +171,50 @@
     height: 100%
     background-color: $color-white
     box-shadow: 0 0 5px $color-black-o07
+    padding: 0
 
 #diet-planner #day-bar
     display: flex
     flex-direction: row
     justify-content: space-between
     align-items: center
-    height: 50px
-    padding: 0 10px
+    min-height: 30px
+    max-height: 100px
+    padding: 10px
     background-color: $color-yellow
-    box-shadow: 0 0 5px $color-black-o07
+    box-shadow: 0 4px 6px $color-black-o07
+    z-index: 2
 
 #diet-planner #day-bar #days
     display: flex
     flex-direction: row
+    flex-wrap: wrap
     align-items: center
-    width: 60%
-    height: 50px
-    overflow: hidden
-    overflow-x: overlay
     
+#diet-planner #buttons
+    display: flex
+    flex-direction: row
+    justify-content: center
+    align-items: center
 
-#diet-planner .btn
-    margin: 0 5px
+#diet-planner #buttons .button
+    display: grid
+    place-items: center
+    width: 25px
+    height: 25px
+    margin: 2px
+    padding: 2px
+    border-radius: 50%
 
 
 #diet-planner #day-bar .day
-    display: flex
-    flex-direction: row
-    align-items: center
-    justify-content: center
+    display: grid
+    place-items: center
     min-width: 30px
     min-height: 30px
+    margin: 2px
 
 #diet-planner #button-box
-    height: 6%
     margin-top: auto
     display: flex
     flex-direction: row
@@ -216,6 +222,7 @@
     align-items: center
     background-color: $color-white
     box-shadow: 0 0 5px $color-black-o07
+    padding: 5px
 
 #diet-planner #chosen-meals
     height: calc( 100% - 50px )
