@@ -124,6 +124,12 @@ export class DietService {
     return this.http.put(this.address + '/api/diet/final', diet, { headers: headers, observe: 'response', responseType: 'text' as 'json' })
   }
 
+  resetDay(idDiet: number, idFinalDay: number) {
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
+    return this.http.put(this.address + '/api/diet/final/day/reset', null, { headers: headers, observe: 'response', responseType: 'text' as 'json', params: {idDiet, idFinalDay} })
+  }
+
+  //TODO: move to different service
   deleteMeal(idMeal: number) : Observable<any> {
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.delete(this.address + '/api/meal', { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });

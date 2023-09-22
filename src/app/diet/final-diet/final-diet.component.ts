@@ -17,6 +17,7 @@ export class FinalDietComponent implements OnInit {
   deleteIcon = faTrashAlt;
   diet: FinalDiet = null!;
   dailyCaloriesIntake: number = 3000;
+  applicableForResetStates: boolean[] = [];
 
   constructor(private dietService: DietService, private sharedService: SharedService, private router: Router) { 
   }
@@ -70,11 +71,28 @@ export class FinalDietComponent implements OnInit {
       alert("Something went wrong");
       return;
     }
+    
+    this.applicableForResetStates = [];
+    this.diet.finalDays.forEach(day => {
+      this.applicableForResetStates.push(day.applicableForReset);
+    });
 
     this.getDiet();
   }
 
   continue(){
     this.router.navigate(['/diet/final/groceries']);
+  }
+
+  resetDay(idDay: number) {
+    this.dietService.resetDay(this.diet.idDiet, idDay).subscribe(response => {
+      this.getDiet();
+      this.diet.finalDays.find(day => day.idFinalDay == idDay)!.applicableForReset = false;
+      this.applicableForResetStates = [];
+      this.diet.finalDays.forEach(day => { this.applicableForResetStates.push(day.applicableForReset); });
+    }, (error: any) => {
+      alert("Day reset failed. Please try again later.");
+      console.log(error);
+    });
   }
 }

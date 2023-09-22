@@ -30,6 +30,7 @@
                 </span>
 
                 <button class="btn btn-primary-green apply-changes-button" *ngIf="finalDay.modified" (click)="applyChanges()">Apply changes</button>
+                <button class="btn btn-primary-red reset-day-button" *ngIf="applicableForResetStates[dayIndex] || finalDay.modified" (click)="resetDay(finalDay.idFinalDay)">Reset day</button>
             </div>
 
             <div class="final-meals">
@@ -37,7 +38,7 @@
                     <div class="meal-title">
                             <p class="meal-actual-title small-wide-text">{{finalMeal.name}}</p>
                             <span class="input-percent">
-                                <input class="super-small-wide-text" type="number" min="0" (input)="finalMeal.percentModified = true; finalDay.modified = true" [(ngModel)]="finalMeal.percentOfDay" max="100">%
+                                <input class="super-small-wide-text" type="number" min="0" (input)="finalMeal.percentModified = true; finalDay.modified = true; finalDay.applicableForReset = true" [(ngModel)]="finalMeal.percentOfDay" max="100">%
                             </span>
                     </div>
 
@@ -47,9 +48,9 @@
                                 <p>{{ingredient.name}}</p>
                                 <span class="super-small-text ingredient-hub">
                                     <span class="weight-input super-small-wide-text">
-                                        <input class="super-small-wide-text" type="number" (input)="ingredient.modified = true; finalDay.modified = true" [(ngModel)]="ingredient.weight" min="0">g
+                                        <input class="super-small-wide-text" type="number" (input)="ingredient.modified = true; finalDay.modified = true; finalDay.applicableForReset = true" [(ngModel)]="ingredient.weight" min="0">g
                                     </span>
-                                    <fa-icon [icon]="deleteIcon" (click)="ingredient.remove = true; ingredient.modified = true; finalDay.modified = true"></fa-icon>
+                                    <fa-icon [icon]="deleteIcon" (click)="ingredient.remove = true; ingredient.modified = true; finalDay.modified = true; finalDay.applicableForReset = true"></fa-icon>
                                 </span>
                             </div>
                             <!-- <fa-icon [icon]="addIcon"></fa-icon> -->
