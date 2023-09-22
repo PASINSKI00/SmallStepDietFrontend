@@ -41,7 +41,7 @@ export class FinalDietComponent implements OnInit {
     });
   }
 
-  calculateDayPercentage(day: FinalDay) {
+  sumDayPercentage(day: FinalDay) {
     let sum: number = 0;
     day.finalMeals.forEach(meal => {
       sum += meal.percentOfDay!;
@@ -51,12 +51,17 @@ export class FinalDietComponent implements OnInit {
   }
 
   async applyChanges() {
+    let isDataValid: boolean = true;
     this.diet.finalDays.forEach(day => {
-      if(this.calculateDayPercentage(day) != 100) {
+      if(this.sumDayPercentage(day) != 100) {
         alert("Meal percentages in a day need to sum up to 100%!");
-        return;
+        isDataValid = false;
       }
     });
+
+    if(!isDataValid) {
+      return;
+    }
 
     const reponse$ = this.dietService.modifyDiet(this.diet);
     const lastValue$ = await lastValueFrom(reponse$);

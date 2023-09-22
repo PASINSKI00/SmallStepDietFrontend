@@ -163,12 +163,19 @@
     align-items: center
     gap: 5px
 
+#empty-box
+    height: 25px
+
 #button-box
+    box-sizing: border-box
+    width: 100%
+    padding: 5px 100px
     display: flex
+    flex-direction: row
     justify-content: space-between
-    align-items: center
-    margin: 20px 50px
-    padding-bottom: 10px
+    position: fixed
+    bottom: 0
+    background-color: $color-black-o04
 
 .apply-changes-button
     margin: 10px 5px

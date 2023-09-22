@@ -11,7 +11,7 @@
         
         <span class="final-day-content">
             <div class="day-info">
-                <p class="go-center normal-wide-text">{{this.calculateDayPercentage(finalDay)}}%</p>
+                <p class="go-center normal-wide-text">{{this.sumDayPercentage(finalDay)}}%</p>
 
                 <span class="macro first-macro">
                     <p class="super-small-wide-text">calories:</p><p>{{finalDay.calories}} kcal</p>
@@ -73,6 +73,8 @@
             </div>
         </span>
     </div>
+
+    <div id="empty-box"></div>
     
     <div id="button-box">
         <button class="btn btn-primary-red" routerLink="/diet">Return</button>
