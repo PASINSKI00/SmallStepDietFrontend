@@ -1,12 +1,20 @@
 <div id="container">
-    <div class="ingredients">
-        <div class="ingredient" *ngFor="let ingredient of ingredients">
-            <div class="ingredient-info">
-                <p class="super-small-wide-text">{{ingredient.name}}</p>
-                <p class="super-small-wide-text">{{ingredient.weight}} g</p>
-            </div>
+    <div id="title-box">
+        <h1 class="title">Shopping List</h1>
+    </div>
+
+    <div id="ingredients-box">
+        <div class="ingredients" *ngFor="let item of [].constructor(numOfColumns); let i = index">
+                <div class="ingredient" *ngFor="let ingredient of ingredients[i]">
+                    <div class="ingredient-info">
+                        <p class="super-small-wide-text">{{ingredient.name}}</p>
+                        <p class="super-small-wide-text">{{ingredient.weight}} g</p>
+                    </div>
+                </div>
         </div>
     </div>
+
+    <div id="empty-box"></div>
 
     <div id="button-box">
         <button class="btn btn-primary-red" routerLink="/diet/final">Return</button>

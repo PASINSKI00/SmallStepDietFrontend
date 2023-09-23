@@ -1,9 +1,25 @@
 @import 'src/variables.sass'
+
+#container
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-items: space-between
+
+#ingredients-box
+    width: 100%
+    display: grid
+    justify-items: center
+    align-items: start
+    grid-template-columns: repeat(var(--num-of-columns), 1fr)
+    background-color: $color-black-o04
+    max-width: 700px
+    border-radius: 20px
+    grid-column-gap: 20px
+    padding: 20px
     
 .ingredients
-    width: 30%
     padding: 10px
-    margin: 20px
     background-color: $color-yellow
     border-radius: 10px
     display: flex
@@ -28,9 +44,16 @@
 .ingredient p
     margin: 0
 
+#empty-box
+    height: 25px
+
 #button-box
+    box-sizing: border-box
+    width: 100%
+    padding: 5px 100px
     display: flex
+    flex-direction: row
     justify-content: space-between
-    align-items: center
-    margin: 20px 50px
-    padding-bottom: 10px
+    position: fixed
+    bottom: 0
+    background-color: $color-black-o04
