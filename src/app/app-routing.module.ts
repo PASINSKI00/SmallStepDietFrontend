@@ -11,6 +11,8 @@ import { UserInfoComponent } from './account/user-info/user-info.component';
 import { DietHistoryComponent } from './account/diet-history/diet-history.component';
 import { BodyInfoComponent } from './account/body-info/body-info.component';
 import { ReviewComponent } from './account/review/review.component';
+import { DietViewComponent } from './account/diet-history/views/diet-view/diet-view.component';
+import { GroceriesViewComponent } from './account/diet-history/views/groceries-view/groceries-view.component';
 
 const routes: Routes = [
   {
@@ -64,6 +66,14 @@ const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'diet/final/:id/view',
+    component: DietViewComponent,
+  },
+  {
+    path: 'diet/final/:id/groceries',
+    component: GroceriesViewComponent,
+  }
 ];
 
 @NgModule({
