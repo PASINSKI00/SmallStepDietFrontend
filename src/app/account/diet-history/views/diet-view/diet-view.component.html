@@ -1,3 +1,67 @@
 <div id="container">
-    <p>diet-view works!</p>
+    <div class="final-day" *ngFor="let finalDay of finalDiet.finalDays; let dayIndex = index">
+        <div class="day-number-and-makro">
+            <p class="big-text">Day {{dayIndex+1}}</p>
+            
+            <div class="day-info">
+                <span class="macro">
+                    <p class="small-wide-text">calories:</p><p>{{finalDay.calories}} kcal</p>
+                </span>
+
+                <span class="macro">
+                    <p class="small-wide-text">carbs:</p><p>{{finalDay.carbs}} g</p>
+                </span>
+
+                <span class="macro">
+                    <p class="small-wide-text">protein:</p><p>{{finalDay.protein}} g</p>
+                </span>
+
+                <span class="macro">
+                    <p class="small-wide-text">fats:</p><p>{{finalDay.fats}} g</p>
+                </span>
+            </div>
+        </div>
+
+        <div class="final-meals">
+            <div class="final-meal" *ngFor="let finalMeal of finalDay.finalMeals;let mealIndex = index">
+                <div class="meal-title-and-makro">
+                        <p class="normal-wide-text">{{finalMeal.name}}</p>
+
+                        <div class="meal-ratio">
+                            <span class="macro">
+                                <p class="super-small-text">calories:</p><p>{{finalMeal.calories}} kcal</p>
+                            </span>
+                            <span class="macro">
+                                <p class="super-small-text">carbs:</p><p>{{finalMeal.carbs}}g</p>
+                            </span>
+                            <span class="macro">
+                                <p class="super-small-text">protein:</p><p>{{finalMeal.protein}}g</p>
+                            </span>
+                            <span class="macro">
+                                <p class="super-small-text">fats:</p><p>{{finalMeal.fats}}g</p>
+                            </span>
+                        </div>
+                </div>
+
+                <span class="meal-details">
+                    <div class="meal-ingredients">
+                        <div class="meal-ingredient super-small-wide-text" *ngFor="let ingredient of finalMeal.finalIngredients">
+                            <p>{{ingredient.name}}</p>
+                            <p>{{ingredient.weight}}g</p>
+                        </div>
+                    </div>
+                </span>
+
+                <div class="meal-recipe">
+                    {{finalMeal.recipe}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="empty-box"></div>
+    
+    <div id="button-box">
+        <button class="btn btn-primary-red" routerLink="/account/diets">Return</button>
+    </div>
 </div>

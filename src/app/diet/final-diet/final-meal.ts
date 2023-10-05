@@ -11,6 +11,7 @@ export class FinalMeal {
     carbs: number;
     percentOfDay: number | null;
     imageUrl: string | undefined;
+    recipe: string | undefined;
 
     percentModified: boolean = false;
 
