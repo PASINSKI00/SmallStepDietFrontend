@@ -26,7 +26,6 @@ import { UserInfoComponent } from './account/user-info/user-info.component';
 import { ReviewComponent } from './account/review/review.component';
 import { AccountHomeComponent } from './account/account-home/account-home.component';
 import { DatePipe } from '@angular/common';
-import { GroceriesViewComponent } from './account/diet-history/views/groceries-view/groceries-view.component';
 import { DietViewComponent } from './account/diet-history/views/diet-view/diet-view.component';
 
 @NgModule({
@@ -48,7 +47,6 @@ import { DietViewComponent } from './account/diet-history/views/diet-view/diet-v
     UserInfoComponent,
     ReviewComponent,
     AccountHomeComponent,
-    GroceriesViewComponent,
     DietViewComponent
   ],
   imports: [
