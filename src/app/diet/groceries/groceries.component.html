@@ -1,16 +1,18 @@
 <div id="container">
-    <div id="title-box">
-        <h1 class="title">Shopping List</h1>
-    </div>
+    <div id="shopping-list">
+        <div id="title-box">
+            <h1 class="title">Shopping List</h1>
+        </div>
 
-    <div id="ingredients-box">
-        <div class="ingredients" *ngFor="let item of [].constructor(numOfColumns); let i = index">
-                <div class="ingredient" *ngFor="let ingredient of ingredients[i]">
-                    <div class="ingredient-info">
-                        <p class="super-small-wide-text">{{ingredient.name}}</p>
-                        <p class="weight super-small-wide-text">{{ingredient.weight}} g</p>
+        <div id="ingredients-box">
+            <div class="ingredients" *ngFor="let item of [].constructor(numOfColumns); let i = index">
+                    <div class="ingredient" *ngFor="let ingredient of ingredients[i]">
+                        <div class="ingredient-info">
+                            <p class="super-small-wide-text">{{ingredient.name}}</p>
+                            <p class="weight super-small-wide-text">{{ingredient.weight}} g</p>
+                        </div>
                     </div>
-                </div>
+            </div>
         </div>
     </div>
 
@@ -18,6 +20,7 @@
 
     <div id="button-box">
         <button *ngIf="cameFromDietHistory" class="btn btn-primary-red" routerLink="/account/diets">Return</button>
+        <button *ngIf="cameFromDietHistory" class="btn btn-primary-green" (click)="downloadPdf()">Download PDF</button>
 
         <button *ngIf="!cameFromDietHistory" class="btn btn-primary-red" routerLink="/diet/final">Return</button>
         <button *ngIf="!cameFromDietHistory" class="btn btn-primary-green" routerLink="/diet/finished">Continue</button>

@@ -4,6 +4,9 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { DietService } from '../diet.service';
 import { lastValueFrom } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+// @ts-ignore
+import * as html2pdf from 'html2pdf.js';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-groceries',
@@ -17,7 +20,7 @@ export class GroceriesComponent implements OnInit {
   elementesPerColumn: number = 0;
   cameFromDietHistory: boolean = false;
 
-  constructor(private dietService: DietService, private elRef: ElementRef, private route: ActivatedRoute) {
+  constructor(private dietService: DietService, private elRef: ElementRef, private route: ActivatedRoute, private datePipe: DatePipe) {
     this.route.params.subscribe( params => 
       {
         this.getGroceries(params['id']);       
@@ -59,5 +62,19 @@ export class GroceriesComponent implements OnInit {
     for(let i = 0; i < this.numOfColumns; i++) {
       this.ingredients.push(allIngredients.slice(i * this.elementesPerColumn, (i + 1) * this.elementesPerColumn));
     }
+  }
+
+  async downloadPdf() {
+    const timestamp = this.datePipe.transform(Date.now(), 'dd-MMM-yyyy');
+    const content = document.getElementById('shopping-list');
+    content?.style.setProperty('--num-of-columns', this.numOfColumns.toString());
+    const options = {
+      margin: 10,
+      image: { type: 'jpeg', quality: 0.98 },
+      jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' },
+    };
+  
+    html2pdf().from(content).set(options).save("Groceries_" + timestamp + ".pdf");
+    console.log("PDF downloaded");
   }
 }

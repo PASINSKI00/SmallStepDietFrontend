@@ -3,35 +3,40 @@
 #container
     display: flex
     flex-direction: column
+
+#shopping-list
+    display: flex
+    flex-direction: column
     align-items: center
     justify-items: space-between
 
 #ingredients-box
-    width: 100%
     display: grid
     justify-items: center
-    align-items: start
     grid-template-columns: repeat(var(--num-of-columns), 1fr)
     background-color: $color-black-o04
-    max-width: 700px
+    width: 700px
     border-radius: 20px
-    grid-column-gap: 20px
+    box-sizing: border-box
     padding: 20px
     
 .ingredients
+    width: 90%
     padding: 10px
     background-color: $color-yellow
     border-radius: 10px
     display: flex
     flex-direction: column
-    width: fit-content
+    box-sizing: border-box
+    padding-bottom: 25px
 
 .ingredient
-    padding-bottom: 5px
+    padding-top: 10px
     display: flex
     flex-direction: row
     align-items: center
     gap: 20px   
+    border-bottom: 1px solid $color-black-o04
 
 .ingredient-info 
     width: 100%
