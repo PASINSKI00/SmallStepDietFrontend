@@ -27,18 +27,12 @@ export class FinalDietComponent implements OnInit {
   }
 
   async getDiet(){
-    const response$ = this.dietService.getDiet(this.sharedService.getActiveDietId());
-    const lastValue$ = await lastValueFrom(response$);
-
-    if(lastValue$.status != 200) {
+    const activeDietId = this.sharedService.getActiveDietId();
+    await lastValueFrom(this.dietService.getDiet(activeDietId))
+    .then((response) => {
+      this.diet = JSON.parse(response.body);
+    }).catch(() => {
       alert("Something went wrong");
-      return;
-    }
-
-    this.diet = JSON.parse(lastValue$.body);
-
-    this.diet.finalDays.forEach(day => {
-      day.finalMeals.sort((a, b) => a.idFinalMeal - b.idFinalMeal);
     });
   }
 

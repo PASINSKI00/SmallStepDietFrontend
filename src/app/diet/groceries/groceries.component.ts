@@ -3,6 +3,7 @@ import { Ingredient } from '../ingredient';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { DietService } from '../diet.service';
 import { lastValueFrom } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-groceries',
@@ -14,15 +15,27 @@ export class GroceriesComponent implements OnInit {
   ingredients: Array<Array<Ingredient>> = [];
   numOfColumns: number = 3;
   elementesPerColumn: number = 0;
+  cameFromDietHistory: boolean = false;
 
-  constructor(private dietService: DietService, private elRef: ElementRef) { }
-
-  ngOnInit(): void {
-    this.getGroceries();
+  constructor(private dietService: DietService, private elRef: ElementRef, private route: ActivatedRoute) {
+    this.route.params.subscribe( params => 
+      {
+        this.getGroceries(params['id']);       
+      }
+    );
   }
 
-  async getGroceries() {
-    const observer$ = this.dietService.getGroceries();
+  ngOnInit(): void {}
+
+  async getGroceries(id?: number) {
+    let observer$;
+    if(id) {
+      observer$ = this.dietService.getGroceriesById(id);
+      this.cameFromDietHistory = true;
+    } else {
+      observer$ = this.dietService.getGroceries();
+      this.cameFromDietHistory = false;
+    }
     const lastValue$ = await lastValueFrom(observer$).catch(error => {
       alert("Something went wrong");
       console.log(error);
@@ -34,9 +47,7 @@ export class GroceriesComponent implements OnInit {
 
     let allIngredients: Array<Ingredient> = JSON.parse(lastValue$.body);
 
-    if(allIngredients.length >= 6) {
-      this.numOfColumns = 3;
-    } else if(allIngredients.length >= 4) {
+    if(allIngredients.length >= 4) {
       this.numOfColumns = 2;
     } else {
       this.numOfColumns = 1;
