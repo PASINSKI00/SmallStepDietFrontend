@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FinalDiet } from '../../diet/final-diet/final-diet';
 import { DietService } from '../../diet/diet.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-diet-history',
@@ -46,5 +47,13 @@ export class DietHistoryComponent implements OnInit {
       'background-size': 'cover',
       'background-position': 'center'
     }
+  }
+
+  reCalculateDiet(idDiet: number) {
+    lastValueFrom(this.dietService.reCalculateDiet(idDiet)).then(() => {
+      alert("Success");
+    }).catch(() => {
+      alert("Something went wrong");
+    });
   }
 }

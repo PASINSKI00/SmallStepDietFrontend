@@ -15,9 +15,7 @@
         <div class="buttons">
             <button class="btn btn-primary-green" routerLink="/diet/final/{{diet.idDiet}}/view">View Diet</button>
             <button class="btn btn-primary-gray" routerLink="/diet/final/groceries/{{diet.idDiet}}">View Groceries</button>
-
-            <!-- TODO: Implement -->
-            <button class="btn btn-primary-gray">Re-calculate</button>
+            <button class="btn btn-primary-gray" (click)="reCalculateDiet(diet.idDiet)">Re-calculate</button>
         </div>
     </div>
 </div>
