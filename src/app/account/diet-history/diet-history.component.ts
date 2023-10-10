@@ -19,7 +19,6 @@ export class DietHistoryComponent implements OnInit {
       }
 
       this.diets = JSON.parse(response.body);
-      console.log(this.diets);
       if(this.diets.length == 0) {
         alert("You have no diets yet. Refer to the diet page to create one.");
       }
@@ -30,7 +29,6 @@ export class DietHistoryComponent implements OnInit {
   }
 
   downloadMyFile(fileUrl: string, number: number) {
-    console.log(fileUrl);
     const now = new Date();
     const link = document.createElement('a');
     link.setAttribute('target', '_blank');

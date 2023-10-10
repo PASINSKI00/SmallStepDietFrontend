@@ -34,7 +34,6 @@ export class ReviewComponent implements OnInit {
       mealsJSON.forEach((mealJSON: any) => {
         this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed), mealJSON));
       });
-      console.log(this.meals);
     });
   }
 

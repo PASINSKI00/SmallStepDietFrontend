@@ -97,7 +97,6 @@ export class DietComponent implements OnInit {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           this.appendMealsAtTheStart();
-          console.log("start");
         }
       });
     }, options);
@@ -106,7 +105,6 @@ export class DietComponent implements OnInit {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           this.appendMealsAtTheBack();
-          console.log("end");
         }  
       });
     }, options);
@@ -206,7 +204,6 @@ export class DietComponent implements OnInit {
   }
 
   async showSingleMeal(meal: Meal){
-    console.log(meal);
     const response$ = this.dietService.extendMeal(meal.idMeal);
     const lastValue$ = await lastValueFrom(response$);
 

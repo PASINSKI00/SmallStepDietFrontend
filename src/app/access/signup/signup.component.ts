@@ -81,7 +81,6 @@ export class SignupComponent implements OnInit {
   }
 
   login() {
-    console.log('login');
     this._sharedService.emitChange('login');
   }
 

@@ -50,7 +50,6 @@ export class AddMealComponent implements OnInit {
 
   imageCropped(event: ImageCroppedEvent) {
     this.croppedImage = event.base64;
-    console.log("Image cropped!");
   }
 
   loadImageFailed() {

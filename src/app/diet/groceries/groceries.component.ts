@@ -75,6 +75,5 @@ export class GroceriesComponent implements OnInit {
     };
   
     html2pdf().from(content).set(options).save("Groceries_" + timestamp + ".pdf");
-    console.log("PDF downloaded");
   }
 }
