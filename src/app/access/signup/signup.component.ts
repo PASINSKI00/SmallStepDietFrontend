@@ -10,10 +10,19 @@ import { faL } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./signup.component.sass']
 })
 export class SignupComponent implements OnInit {
-  message: string = 'Create a new account';
+  readonly defaultMessage: string = 'Create a new account';
+  readonly signUpSuccessMessage: string = 'Account created! You can Log in now!';
+  readonly signUpFailureMessage: string = 'Something went wrong. Please try again.';
+  readonly nameInvalidMessage: string = 'Name is required';
+  readonly emailTakenMessage: string = 'Email already in use';
+  readonly emailInvalidMessage: string = 'Email is invalid. Try something similar to: john.smith@gmail.com';
+  readonly passwordInvalidMessage: string = 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter and one number';
+  readonly passwordsDontMatchMessage: string = 'Passwords do not match';
+  message: string = this.defaultMessage;
   signUpFailed: boolean = false;
   signUpSuccessfull: boolean = false;
   passwordsMatch: boolean = false;
+  isLoading: boolean = false;
 
   constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) { }
 
@@ -34,7 +43,7 @@ export class SignupComponent implements OnInit {
   signupForm = this.formBuilder.group({
     name: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    password: new FormControl('', [Validators.required, Validators.pattern('^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$')]),
     repassword: new FormControl('', [Validators.required]),
   }, { validators: this.passwordMatchValidator });
 
@@ -42,11 +51,16 @@ export class SignupComponent implements OnInit {
   }
 
   signup() {
+    if (!this.goodInputOrFeedback()) {
+      return;
+    }
+    this.isLoading = true;
     this.accessService.signup(this.signupForm).subscribe(
       (response) => {
         this.signUpFailed = false;
         this.signUpSuccessfull = true;
-        this.message = 'Account created successfully! You can Log in now!';
+        this.message = this.signUpSuccessMessage;
+        this.isLoading = false;
         setTimeout(() => {
           this._sharedService.emitChange('login');
         }
@@ -54,13 +68,14 @@ export class SignupComponent implements OnInit {
       },
       (error) => {
         if(error.status == 409) 
-          this.message = 'Email already in use. Please try again.';
+          this.message = this.emailTakenMessage;
         
         if(error.status == 400 && error.error.message)
           this.message = error.error.message;
 
         this.signUpFailed = true;
         this.signUpSuccessfull = false;
+        this.isLoading = false;
       }
     );
   }
@@ -68,5 +83,36 @@ export class SignupComponent implements OnInit {
   login() {
     console.log('login');
     this._sharedService.emitChange('login');
+  }
+
+  private goodInputOrFeedback(): boolean {
+    if(this.signupForm.valid) {
+      return true;
+    }
+
+    const name = this.signupForm.controls.name;
+    const email = this.signupForm.controls.email;
+    const password = this.signupForm.controls.password;
+    const repassword = this.signupForm.controls.repassword;
+
+    if(name.invalid) {
+      this.message = this.nameInvalidMessage;
+      name.markAsTouched();
+    } else if(email.invalid) {
+      this.message = this.emailInvalidMessage;
+      email.markAsTouched();
+    } else if(password.invalid) {
+      this.message = this.passwordInvalidMessage;
+      password.markAsTouched();
+    } else if(repassword.invalid) {
+      this.message = this.passwordsDontMatchMessage;
+      repassword.markAsTouched();
+    } else {
+      this.message = this.signUpFailureMessage;
+    }
+
+    this.signUpFailed = true;
+    this.signUpSuccessfull = false;
+    return false;
   }
 }

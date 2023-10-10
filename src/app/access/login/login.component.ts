@@ -10,13 +10,17 @@ import { AccessService } from '../access.service';
   styleUrls: ['./login.component.sass']
 })
 export class LoginComponent implements OnInit {
-  message: string = 'Sign in to Your Account';
+  readonly defaultMessage: string = 'Sign in to Your Account';
+  readonly loginSuccessMessage: string = 'Login successful. Welcome!';
+  readonly loginFailureMessage: string = 'Bad email or password. Please try again.';
+  message: string = this.defaultMessage;
   loginFailed: boolean = false;
   loginSuccessfull: boolean = false;
+  isLoading: boolean = false;
 
   loginForm = this.formBuilder.group({
-    email: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required])
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.pattern('^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$')])
   });
 
   constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) { }
@@ -25,11 +29,13 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    this.isLoading = true;
     this.accessService.login(this.loginForm).subscribe(
       (response) => {
         this.loginFailed = false;
         this.loginSuccessfull = true;
-        this.message = 'Login successful. Welcome!';
+        this.message = this.loginSuccessMessage;
+        this.isLoading = false;
         setTimeout(() => {
           this._sharedService.emitChange('closeAccess');
         }, 2000);
@@ -38,12 +44,19 @@ export class LoginComponent implements OnInit {
         this._sharedService.deleteAuthHeaderValue();
         this.loginFailed = true;
         this.loginSuccessfull = false;
-        this.message = 'Bad email or password. Please try again.';
+        this.message = this.loginFailureMessage;
+        this.isLoading = false;
       }
     );
   }
 
   signup() {
     this._sharedService.emitChange('signup');
+  }
+
+  retryLogin() {
+    this.loginFailed = false;
+    this.loginSuccessfull = false;
+    this.message = this.defaultMessage;
   }
 }
