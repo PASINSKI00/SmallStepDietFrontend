@@ -50,7 +50,11 @@
                                     <span class="weight-input super-small-wide-text">
                                         <input class="super-small-wide-text" type="number" (input)="ingredient.modified = true; finalDay.modified = true; finalDay.applicableForReset = true" [(ngModel)]="ingredient.weight" min="0">g
                                     </span>
-                                    <fa-icon [icon]="deleteIcon" (click)="ingredient.remove = true; ingredient.modified = true; finalDay.modified = true; finalDay.applicableForReset = true"></fa-icon>
+                                    <button class="bg-none">
+                                        <fa-icon class="icon-size-20" [icon]="deleteIcon" (click)="ingredient.remove = true; 
+                                            ingredient.modified = true; finalDay.modified = true; 
+                                            finalDay.applicableForReset = true"></fa-icon>
+                                    </button>
                                 </span>
                             </div>
                             <!-- <fa-icon [icon]="addIcon"></fa-icon> -->
