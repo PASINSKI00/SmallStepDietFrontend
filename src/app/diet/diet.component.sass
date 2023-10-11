@@ -16,9 +16,9 @@
     flex-direction: row
     justify-content: flex-start
     align-items: center
-    height: 52px
+    height: 61px
     background-color: $color-white
-    box-shadow: 0 4px 6px $color-black-o07
+    box-shadow: 4px 4px 6px $color-black-o07
     z-index: 1
 
 #show-filter 
@@ -130,11 +130,11 @@
     cursor: pointer
 
 #meals .meal .meal-info
-    padding: 0px 10px
-    padding-bottom: 5px
+    padding: 0px 5px 5px 10px
     display: flex
     flex-direction: row
     justify-content: space-between
+    align-items: flex-end
     background-color: $color-white
 
 #meals .meal .meal-info p
@@ -185,11 +185,12 @@
     flex-direction: row
     justify-content: space-between
     align-items: center
-    min-height: 30px
+    min-height: 61px
+    box-sizing: border-box
     max-height: 100px
     padding: 10px
     background-color: $color-yellow
-    box-shadow: 0 4px 6px $color-black-o07
+    box-shadow: 4px 4px 6px $color-black-o07
     z-index: 2
 
 #diet-planner #day-bar #days
@@ -199,16 +200,15 @@
     align-items: center
     
 #diet-planner #buttons
-    display: flex
-    flex-direction: row
-    justify-content: center
-    align-items: center
+    display: grid
+    place-items: center
+    grid-template-columns: repeat(2, 1fr)
 
 #diet-planner #buttons .button
     display: grid
     place-items: center
-    width: 25px
-    height: 25px
+    width: 35px
+    height: 35px
     margin: 2px
     padding: 2px
     border-radius: 50%
@@ -217,8 +217,8 @@
 #diet-planner #day-bar .day
     display: grid
     place-items: center
-    min-width: 30px
-    min-height: 30px
+    min-width: 35px
+    min-height: 35px
     margin: 2px
 
 #diet-planner #button-box

@@ -112,18 +112,18 @@
     <div id="diet-planner">
         <div id="day-bar">
             <div id="days">
-                <div class="btn btn-round-white super-small-wide-text day" *ngFor="let day of diet; let i = index" [ngClass]="{'non-active-day' : i !== chosenDayIndex}" 
+                <button class="btn btn-round-white small-wide-text day" *ngFor="let day of diet; let i = index" [ngClass]="{'non-active-day' : i !== chosenDayIndex}" 
                 (click)="this.chosenDayIndex = i">
                     {{i+1}}
-                </div>
+                </button>
             </div>
             <div id="buttons">
-                <div class="button round green-bg color-white">
-                    <fa-icon size="lg" [icon]="addIcon" (click)="addDayToDiet()"></fa-icon>
-                </div>
-                <div class="button round red-bg color-white">
-                    <fa-icon size="sm" [icon]="deleteIcon" (click)="removeDayFromDiet()"></fa-icon>
-                </div>
+                <button class="button round green-bg color-white">
+                    <fa-icon class="icon-size-29" [icon]="addIcon" (click)="addDayToDiet()"></fa-icon>
+                </button>
+                <button class="button round red-bg color-white">
+                    <fa-icon class="icon-size-22" [icon]="deleteIcon" (click)="removeDayFromDiet()"></fa-icon>
+                </button>
             </div>
         </div>
 
@@ -131,7 +131,9 @@
             <div *ngFor="let meal of diet[chosenDayIndex]" [ngStyle]="chosenMealBackground(meal.imageUrl)" class="chosen-meal">
                 <div class="background-darkener">
                     <p class="chosen-meal-name super-small-wide-text">{{meal.name}}</p>
-                    <fa-icon class="btn btn-small-red" [icon]="deleteIcon" (click)="removeMealFromDiet(meal)"></fa-icon>
+                    <button class="btn btn-small-red">
+                        <fa-icon [icon]="deleteIcon" (click)="removeMealFromDiet(meal)"></fa-icon>
+                    </button>
                 </div>
             </div>
         </div>
