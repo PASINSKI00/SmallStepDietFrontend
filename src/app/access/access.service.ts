@@ -21,7 +21,6 @@ export class AccessService {
   }
 
   signup(form: FormGroup) : Observable<any> {
-    console.log(form.value);
     return this.http.post(this.address + '/api/user', form.value);
   }
 }
