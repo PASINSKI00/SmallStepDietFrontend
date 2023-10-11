@@ -6,6 +6,6 @@
     </nav>
     <div id="button-container">
         <button class="btn btn-primary-green" [ngClass]="{'display-none': isLoggedIn}" (click)="access()">Join Us</button>
-        <button class="btn green-text small-wide-text bg-none bigger-on-hover" [ngClass]="{'display-none': !isLoggedIn, 'selected': active === 'account'}" (click)="active='account'" routerLink="/account/user">Your account</button>
+        <button class="btn green-text small-wide-text bg-none" [ngClass]="{'display-none': !isLoggedIn, 'selected': active === 'account'}" (click)="active='account'" routerLink="/account/user">Your account</button>
     </div>
 </div>
