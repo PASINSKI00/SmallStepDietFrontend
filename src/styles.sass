@@ -14,17 +14,24 @@ body
     width: 100%
     padding-top: $height-navbar  
   
-
-
-
-
+button
+    transition: box-shadow 0.5s ease, transform 0.5s ease
+    &:hover
+        box-shadow: 2px 4px 8px $color-black-o04
+        transform: scale(1.03)
 
 
 button, input
     font-family: 'Roboto', sans-serif
+    cursor: pointer
 
 input
     outline: none
+    transition: box-shadow 0.3s ease, transform 0.3s ease
+    border-top-right-radius: 10px
+    border-top-left-radius: 10px
+    &:hover, &:focus
+        transform: scale(1.01)
 
 .btn
     border: none
