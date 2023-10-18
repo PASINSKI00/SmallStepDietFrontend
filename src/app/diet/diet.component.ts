@@ -245,8 +245,8 @@ export class DietComponent implements OnInit {
 
     // Check if user provided bodyinfo
     if(!this.isBodyInfoSet) {
-      alert("You need to provide your body information to continue. You will be redirected.");
-      this.router.navigate(['/account/bodyinfo']);
+      const redirectDetails = new RedirectDetails("Body information missing", "/account/bodyinfo");
+      this.sharedService.emitChange(redirectDetails);
       return;
     }
 
