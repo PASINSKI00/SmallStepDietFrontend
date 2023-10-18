@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { lastValueFrom } from 'rxjs';
 import { BodyInfoService } from './body-info.service';
+import { SharedService } from 'src/app/shared.service';
+import { RedirectDetails } from 'src/app/overlays/redirect/redirect-details';
 
 @Component({
   selector: 'app-body-info',
@@ -13,9 +15,9 @@ export class BodyInfoComponent implements OnInit {
   TDEE: number = 0;
   caloriesGoal: number = 0;
   isLoading: boolean = false;
-  
+  firstTimer: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private bodyInfoService: BodyInfoService) { }
+  constructor(private formBuilder: FormBuilder, private bodyInfoService: BodyInfoService, private sharedService: SharedService) { }
 
   ngOnInit(): void {
     this.getBodyInfo();
@@ -32,24 +34,25 @@ export class BodyInfoComponent implements OnInit {
   });
 
   async getBodyInfo() {
-    const response$ = this.bodyInfoService.getBodyInfo();
-    const lastValue$ = await lastValueFrom(response$);
-
-    let result = JSON.parse(lastValue$.body);
-    
-    this.bodyInfoForm.patchValue({
-      goal: result.goal,
-      gender: result.gender,
-      height: result.height,
-      weight: result.weight,
-      age: result.age,
-      pal: result.pal,
-      additionalCalories: result.additionalCalories
+    await lastValueFrom(this.bodyInfoService.getBodyInfo()).then((response) => {
+      const result = JSON.parse(response.body);
+      this.bodyInfoForm.patchValue({
+        goal: result.goal,
+        gender: result.gender,
+        height: result.height,
+        weight: result.weight,
+        age: result.age,
+        pal: result.pal,
+        additionalCalories: result.additionalCalories
+      });
+      this.BEE = result.bee;
+      this.TDEE = result.tdee;
+      this.caloriesGoal = result.caloriesGoal;
+    }).catch((error) => {
+      if(error.status == 404) {
+        this.firstTimer = true;
+      }
     });
-
-    this.BEE = result.bee;
-    this.TDEE = result.tdee;
-    this.caloriesGoal = result.caloriesGoal;
   }
 
   async onSubmit() {
@@ -58,6 +61,12 @@ export class BodyInfoComponent implements OnInit {
       (response) => {
           this.getBodyInfo();
           this.isLoading = false;
+
+          if(this.firstTimer) {
+            this.firstTimer = false;
+            const redirectDetails = new RedirectDetails("Now that we know Your Calories Goal, You can go ahead and finish Your diet","/diet")
+            this.sharedService.emitChange(redirectDetails);
+          }
       },
       (error) => {
         alert('Error while saving. Please check the values and try again.');
