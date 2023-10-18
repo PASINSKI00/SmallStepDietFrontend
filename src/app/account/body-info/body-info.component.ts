@@ -12,6 +12,7 @@ export class BodyInfoComponent implements OnInit {
   BEE: number = 0;
   TDEE: number = 0;
   caloriesGoal: number = 0;
+  isLoading: boolean = false;
   
 
   constructor(private formBuilder: FormBuilder, private bodyInfoService: BodyInfoService) { }
@@ -23,10 +24,10 @@ export class BodyInfoComponent implements OnInit {
   bodyInfoForm = this.formBuilder.group({
     goal: new FormControl('LOSE_WEIGHT', [Validators.required]),
     gender: new FormControl('MALE', [Validators.required]),
-    height: new FormControl('', [Validators.required]),
-    weight: new FormControl('', [Validators.required]),
-    age: new FormControl('', [Validators.required]),
-    pal: new FormControl('', [Validators.required, Validators.min(1.4), Validators.max(2.4)]),
+    height: new FormControl(undefined, [Validators.required]),
+    weight: new FormControl(undefined, [Validators.required]),
+    age: new FormControl(undefined, [Validators.required]),
+    pal: new FormControl<number>(1.4, [Validators.required, Validators.min(1.4), Validators.max(2.5)]),
     additionalCalories: 0
   });
 
@@ -52,13 +53,16 @@ export class BodyInfoComponent implements OnInit {
   }
 
   async onSubmit() {
+    this.isLoading = true;
     this.bodyInfoService.saveBodyInfo(this.bodyInfoForm).subscribe(
       (response) => {
           this.getBodyInfo();
+          this.isLoading = false;
       },
       (error) => {
         alert('Error while saving. Please check the values and try again.');
         console.log(error);
+        this.isLoading = false;
       }
     );
   }
