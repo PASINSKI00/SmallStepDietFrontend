@@ -8,6 +8,7 @@ import { lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { BodyInfoService } from '../account/body-info/body-info.service';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { RedirectDetails } from '../overlays/redirect/redirect-details';
 
 @Component({
   selector: 'app-diet',
@@ -237,8 +238,8 @@ export class DietComponent implements OnInit {
 
     // Check if logged in and save diet if not
     if(!this.sharedService.isLoggedIn()) {
-      alert("You need to be logged in to continue");
-      this.sharedService.emitChange('loginOverlay')
+      const redirectDetails = new RedirectDetails("You need to be logged in to continue", "login");
+      this.sharedService.emitChange(redirectDetails);
       return;
     }
 
