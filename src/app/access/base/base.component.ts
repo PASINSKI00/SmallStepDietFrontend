@@ -13,6 +13,6 @@ export class BaseComponent implements OnInit {
   }
 
   closeAccess(){
-    this._sharedService.emitChange('closeAccess');
+    this._sharedService.emitChange('closeOverlay');
   }
 }

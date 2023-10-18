@@ -16,7 +16,7 @@ export class AppComponent {
 
   constructor(private overlay: Overlay, private _sharedService: SharedService) {
     _sharedService.changeEmitted$.subscribe( text => {
-      if(text == 'closeAccess')
+      if(text == 'closeOverlay')
         this.closeOverlay();
       else if(text == 'login')
         this.login();

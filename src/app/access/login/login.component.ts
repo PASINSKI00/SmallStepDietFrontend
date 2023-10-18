@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
         this.message = this.loginSuccessMessage;
         this.isLoading = false;
         setTimeout(() => {
-          this._sharedService.emitChange('closeAccess');
+          this._sharedService.emitChange('closeOverlay');
         }, 2000);
       },
       (error) => {
