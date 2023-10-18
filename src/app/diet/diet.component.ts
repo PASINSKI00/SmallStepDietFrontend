@@ -238,6 +238,7 @@ export class DietComponent implements OnInit {
     // Check if logged in and save diet if not
     if(!this.sharedService.isLoggedIn()) {
       alert("You need to be logged in to continue");
+      this.sharedService.emitChange('login')
       return;
     }
 
