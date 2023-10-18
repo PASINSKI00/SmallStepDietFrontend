@@ -18,7 +18,7 @@ export class SharedService {
 
   setAuthHeaderValue(base64String: string) {
     this.cookieService.set('authHeaderValue', base64String);
-    this.emitChange(true);
+    this.emitChange(null);
   }
 
   getAuthHeaderValue() {
@@ -43,7 +43,7 @@ export class SharedService {
       return false;
     }
     
-    this.emitChange(false);
+    this.emitChange(null);
     return true;
   }
 
