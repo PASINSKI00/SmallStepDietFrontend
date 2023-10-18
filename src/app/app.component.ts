@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
 import { ComponentPortal } from "@angular/cdk/portal";
 import { LoginComponent } from "./overlays/login/login.component";
 import { SignupComponent } from "./overlays/signup/signup.component";
 import { SharedService } from './shared.service';
 import { Router } from '@angular/router';
+import { RedirectDetails } from './overlays/redirect/redirect-details';
+import { RedirectComponent } from './overlays/redirect/redirect.component';
 
 @Component({
   selector: 'app-root',
@@ -15,16 +17,16 @@ export class AppComponent {
   title = 'frontend';
   overlayRef!: OverlayRef;
 
-  constructor(private overlay: Overlay, private _sharedService: SharedService, private router: Router) {
-    _sharedService.changeEmitted$.subscribe( text => {
-      if(text == 'closeOverlay')
+  constructor(private overlay: Overlay, private _sharedService: SharedService, private router: Router, private injector: Injector) {
+    _sharedService.changeEmitted$.subscribe( change => {
+      if(change == 'closeOverlay')
         this.closeOverlay();
-      else if(text == 'loginOverlay')
+      else if(change == 'loginOverlay')
         this.loginOverlay();
-      else if(text == 'signupOverlay')
+      else if(change == 'signupOverlay')
         this.signupOverlay();
-      else if(text == 'message')
-        alert('message');
+      else if(change instanceof RedirectDetails)
+        this.redirectOverlay(change);
       });
    }
 
@@ -42,12 +44,19 @@ export class AppComponent {
     this.overlayRef.attach(componentPortal);
   }
 
-  // redirectOverlay(message: string, url: string){
-  //   this.closeOverlay();
-  //   this.overlayRef = this.overlay.create();
-  //   const componentPortal = new ComponentPortal();
-  //   this.overlayRef.attach(componentPortal);
-  // }
+  redirectOverlay(details: RedirectDetails){
+    this.closeOverlay();
+    this.overlayRef = this.overlay.create();
+
+    const injectorWithRedirectData = Injector.create({
+      providers: [
+        { provide: RedirectDetails, useValue: details },
+      ],
+      parent: this.injector,
+    });
+    const componentPortal = new ComponentPortal(RedirectComponent, null, injectorWithRedirectData);
+    this.overlayRef.attach(componentPortal);
+  }
 
   closeOverlay(){
     if(this.overlayRef)
