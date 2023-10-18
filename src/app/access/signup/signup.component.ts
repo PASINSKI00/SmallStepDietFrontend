@@ -62,7 +62,7 @@ export class SignupComponent implements OnInit {
         this.message = this.signUpSuccessMessage;
         this.isLoading = false;
         setTimeout(() => {
-          this._sharedService.emitChange('login');
+          this._sharedService.emitChange('loginOverlay');
         }
         , 2000);
       },
@@ -81,7 +81,7 @@ export class SignupComponent implements OnInit {
   }
 
   login() {
-    this._sharedService.emitChange('login');
+    this._sharedService.emitChange('loginOverlay');
   }
 
   private goodInputOrFeedback(): boolean {

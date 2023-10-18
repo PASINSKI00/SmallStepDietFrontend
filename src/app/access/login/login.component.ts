@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
   }
 
   signup() {
-    this._sharedService.emitChange('signup');
+    this._sharedService.emitChange('signupOverlay');
   }
 
   retryLogin() {

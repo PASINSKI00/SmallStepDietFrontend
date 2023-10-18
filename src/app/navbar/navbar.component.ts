@@ -23,7 +23,7 @@ export class NavbarComponent implements OnInit {
   }
 
   access() {
-    this.sharedService.emitChange('login')
+    this.sharedService.emitChange('loginOverlay')
   }
 
   setCorrectActive() {
