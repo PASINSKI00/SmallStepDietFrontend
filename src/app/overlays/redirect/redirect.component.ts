@@ -21,12 +21,16 @@ export class RedirectComponent {
   }
 
   redirect() {
-    if(this.url == 'login')
+    if(this.url == 'login'){
       this.sharedService.emitChange('loginOverlay')
-    else if(this.url == 'signup')
+    }
+    else if(this.url == 'signup') {
       this.sharedService.emitChange('signupOverlay')
-    else
+    }
+    else {
       this.router.navigate([this.url]);
+      this.sharedService.emitChange('closeOverlay');
+    }
   }
 
   close() {
