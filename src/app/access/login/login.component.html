@@ -4,7 +4,7 @@
         <app-spinner *ngIf="isLoading"></app-spinner>
         
         <input [ngClass]="{'red-border': loginForm.get('email')!.invalid && loginForm.controls.email.touched}" 
-            formControlName="email" id="email" placeholder="email" (ngModelChange)="retryLogin()">
+            formControlName="email" id="email" placeholder="email" (ngModelChange)="retryLogin()" (keydown.enter)="login()">
         <input [ngClass]="{'red-border': loginForm.get('password')!.invalid && loginForm.controls.password.touched}" 
             formControlName="password" id="password" type="password" placeholder="password" (ngModelChange)="retryLogin()" 
             (keydown.enter)="login()">
