@@ -230,7 +230,7 @@ export class DietComponent implements OnInit {
     // Check if diet is valid
     for(let i = 0; i < this.diet.length; i++) {
       if(this.diet[i].length == 0) {
-        alert("You can't continue with empty days");
+        alert("At least one of the days is empty");
         return;
       }
     }
