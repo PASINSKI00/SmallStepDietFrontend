@@ -1,5 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../shared.service';
 
 @Component({
@@ -8,7 +7,6 @@ import { SharedService } from '../shared.service';
   styleUrls: ['./navbar.component.sass']
 })
 export class NavbarComponent implements OnInit {
-  @Output() accessEvent = new EventEmitter<string>();
   active: string = '';
   isLoggedIn: boolean = false;
 
@@ -18,15 +16,14 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoggedIn = this.sharedService.isLoggedIn();
-    this.sharedService.changeEmitted$.subscribe(
-      (change) => {
+    this.sharedService.changeEmitted$.subscribe(() => {
         this.isLoggedIn = this.sharedService.isLoggedIn();
       }
     );
   }
 
   access() {
-    this.accessEvent.next('access');
+    this.sharedService.emitChange('login')
   }
 
   setCorrectActive() {

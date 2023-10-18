@@ -25,10 +25,6 @@ export class AppComponent {
       });
    }
 
-  access() {
-    this.login();
-  }
-
   login(){
     this.closeOverlay();
     this.overlayRef = this.overlay.create();
