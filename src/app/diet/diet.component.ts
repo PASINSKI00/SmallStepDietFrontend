@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { BodyInfoService } from '../account/body-info/body-info.service';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { RedirectDetails } from '../overlays/redirect/redirect-details';
+import { AlertDetails } from '../overlays/alert/alert-details';
 
 @Component({
   selector: 'app-diet',
@@ -127,7 +128,8 @@ export class DietComponent implements OnInit {
       this.firstPageNumber--;
       this.lastPageNumber--;
     }).catch(() => {
-      alert("Couldn't load meals. Please refresh the page to try again.");
+      const alertDetails = new AlertDetails("Couldn't load meals. Please refresh the page to try again.")
+      this.sharedService.emitChange(alertDetails);
     });
   }
 
@@ -141,7 +143,8 @@ export class DietComponent implements OnInit {
       this.firstPageNumber++;
       this.lastPageNumber++;
     }).catch(() => {
-      alert("Couldn't load meals. Please refresh the page to try again.");
+      const alertDetails = new AlertDetails("Couldn't load meals. Please refresh the page to try again.")
+      this.sharedService.emitChange(alertDetails);
     });
   }
 
@@ -224,17 +227,19 @@ export class DietComponent implements OnInit {
   async continue() {
     this.sharedService.setActiveDiet(this.diet);
 
-    // Check if diet is empty
-    if(this.diet.length == 0) {
-      alert("You can't continue with an empty diet");
-      return;
-    }
-
     // Check if diet is valid
     for(let i = this.diet.length-1 ; i >= 0 ; i--) {
       if(this.diet[i].length == 0) {
         this.removeDayFromDiet(i);
       }
+    }
+
+    // Check if diet is empty
+    if(this.diet.length == 0) {
+      const alertDetails = new AlertDetails("Diet is empty. Please add meals.");
+      this.sharedService.emitChange(alertDetails);
+      this.addDayToDiet();
+      return;
     }
 
     // Check if logged in and save diet if not
@@ -255,7 +260,8 @@ export class DietComponent implements OnInit {
     if(this.sharedService.getActiveDietId() != -1) {
       await lastValueFrom(this.dietService.updateDiet(this.diet))
         .catch(() => {
-          alert("Diet wasn't updated. Please try again.");
+          const alertDetails = new AlertDetails("Diet wasn't updated. Please try again.");
+          this.sharedService.emitChange(alertDetails);
           return;
         });
     }
@@ -265,7 +271,8 @@ export class DietComponent implements OnInit {
       await lastValueFrom(this.dietService.uploadDiet(this.diet)).then((response) => {
         this.sharedService.setActiveDietId(JSON.parse(response.body));
       }).catch(() => {
-        alert("Diet wasn't created. Please try again.");
+        const alertDetails = new AlertDetails("Diet wasn't created. Please try again.");
+        this.sharedService.emitChange(alertDetails);
         return;
       });
     }
@@ -277,7 +284,8 @@ export class DietComponent implements OnInit {
     lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, 0, this.pageSize*3)).then((array) => {
       this.meals = array;
     }).catch(() => {
-      alert("Couldn't load meals. Please refresh the page to try again.");
+      const alertDetails = new AlertDetails("Couldn't load meals. Please refresh the page to try again.")
+      this.sharedService.emitChange(alertDetails);
     });
   }
 
