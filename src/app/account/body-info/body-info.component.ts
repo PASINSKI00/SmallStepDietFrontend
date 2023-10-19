@@ -4,6 +4,7 @@ import { lastValueFrom } from 'rxjs';
 import { BodyInfoService } from './body-info.service';
 import { SharedService } from 'src/app/shared.service';
 import { RedirectDetails } from 'src/app/overlays/redirect/redirect-details';
+import { AlertDetails } from 'src/app/overlays/alert/alert-details';
 
 @Component({
   selector: 'app-body-info',
@@ -69,8 +70,8 @@ export class BodyInfoComponent implements OnInit {
           }
       },
       (error) => {
-        alert('Error while saving. Please check the values and try again.');
-        console.log(error);
+        const alertDetails = new AlertDetails("Error while saving. Please check the values and try again.");
+        this.sharedService.emitChange(alertDetails);
         this.isLoading = false;
       }
     );

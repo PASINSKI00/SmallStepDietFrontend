@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FinalDiet } from '../../diet/final-diet/final-diet';
 import { DietService } from '../../diet/diet.service';
 import { lastValueFrom } from 'rxjs';
+import { AlertDetails } from 'src/app/overlays/alert/alert-details';
+import { SharedService } from 'src/app/shared.service';
 
 @Component({
   selector: 'app-diet-history',
@@ -11,16 +13,18 @@ import { lastValueFrom } from 'rxjs';
 export class DietHistoryComponent implements OnInit {
   diets: FinalDiet[] = null!;
 
-  constructor(private dietService: DietService) {
+  constructor(private dietService: DietService, private sharedService: SharedService) {
     this.dietService.getMyDiets().subscribe((response) => {
       if(response.status != 200) {
-        alert("Something went wrong");
+        const alertDetails = new AlertDetails("You have no diets yet. Refer to the diet page to create one.");
+        this.sharedService.emitChange(alertDetails);
         return;
       }
 
       this.diets = JSON.parse(response.body);
       if(this.diets.length == 0) {
-        alert("You have no diets yet. Refer to the diet page to create one.");
+        const alertDetails = new AlertDetails("You have no diets yet. Refer to the diet page to create one.");
+        this.sharedService.emitChange(alertDetails);
       }
     });
   }
@@ -48,10 +52,9 @@ export class DietHistoryComponent implements OnInit {
   }
 
   reCalculateDiet(idDiet: number) {
-    lastValueFrom(this.dietService.reCalculateDiet(idDiet)).then(() => {
-      alert("Success");
-    }).catch(() => {
-      alert("Something went wrong");
+    lastValueFrom(this.dietService.reCalculateDiet(idDiet)).catch(() => {
+      const alertDetails = new AlertDetails("Something went wrong");
+      this.sharedService.emitChange(alertDetails);
     });
   }
 }

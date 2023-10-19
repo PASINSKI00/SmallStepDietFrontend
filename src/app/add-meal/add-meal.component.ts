@@ -8,6 +8,8 @@ import { ImageService } from '../image.service';
 import { lastValueFrom } from 'rxjs';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { Router } from '@angular/router';
+import { AlertDetails } from '../overlays/alert/alert-details';
+import { SharedService } from '../shared.service';
 
 @Component({
   selector: 'app-add-meal',
@@ -42,7 +44,8 @@ export class AddMealComponent implements OnInit {
     return this.addMealForm.get('categoriesArray') as FormArray;
   }
   
-  constructor(private formBuilder: FormBuilder, private dietService: DietService, private imageService: ImageService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private dietService: DietService, private imageService: ImageService, 
+    private router: Router, private sharedService: SharedService) { }
   
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;
@@ -117,12 +120,14 @@ export class AddMealComponent implements OnInit {
   
     const uploadedMealId: number | undefined = await this.uploadMeal(finalForm);
     if (uploadedMealId == undefined) {
-      alert("Meal wasn't created :( Please try again");
+      const alertDetails = new AlertDetails("Meal wasn't created. Please try again");
+      this.sharedService.emitChange(alertDetails);
       return;
     }
 
     if(!this.checkMealImage()) {
-      alert("Meal without picture was successfully created! You'll be redirected");
+      const alertDetails = new AlertDetails("Success");
+      this.sharedService.emitChange(alertDetails);
       setTimeout(() => {
         this.router.navigate(['/diet']);
       }, 3000);
@@ -131,7 +136,8 @@ export class AddMealComponent implements OnInit {
 
     const imageName: string | undefined = await this.uploadMealImage(uploadedMealId);
     if (imageName == undefined) {
-      alert("There were issues with uploading the image :( Please try again");
+      const alertDetails = new AlertDetails("There were issues with uploading the image :( Please try again");
+      this.sharedService.emitChange(alertDetails);
       this.dietService.deleteMeal(uploadedMealId).subscribe((response) => {
         if (response.status != 200)
           console.error("Meal wasn't deleted :(");
@@ -140,7 +146,8 @@ export class AddMealComponent implements OnInit {
       return;
     }
 
-    alert("Meal was successfully created! You'll be redirected");
+    const alertDetails = new AlertDetails("Success");
+    this.sharedService.emitChange(alertDetails);
     setTimeout(() => {
       this.router.navigate(['/diet']);
     }, 3000);

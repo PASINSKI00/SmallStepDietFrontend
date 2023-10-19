@@ -4,6 +4,8 @@ import { Meal } from 'src/app/diet/meal';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder } from '@angular/forms';
 import { ReviewService } from 'src/app/diet/review.service';
+import { AlertDetails } from 'src/app/overlays/alert/alert-details';
+import { SharedService } from 'src/app/shared.service';
 
 @Component({
   selector: 'app-review',
@@ -22,7 +24,8 @@ export class ReviewComponent implements OnInit {
     comment: ''
   });
 
-  constructor(private dietService: DietService, private formBuilder: FormBuilder, private reviewService: ReviewService) { }
+  constructor(private dietService: DietService, private formBuilder: FormBuilder, private reviewService: ReviewService, 
+    private sharedService: SharedService) { }
 
   ngOnInit(): void {
     this.getMeals(); 
@@ -50,7 +53,8 @@ export class ReviewComponent implements OnInit {
 
     this.reviewService.reviewMeal(this.reviewForm).subscribe(response => {
       if(response.status != 200) {
-        alert("Something went wrong");
+        const alertDetails = new AlertDetails("Something went wrong");
+        this.sharedService.emitChange(alertDetails);
         return;
       }
     });
@@ -62,7 +66,8 @@ export class ReviewComponent implements OnInit {
 
   private isReviewFormFine(form: any) : boolean {
     if(form.value.rating < 0 || form.value.rating > 10) {
-      alert("You must give a rating that's between 0 and 10");
+      const alertDetails = new AlertDetails("You must give a rating that's between 0 and 10");
+      this.sharedService.emitChange(alertDetails);
       return false;
     }
 

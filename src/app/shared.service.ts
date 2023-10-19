@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { Meal } from './diet/meal';
+import { AlertDetails } from './overlays/alert/alert-details';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,8 @@ export class SharedService {
     localStorage.getItem('activeDiet') ? localStorage.removeItem('activeDiet') : null;
 
     if( this.cookieService.check('authHeaderValue') || this.cookieService.check('activeDietId') || localStorage.getItem('activeDiet')) {
-      alert('Something went wrong with the logout. Please try again.');
+      const alertDetails = new AlertDetails("Something went wrong with the logout. Please try again.");
+      this.emitChange(alertDetails);
       return false;
     }
     

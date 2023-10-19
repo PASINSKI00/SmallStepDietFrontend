@@ -6,6 +6,7 @@ import { SharedService } from 'src/app/shared.service';
 import { FinalDiet } from './final-diet';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
+import { AlertDetails } from 'src/app/overlays/alert/alert-details';
 
 @Component({
   selector: 'app-final-diet',
@@ -32,7 +33,8 @@ export class FinalDietComponent implements OnInit {
     .then((response) => {
       this.diet = JSON.parse(response.body);
     }).catch(() => {
-      alert("Something went wrong");
+      const alertDetails = new AlertDetails("Something went wrong");
+      this.sharedService.emitChange(alertDetails);
     });
   }
 
@@ -49,7 +51,8 @@ export class FinalDietComponent implements OnInit {
     let isDataValid: boolean = true;
     this.diet.finalDays.forEach(day => {
       if(this.sumDayPercentage(day) != 100) {
-        alert("Meal percentages in a day need to sum up to 100%!");
+        const alertDetails = new AlertDetails("Meal percentages in a day need to sum up to 100%!");
+        this.sharedService.emitChange(alertDetails);
         isDataValid = false;
       }
     });
@@ -62,7 +65,8 @@ export class FinalDietComponent implements OnInit {
     const lastValue$ = await lastValueFrom(reponse$);
 
     if(lastValue$.status != 200) {
-      alert("Something went wrong");
+      const alertDetails = new AlertDetails("Something went wrong");
+      this.sharedService.emitChange(alertDetails);
       return;
     }
     
@@ -85,8 +89,8 @@ export class FinalDietComponent implements OnInit {
       this.applicableForResetStates = [];
       this.diet.finalDays.forEach(day => { this.applicableForResetStates.push(day.applicableForReset); });
     }, (error: any) => {
-      alert("Day reset failed. Please try again later.");
-      console.log(error);
+      const alertDetails = new AlertDetails("Day reset failed. Please try again later.");
+      this.sharedService.emitChange(alertDetails);
     });
   }
 }

@@ -7,6 +7,8 @@ import { ActivatedRoute } from '@angular/router';
 // @ts-ignore
 import * as html2pdf from 'html2pdf.js';
 import { DatePipe } from '@angular/common';
+import { AlertDetails } from 'src/app/overlays/alert/alert-details';
+import { SharedService } from 'src/app/shared.service';
 
 @Component({
   selector: 'app-groceries',
@@ -20,7 +22,8 @@ export class GroceriesComponent implements OnInit {
   elementesPerColumn: number = 0;
   cameFromDietHistory: boolean = false;
 
-  constructor(private dietService: DietService, private elRef: ElementRef, private route: ActivatedRoute, private datePipe: DatePipe) {
+  constructor(private dietService: DietService, private elRef: ElementRef, private route: ActivatedRoute, 
+    private datePipe: DatePipe, private sharedService: SharedService) {
     this.route.params.subscribe( params => 
       {
         this.getGroceries(params['id']);       
@@ -40,8 +43,8 @@ export class GroceriesComponent implements OnInit {
       this.cameFromDietHistory = false;
     }
     const lastValue$ = await lastValueFrom(observer$).catch(error => {
-      alert("Something went wrong");
-      console.log(error);
+      const alertDetails = new AlertDetails("Something went wrong");
+      this.sharedService.emitChange(alertDetails);
     });
 
     if(lastValue$ == undefined) {
