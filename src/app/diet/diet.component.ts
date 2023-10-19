@@ -119,9 +119,9 @@ export class DietComponent implements OnInit {
       return;
 
     lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.firstPageNumber-1, this.pageSize)).then((array) => {
-      if(array.length == 0)
+      if(array.length == 0){
         return;
-
+      }
       this.meals.unshift(...array);
       this.meals.splice(this.meals.length - array.length, array.length);
       this.firstPageNumber--;
@@ -147,7 +147,6 @@ export class DietComponent implements OnInit {
 
   addDayToDiet() {
     if(this.maxDayIndex == 6) {
-      alert("You can't add more than 7 days to a diet");
       return;
     }
     
@@ -158,7 +157,6 @@ export class DietComponent implements OnInit {
 
   addMealToDiet(meal: Meal) {
     if(this.diet[this.chosenDayIndex].length == 8) {
-      alert("You can't add more than 8 meals to one day");
       return;
     }
 
@@ -177,8 +175,12 @@ export class DietComponent implements OnInit {
     }
   }
 
-  removeDayFromDiet() {
-    this.diet.splice(this.chosenDayIndex, 1);
+  removeDayFromDiet(i?: number) {
+    if(i == undefined) {
+      i = this.chosenDayIndex;
+    }
+
+    this.diet.splice(i, 1);
     this.maxDayIndex--;
     this.chosenDayIndex = this.maxDayIndex;
   }
@@ -229,10 +231,9 @@ export class DietComponent implements OnInit {
     }
 
     // Check if diet is valid
-    for(let i = 0; i < this.diet.length; i++) {
+    for(let i = this.diet.length-1 ; i >= 0 ; i--) {
       if(this.diet[i].length == 0) {
-        alert("At least one of the days is empty");
-        return;
+        this.removeDayFromDiet(i);
       }
     }
 
@@ -252,26 +253,21 @@ export class DietComponent implements OnInit {
 
     // Update diet if active diet
     if(this.sharedService.getActiveDietId() != -1) {
-      const response$ = this.dietService.updateDiet(this.diet);
-      const lastValue$ = await lastValueFrom(response$);
-
-      if(lastValue$.status != 200) {
-        alert("Diet wasn't updated. Please try again.");
-        return;
-      }
+      await lastValueFrom(this.dietService.updateDiet(this.diet))
+        .catch(() => {
+          alert("Diet wasn't updated. Please try again.");
+          return;
+        });
     }
 
     // Create diet if no active diet
     if(this.sharedService.getActiveDietId() == -1) {
-      const response$ = this.dietService.uploadDiet(this.diet);
-      const lastValue$ = await lastValueFrom(response$);
-
-      if(lastValue$.status != 201) {
+      await lastValueFrom(this.dietService.uploadDiet(this.diet)).then((response) => {
+        this.sharedService.setActiveDietId(JSON.parse(response.body));
+      }).catch(() => {
         alert("Diet wasn't created. Please try again.");
         return;
-      }
-
-      this.sharedService.setActiveDietId(JSON.parse(lastValue$.body));
+      });
     }
 
     this.router.navigate(['/diet/final']);
