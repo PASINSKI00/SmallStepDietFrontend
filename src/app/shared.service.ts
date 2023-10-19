@@ -36,9 +36,9 @@ export class SharedService {
   logout() {
     this.cookieService.check('authHeaderValue') ? this.cookieService.delete('authHeaderValue') : null;
     this.cookieService.check('activeDietId') ? this.cookieService.delete('activeDietId') : null;
-    this.cookieService.check('activeDiet') ? this.cookieService.delete('activeDiet') : null;
+    localStorage.getItem('activeDiet') ? localStorage.removeItem('activeDiet') : null;
 
-    if( this.cookieService.check('authHeaderValue') || this.cookieService.check('activeDietId') || this.cookieService.check('activeDiet')) {
+    if( this.cookieService.check('authHeaderValue') || this.cookieService.check('activeDietId') || localStorage.getItem('activeDiet')) {
       alert('Something went wrong with the logout. Please try again.');
       return false;
     }
@@ -56,19 +56,19 @@ export class SharedService {
   }
 
   setActiveDiet(diet: Array<Array<Meal>>) {
-    this.cookieService.set('activeDiet', JSON.stringify(diet));
+    localStorage.setItem('activeDiet', JSON.stringify(diet));
   }
 
   getActiveDiet() {
-    return JSON.parse(this.cookieService.get('activeDiet') ? this.cookieService.get('activeDiet') : '[]');
+    return JSON.parse(localStorage.getItem('activeDiet') ? localStorage.getItem('activeDiet')! : '[]');
   }
 
   checkActiveDiet() {
-    return this.cookieService.check('activeDiet');
+    return localStorage.getItem('activeDiet') ? true : false;
   }
 
   clearActiveDiet() {
-    this.cookieService.delete('activeDiet');
+    localStorage.removeItem('activeDiet');
     this.cookieService.delete('activeDietId');
   }
 }
