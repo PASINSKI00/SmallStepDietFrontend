@@ -45,7 +45,12 @@
                         </div>
                     </div>
 
-                    <div class="ad-box" *ngIf="(i+1) % 15 === 0">
+                    <div *ngIf="i == meals.length-1" class="meal add-meal">
+                        <p>Out of meals?</p>
+                        <button class="btn btn-small-green" routerLink="/addMeal">Add a new one</button>
+                    </div>
+
+                    <div class="ad-box" *ngIf="(i+1) % 15 === 0 || i == meals.length-1">
                         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5062742448636216"
                         crossorigin="anonymous"></script>
                         <ins class="adsbygoogle"
