@@ -29,6 +29,7 @@ import { DatePipe } from '@angular/common';
 import { DietViewComponent } from './account/diet-history/views/diet-view/diet-view.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { RedirectComponent } from './overlays/redirect/redirect.component';
+import { AlertComponent } from './overlays/alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { RedirectComponent } from './overlays/redirect/redirect.component';
     AccountHomeComponent,
     DietViewComponent,
     SpinnerComponent,
-    RedirectComponent
+    RedirectComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
