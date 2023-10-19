@@ -7,6 +7,8 @@ import { SharedService } from './shared.service';
 import { Router } from '@angular/router';
 import { RedirectDetails } from './overlays/redirect/redirect-details';
 import { RedirectComponent } from './overlays/redirect/redirect.component';
+import { AlertDetails } from './overlays/alert/alert-details';
+import { AlertComponent } from './overlays/alert/alert.component';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +29,8 @@ export class AppComponent {
         this.signupOverlay();
       else if(change instanceof RedirectDetails)
         this.redirectOverlay(change);
+      else if(change instanceof AlertDetails)
+        this.alertOverlay(change);
       });
    }
 
@@ -47,7 +51,6 @@ export class AppComponent {
   redirectOverlay(details: RedirectDetails){
     this.closeOverlay();
     this.overlayRef = this.overlay.create();
-
     const injectorWithRedirectData = Injector.create({
       providers: [
         { provide: RedirectDetails, useValue: details },
@@ -55,6 +58,19 @@ export class AppComponent {
       parent: this.injector,
     });
     const componentPortal = new ComponentPortal(RedirectComponent, null, injectorWithRedirectData);
+    this.overlayRef.attach(componentPortal);
+  }
+
+  alertOverlay(details: AlertDetails){
+    this.closeOverlay();
+    this.overlayRef = this.overlay.create();
+    const injectorWithAlertData = Injector.create({
+      providers: [
+        { provide: AlertDetails, useValue: details },
+      ],
+      parent: this.injector,
+    });
+    const componentPortal = new ComponentPortal(AlertComponent, null, injectorWithAlertData);
     this.overlayRef.attach(componentPortal);
   }
 
