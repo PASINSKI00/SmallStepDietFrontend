@@ -13,19 +13,21 @@ import { SharedService } from 'src/app/shared.service';
 export class DietHistoryComponent implements OnInit {
   diets: FinalDiet[] = null!;
 
-  constructor(private dietService: DietService, private sharedService: SharedService) {
-    this.dietService.getMyDiets().subscribe((response) => {
-      if(response.status != 200) {
-        const alertDetails = new AlertDetails("You have no diets yet. Refer to the diet page to create one.");
-        this.sharedService.emitChange(alertDetails);
-        return;
-      }
+  isLoading: boolean = false;
 
+  constructor(private dietService: DietService, private sharedService: SharedService) {
+    this.isLoading = true;
+    lastValueFrom(this.dietService.getMyDiets()).then((response) => {
       this.diets = JSON.parse(response.body);
       if(this.diets.length == 0) {
         const alertDetails = new AlertDetails("You have no diets yet. Refer to the diet page to create one.");
         this.sharedService.emitChange(alertDetails);
       }
+      this.isLoading = false;
+    }).catch(() => {
+      const alertDetails = new AlertDetails("Something went wrong. Please try again.");
+      this.sharedService.emitChange(alertDetails);
+      this.isLoading = false;
     });
   }
 
