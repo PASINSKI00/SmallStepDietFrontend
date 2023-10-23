@@ -27,6 +27,8 @@ export class AddMealComponent implements OnInit {
   imageChangedEvent: any = '';
   croppedImage: any = '';
 
+  isUploading: boolean = false;
+
   addMealForm = this.formBuilder.group({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     recipe: new FormControl('', [Validators.required, Validators.minLength(10)]),
@@ -109,6 +111,7 @@ export class AddMealComponent implements OnInit {
   }  
 
   async upload() {
+    this.isUploading = true;
     let finalForm = this.formBuilder.group({
       name: new FormControl(this.addMealForm.value.name!, [Validators.required]),
       recipe: new FormControl(this.addMealForm.value.recipe!, [Validators.required]),
@@ -120,8 +123,7 @@ export class AddMealComponent implements OnInit {
   
     const uploadedMealId: number | undefined = await this.uploadMeal(finalForm);
     if (uploadedMealId == undefined) {
-      const alertDetails = new AlertDetails("Meal wasn't created. Please try again");
-      this.sharedService.emitChange(alertDetails);
+      this.isUploading = false;
       return;
     }
 
@@ -131,6 +133,7 @@ export class AddMealComponent implements OnInit {
       setTimeout(() => {
         this.router.navigate(['/diet']);
       }, 3000);
+      this.isUploading = false;
       return;
     }
 
@@ -142,7 +145,7 @@ export class AddMealComponent implements OnInit {
         if (response.status != 200)
           console.error("Meal wasn't deleted :(");
       });
-
+      this.isUploading = false;
       return;
     }
 
@@ -151,6 +154,7 @@ export class AddMealComponent implements OnInit {
     setTimeout(() => {
       this.router.navigate(['/diet']);
     }, 3000);
+    this.isUploading = false;
   }
 
   private checkMealImage(): boolean {
@@ -163,13 +167,12 @@ export class AddMealComponent implements OnInit {
   private async uploadMeal(finalForm: FormGroup) : Promise<number | undefined> {
     let idMeal: number | undefined = undefined;
 
-    const response$ = this.dietService.addMeal(finalForm);
-    const lastValue$ = await lastValueFrom(response$);
-
-    if (lastValue$.status != 201)
-      return;
-
-    idMeal = lastValue$.body;
+    await lastValueFrom(this.dietService.addMeal(finalForm)).then((response) => {
+      idMeal = response.body
+    }).catch(() => {
+      const alertDetails = new AlertDetails("Meal wasn't created. Please try again");
+      this.sharedService.emitChange(alertDetails);
+    });
 
     return idMeal;
   }
