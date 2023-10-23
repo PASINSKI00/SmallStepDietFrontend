@@ -86,10 +86,6 @@ export class FinalDietComponent implements OnInit {
     this.isDownloading = false;
   }
 
-  continue(){
-    this.router.navigate(['/diet/final/groceries']);
-  }
-
   async resetDay(idDay: number, dayIndex: number) {
     this.isResetting[dayIndex] = true;
     await lastValueFrom(this.dietService.resetDay(this.diet.idDiet, idDay)).then(() => {
