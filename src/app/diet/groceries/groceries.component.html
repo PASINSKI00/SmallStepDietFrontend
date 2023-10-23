@@ -5,14 +5,18 @@
         </div>
 
         <div id="ingredients-box">
-            <div class="ingredients" *ngFor="let item of [].constructor(numOfColumns); let i = index">
-                    <div class="ingredient" *ngFor="let ingredient of ingredients[i]">
-                        <div class="ingredient-info">
-                            <p class="super-small-wide-text">{{ingredient.name}}</p>
-                            <p class="weight super-small-wide-text">{{ingredient.weight}} g</p>
+            <app-spinner *ngIf="isLoading"></app-spinner>
+
+            <ng-container *ngIf="!isLoading">
+                <div class="ingredients" *ngFor="let item of [].constructor(numOfColumns); let i = index">
+                        <div class="ingredient" *ngFor="let ingredient of ingredients[i]">
+                            <div class="ingredient-info">
+                                <p class="super-small-wide-text">{{ingredient.name}}</p>
+                                <p class="weight super-small-wide-text">{{ingredient.weight}} g</p>
+                            </div>
                         </div>
-                    </div>
-            </div>
+                </div>
+            </ng-container>
         </div>
     </div>
 

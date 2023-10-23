@@ -22,6 +22,8 @@ export class GroceriesComponent implements OnInit {
   elementesPerColumn: number = 0;
   cameFromDietHistory: boolean = false;
 
+  isLoading: boolean = false;
+
   constructor(private dietService: DietService, private elRef: ElementRef, private route: ActivatedRoute, 
     private datePipe: DatePipe, private sharedService: SharedService) {
     this.route.params.subscribe( params => 
@@ -34,6 +36,7 @@ export class GroceriesComponent implements OnInit {
   ngOnInit(): void {}
 
   async getGroceries(id?: number) {
+    this.isLoading = true;
     let observer$;
     if(id) {
       observer$ = this.dietService.getGroceriesById(id);
@@ -48,6 +51,7 @@ export class GroceriesComponent implements OnInit {
     });
 
     if(lastValue$ == undefined) {
+      this.isLoading = false;
       return;
     }
 
@@ -65,6 +69,8 @@ export class GroceriesComponent implements OnInit {
     for(let i = 0; i < this.numOfColumns; i++) {
       this.ingredients.push(allIngredients.slice(i * this.elementesPerColumn, (i + 1) * this.elementesPerColumn));
     }
+
+    this.isLoading = false;
   }
 
   async downloadPdf() {
