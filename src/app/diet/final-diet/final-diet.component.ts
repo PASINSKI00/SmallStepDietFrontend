@@ -4,7 +4,6 @@ import { DietService } from '../diet.service';
 import { FinalDay } from './final-day';
 import { SharedService } from 'src/app/shared.service';
 import { FinalDiet } from './final-diet';
-import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { AlertDetails } from 'src/app/overlays/alert/alert-details';
 
@@ -23,7 +22,7 @@ export class FinalDietComponent implements OnInit {
   isDownloading: boolean = false;
   isResetting: boolean[] = [];
 
-  constructor(private dietService: DietService, private sharedService: SharedService, private router: Router) { 
+  constructor(private dietService: DietService, private sharedService: SharedService) { 
   }
   
   ngOnInit() {
