@@ -6,6 +6,7 @@ import { FormBuilder } from '@angular/forms';
 import { ReviewService } from 'src/app/diet/review.service';
 import { AlertDetails } from 'src/app/overlays/alert/alert-details';
 import { SharedService } from 'src/app/shared.service';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-review',
@@ -17,6 +18,8 @@ export class ReviewComponent implements OnInit {
   mealForReview: Meal|undefined = undefined;
   reviewing: boolean = false;
   returnIcon = faAngleLeft;
+
+  isLoading: boolean = false;
   
   reviewForm = this.formBuilder.group({
     idMeal: 0,
@@ -27,17 +30,26 @@ export class ReviewComponent implements OnInit {
   constructor(private dietService: DietService, private formBuilder: FormBuilder, private reviewService: ReviewService, 
     private sharedService: SharedService) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.getMeals(); 
   }
-
-  getMeals() {
-    this.dietService.getUnreviewedMealsFromMyDiets().subscribe(response => {
+ 
+  async getMeals() {
+    this.isLoading = true;
+    await lastValueFrom(this.dietService.getUnreviewedMealsFromMyDiets()).then((response) => {
       let mealsJSON: Array<any> = JSON.parse(response.body);
       mealsJSON.forEach((mealJSON: any) => {
         this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed), mealJSON));
       });
+      if(this.meals.length == 0){
+        const alertDetails = new AlertDetails("You don't have any unreviewed used meals");
+        this.sharedService.emitChange(alertDetails);
+      }
+    }).catch(() => {
+      const alertDetails = new AlertDetails("Something went wrong. Please try again.");
+      this.sharedService.emitChange(alertDetails);
     });
+    this.isLoading = false;
   }
 
   review(meal: Meal) {

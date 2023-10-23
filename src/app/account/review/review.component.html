@@ -1,18 +1,22 @@
 <div id="meals" [ngClass]="{'display-none': reviewing}">
-    <div *ngFor="let meal of meals" class="meal">
-        <img src="{{meal.imageUrl}}" alt="meal image" />
-        <div class="meal-info">
-            <span>
-                <p class="meal-name super-small-wide-text">{{meal.name}}</p>
-                <div class="ingredients-names">
-                    <p class="super-super-small-wide-text">
-                        {{meal.getIngredientsNames()}}
-                    </p>
-                </div>
-            </span>
-            <button class="btn btn-small-green" (click)="review(meal)">review</button>
+    <app-spinner class="spinner" *ngIf="isLoading"></app-spinner>
+
+    <ng-container *ngIf="!isLoading">
+        <div *ngFor="let meal of meals" class="meal">
+            <img src="{{meal.imageUrl}}" alt="meal image" />
+            <div class="meal-info">
+                <span>
+                    <p class="meal-name super-small-wide-text">{{meal.name}}</p>
+                    <div class="ingredients-names">
+                        <p class="super-super-small-wide-text">
+                            {{meal.getIngredientsNames()}}
+                        </p>
+                    </div>
+                </span>
+                <button class="btn btn-small-green" (click)="review(meal)">review</button>
+            </div>
         </div>
-    </div>
+    </ng-container> 
 </div>
 
 <div id="review" [formGroup]="reviewForm" [ngClass]="{'display-none': !reviewing}">

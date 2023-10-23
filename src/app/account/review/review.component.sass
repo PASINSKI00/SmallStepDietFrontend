@@ -5,22 +5,23 @@
     width: calc(100% - 100px)
     height: 100%
     
+.spinner
+    height: 200px
+    display: grid
+    place-items: center
+
 #meals
-    display: flex
-    flex-direction: row
-    justify-content: space-around
-    width: 100%
-    height: calc(100% - 50px)
-    flex-wrap: wrap
+    padding: 20px
+    display: grid
+    place-items: center
+    grid-template-columns: repeat(3, 1fr)
+    gap: 20px
     overflow-y: scroll
 
 #meals .meal
-    width: 32%
-    margin: 10px 0
     border-radius: 20px
     overflow: hidden
-    box-shadow: 0 0 5px 0 $color-black-o07
-    height: fit-content
+    box-shadow: 4px 4px 15px 0px $color-black-o04
     cursor: pointer
 
 #meals .meal .meal-info
