@@ -8,8 +8,11 @@
 
             <div class="line-vr"></div>
 
-            <input id="search-bar" formControlName="nameContains" class="small-wide-text" placeholder="Meal name..." (keydown.enter)="searchClicked()"/>
-            <button id="search-button" class="btn btn-small-green" [ngClass]="{'display-none' : this.formUpdated === false}" (click)="searchClicked()">Search</button>
+            <input id="search-bar" formControlName="nameContains" class="small-wide-text" placeholder="Meal name..." 
+                (keydown.enter)="searchClicked()"/>
+            <button *ngIf="!isSearching" id="search-button" class="btn btn-small-green" [ngClass]="{'display-none' : this.formUpdated === false}" 
+                (click)="searchClicked()">Search</button>
+            <app-spinner *ngIf="isSearching" id="search-button"></app-spinner>
         </div>
 
         <div id="meals" [ngClass]="{'display-none' : singleMealVisible === true}">
@@ -28,7 +31,12 @@
             </div>
 
             <div style="opacity: 0; width: 100%; height: 5px" #infinityScrollStart></div>
+
             <div id="meals-box">
+                <div *ngIf="isLoadingTop || isLoading" class="meal centered-meal">
+                    <app-spinner></app-spinner>
+                </div>
+
                 <ng-container *ngFor="let meal of meals; let i = index">
                     <div class="meal" (click)="showSingleMeal(meal)">
                         <img src="{{meal.imageUrl}}" alt="meal image" />
@@ -45,12 +53,7 @@
                         </div>
                     </div>
 
-                    <div *ngIf="i == meals.length-1" class="meal add-meal">
-                        <p>Out of meals?</p>
-                        <button class="btn btn-small-green" routerLink="/addMeal">Add a new one</button>
-                    </div>
-
-                    <div class="ad-box" *ngIf="(i+1) % 15 === 0 || i == meals.length-1">
+                    <div class="ad-box" *ngIf="(i+1) % 30 === 0">
                         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5062742448636216"
                         crossorigin="anonymous"></script>
                         <ins class="adsbygoogle"
@@ -64,7 +67,17 @@
                         </script>
                     </div>
                 </ng-container>
+
+                <div *ngIf="isLoadingBottom" class="meal centered-meal">
+                    <app-spinner></app-spinner>
+                </div>
+
+                <div *ngIf="noMoreMeals" class="meal add-meal">
+                    <p>Out of meals?</p>
+                    <button class="btn btn-small-green" routerLink="/addMeal">Add a new one</button>
+                </div>
             </div>
+
             <div style="opacity: 0; width: 100%; margin-bottom: 10px; height: 5px;" #infinityScrollEnd></div>
         </div>
 
@@ -74,7 +87,9 @@
                 <p class="small-wide-text">return</p>
             </div>
 
-            <div id="single-meal">
+            <app-spinner *ngIf="isSingleMealLoading"></app-spinner>
+
+            <div *ngIf="!isSingleMealLoading" id="single-meal">
                 <img src="{{singleMeal.imageUrl}}" alt="meal image" />
 
                 <div id="single-meal-info">
@@ -144,7 +159,8 @@
         </div>
 
         <div id="button-box">
-            <button class="btn btn-primary-green" (click)="continue()">Continue</button>
+            <button *ngIf="!isUploading" class="btn btn-primary-green" (click)="continue()">Continue</button>
+            <app-spinner *ngIf="isUploading"></app-spinner>
         </div>
     </div>
 </div>

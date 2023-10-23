@@ -50,6 +50,14 @@ export class DietComponent implements OnInit {
   lastPageNumber: number = 2;
   pageSize: number = 15;
 
+  noMoreMeals: boolean = false;
+  isLoading: boolean = false;
+  isLoadingTop: boolean = false;
+  isLoadingBottom: boolean = false;
+  isUploading: boolean  = false;
+  isSearching: boolean = false;
+  isSingleMealLoading: boolean = false;
+
   mealQueryInput = this.formBuilder.group({
     nameContains: '',
     sortBy: '',
@@ -82,6 +90,7 @@ export class DietComponent implements OnInit {
 
     this.mealQueryInput.valueChanges.subscribe(() => {
       this.formUpdated = true;
+      this.noMoreMeals = false;
     });
   }
 
@@ -115,11 +124,13 @@ export class DietComponent implements OnInit {
     this.observerEnd.observe(this.infinityScrollEnd.nativeElement);
   }
 
-  appendMealsAtTheStart() {
+  async appendMealsAtTheStart() {
     if(this.firstPageNumber == 0)
       return;
-
-    lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.firstPageNumber-1, this.pageSize)).then((array) => {
+  
+    console.log("Appending meals at the start");
+    this.isLoadingTop = true;
+    await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.firstPageNumber-1, this.pageSize)).then((array) => {
       if(array.length == 0){
         return;
       }
@@ -131,20 +142,27 @@ export class DietComponent implements OnInit {
       const alertDetails = new AlertDetails("Couldn't load meals. Please refresh the page to try again.")
       this.sharedService.emitChange(alertDetails);
     });
+    this.isLoadingTop = false;
   }
 
   appendMealsAtTheBack() {
+    console.log("Appending meals at the back");
+    this.isLoadingBottom = true;
     lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.lastPageNumber+1, this.pageSize)).then((array) => {
-      if(array.length == 0)
+      this.isLoadingBottom = false;
+      if(array.length == 0){
+        this.noMoreMeals = true;
         return;
+      }
 
       this.meals.push(...array);
       this.meals.splice(0, array.length);
       this.firstPageNumber++;
       this.lastPageNumber++;
     }).catch(() => {
-      const alertDetails = new AlertDetails("Couldn't load meals. Please refresh the page to try again.")
+      const alertDetails = new AlertDetails("Something went wrong when getting new meals")
       this.sharedService.emitChange(alertDetails);
+      this.isLoadingBottom = false;
     });
   }
 
@@ -204,89 +222,97 @@ export class DietComponent implements OnInit {
     }
   }
 
-  searchClicked(){
-    this.getInitialMealsFromBackend();
+  async searchClicked(){
+    this.isSearching = true;
+    await this.getInitialMealsFromBackend();
     this.formUpdated = false;
+    this.isSearching = false;
   }
 
   async showSingleMeal(meal: Meal){
-    const response$ = this.dietService.extendMeal(meal.idMeal);
-    const lastValue$ = await lastValueFrom(response$);
-
-    if(lastValue$.status != 200) 
-      return;
-
-    let value = JSON.parse(lastValue$.body);
-
-    meal.extendMeal(value.recipe, value.timeToPrepare, value.proteinRatio, value.carbsRatio, value.fatsRatio, value.reviews);
-
-    this.singleMeal = meal;
-    this.singleMealVisible = !this.singleMealVisible;
+    this.isSingleMealLoading = true;
+    await lastValueFrom(this.dietService.extendMeal(meal.idMeal)).then((response) => {
+      let value = JSON.parse(response.body);
+      meal.extendMeal(value.recipe, value.timeToPrepare, value.proteinRatio, value.carbsRatio, value.fatsRatio, value.reviews);
+      this.singleMeal = meal;
+      this.singleMealVisible = !this.singleMealVisible;
+    }).catch(() => {
+      const alertDetails = new AlertDetails("Couldn't load meal. Please try again.");
+      this.sharedService.emitChange(alertDetails);
+    });
+    this.isSingleMealLoading = false;
   }
 
   async continue() {
+    let isFailed = false;
+    this.isUploading = true;
     this.sharedService.setActiveDiet(this.diet);
 
-    // Check if diet is valid
     for(let i = this.diet.length-1 ; i >= 0 ; i--) {
       if(this.diet[i].length == 0) {
         this.removeDayFromDiet(i);
       }
     }
 
-    // Check if diet is empty
-    if(this.diet.length == 0) {
+    if(this.diet.length == 0 && !isFailed) {
       const alertDetails = new AlertDetails("Diet is empty. Please add meals.");
       this.sharedService.emitChange(alertDetails);
       this.addDayToDiet();
-      return;
+      isFailed = true
     }
 
-    // Check if logged in and save diet if not
-    if(!this.sharedService.isLoggedIn()) {
+    if(!this.sharedService.isLoggedIn() && !isFailed) {
       const redirectDetails = new RedirectDetails("You need to be logged in to continue", "login");
       this.sharedService.emitChange(redirectDetails);
-      return;
+      isFailed = true
     }
 
-    // Check if user provided bodyinfo
-    if(!this.isBodyInfoSet) {
+    if(!this.isBodyInfoSet && !isFailed) {
       const redirectDetails = new RedirectDetails("Body information missing", "/account/bodyinfo");
       this.sharedService.emitChange(redirectDetails);
-      return;
+      isFailed = true
     }
 
-    // Update diet if active diet
-    if(this.sharedService.getActiveDietId() != -1) {
+    if(this.sharedService.getActiveDietId() != -1 && !isFailed)  {
       await lastValueFrom(this.dietService.updateDiet(this.diet))
-        .catch(() => {
+        .catch((error) => {
+          if (error.status == 404) {
+            this.sharedService.setActiveDietId(-1);
+            return;
+          }
+
           const alertDetails = new AlertDetails("Diet wasn't updated. Please try again.");
           this.sharedService.emitChange(alertDetails);
-          return;
+          isFailed = true;
         });
     }
 
-    // Create diet if no active diet
-    if(this.sharedService.getActiveDietId() == -1) {
+    if(this.sharedService.getActiveDietId() == -1 && !isFailed) {
       await lastValueFrom(this.dietService.uploadDiet(this.diet)).then((response) => {
         this.sharedService.setActiveDietId(JSON.parse(response.body));
       }).catch(() => {
         const alertDetails = new AlertDetails("Diet wasn't created. Please try again.");
         this.sharedService.emitChange(alertDetails);
-        return;
+        isFailed = true;
       });
     }
+
+    this.isUploading = false;
+
+    if(isFailed) return;
 
     this.router.navigate(['/diet/final']);
   }
 
   private async getInitialMealsFromBackend() : Promise<void> {
-    lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, 0, this.pageSize*3)).then((array) => {
+    this.isLoading = true;
+    await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, 0, this.pageSize*3)).then((array) => {
       this.meals = array;
     }).catch(() => {
       const alertDetails = new AlertDetails("Couldn't load meals. Please refresh the page to try again.")
       this.sharedService.emitChange(alertDetails);
     });
+    this.isLoading = false;
   }
 
   private getCategoriesFromBackend() {
