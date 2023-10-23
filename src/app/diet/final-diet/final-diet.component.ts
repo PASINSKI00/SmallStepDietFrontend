@@ -20,6 +20,9 @@ export class FinalDietComponent implements OnInit {
   dailyCaloriesIntake: number = 3000;
   applicableForResetStates: boolean[] = [];
 
+  isDownloading: boolean = false;
+  isResetting: boolean[] = [];
+
   constructor(private dietService: DietService, private sharedService: SharedService, private router: Router) { 
   }
   
@@ -28,14 +31,20 @@ export class FinalDietComponent implements OnInit {
   }
 
   async getDiet(){
+    this.isDownloading = true;
     const activeDietId = this.sharedService.getActiveDietId();
     await lastValueFrom(this.dietService.getDiet(activeDietId))
     .then((response) => {
       this.diet = JSON.parse(response.body);
+      this.isResetting = [];
+      this.diet.finalDays.forEach(day => {
+        this.isResetting.push(false);
+      });
     }).catch(() => {
       const alertDetails = new AlertDetails("Something went wrong");
       this.sharedService.emitChange(alertDetails);
     });
+    this.isDownloading = false;
   }
 
   sumDayPercentage(day: FinalDay) {
@@ -48,6 +57,7 @@ export class FinalDietComponent implements OnInit {
   }
 
   async applyChanges() {
+    this.isDownloading = true;
     let isDataValid: boolean = true;
     this.diet.finalDays.forEach(day => {
       if(this.sumDayPercentage(day) != 100) {
@@ -58,39 +68,42 @@ export class FinalDietComponent implements OnInit {
     });
 
     if(!isDataValid) {
+      this.isDownloading = false;
       return;
     }
 
-    const reponse$ = this.dietService.modifyDiet(this.diet);
-    const lastValue$ = await lastValueFrom(reponse$);
-
-    if(lastValue$.status != 200) {
+    await lastValueFrom(this.dietService.modifyDiet(this.diet)).then(() => {
+      this.applicableForResetStates = [];
+      this.diet.finalDays.forEach(day => {
+        this.applicableForResetStates.push(day.applicableForReset);
+      });
+      this.getDiet();
+    }).catch(() => {
       const alertDetails = new AlertDetails("Something went wrong");
       this.sharedService.emitChange(alertDetails);
-      return;
-    }
-    
-    this.applicableForResetStates = [];
-    this.diet.finalDays.forEach(day => {
-      this.applicableForResetStates.push(day.applicableForReset);
     });
 
-    this.getDiet();
+    this.isDownloading = false;
   }
 
   continue(){
     this.router.navigate(['/diet/final/groceries']);
   }
 
-  resetDay(idDay: number) {
-    this.dietService.resetDay(this.diet.idDiet, idDay).subscribe(response => {
+  async resetDay(idDay: number, dayIndex: number) {
+    this.isResetting[dayIndex] = true;
+    await lastValueFrom(this.dietService.resetDay(this.diet.idDiet, idDay)).then(() => {
       this.getDiet();
       this.diet.finalDays.find(day => day.idFinalDay == idDay)!.applicableForReset = false;
       this.applicableForResetStates = [];
       this.diet.finalDays.forEach(day => { this.applicableForResetStates.push(day.applicableForReset); });
-    }, (error: any) => {
-      const alertDetails = new AlertDetails("Day reset failed. Please try again later.");
+    }).catch(() => {
+      const alertDetails = new AlertDetails("Day reset failed. Please try again.");
       this.sharedService.emitChange(alertDetails);
     });
+  }
+
+  isDayLoading(dayIndex: number){
+    return this.isDownloading || this.isResetting[dayIndex];
   }
 }

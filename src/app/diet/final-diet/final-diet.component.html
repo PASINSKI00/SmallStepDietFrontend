@@ -9,7 +9,9 @@
     <div class="final-day" *ngFor="let finalDay of diet.finalDays; let dayIndex = index">
         <p class="big-text">Day {{dayIndex+1}}</p>
         
-        <span class="final-day-content">
+        <app-spinner *ngIf="isDayLoading(dayIndex)"></app-spinner>
+
+        <span *ngIf="!isDayLoading(dayIndex)" class="final-day-content">
             <div class="day-info">
                 <p class="go-center normal-wide-text">{{this.sumDayPercentage(finalDay)}}%</p>
 
@@ -30,7 +32,8 @@
                 </span>
 
                 <button class="btn btn-primary-green apply-changes-button" *ngIf="finalDay.modified" (click)="applyChanges()">Apply changes</button>
-                <button class="btn btn-primary-red reset-day-button" *ngIf="applicableForResetStates[dayIndex] || finalDay.modified" (click)="resetDay(finalDay.idFinalDay)">Reset day</button>
+                <button class="btn btn-primary-red reset-day-button" *ngIf="applicableForResetStates[dayIndex] || finalDay.modified" 
+                    (click)="resetDay(finalDay.idFinalDay, dayIndex)">Reset day</button>
             </div>
 
             <div class="final-meals">
