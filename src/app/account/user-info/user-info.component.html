@@ -1,5 +1,7 @@
 <div id="secondary-container">
-    <div id="user-info">
+    <app-spinner class="spinner" *ngIf="isLoading" [size]="'100px'"></app-spinner>
+
+    <div *ngIf="!isLoading" id="user-info">
         <div id="user-image-with-cropper">
             <img class="img-circle" src="{{user.imageUrl}}" (click)="hideFileInput=!hideFileInput" />
 

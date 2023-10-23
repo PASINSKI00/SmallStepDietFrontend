@@ -19,12 +19,19 @@ export class UserInfoComponent implements OnInit {
   croppedImage: any = '';
   hideFileInput = true;
 
+  isLoading: boolean = false;
+
   constructor(private sharedService: SharedService, private userService: UserService, private router: Router, private imageService: ImageService) { }
 
-  ngOnInit(): void {
-    this.userService.getMe().subscribe(response => {
+  async ngOnInit() {
+    this.isLoading = true;
+    await lastValueFrom(this.userService.getMe()).then(response => {
       this.user = JSON.parse(response.body);
+    }).catch(() => {
+      const alertDetails = new AlertDetails("Something went wrong. Please try again.")
+      this.sharedService.emitChange(alertDetails);
     });
+    this.isLoading = false;
   }
 
   logout() {
