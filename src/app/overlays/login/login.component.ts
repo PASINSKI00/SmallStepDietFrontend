@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { lastValueFrom } from 'rxjs';
 import { SharedService } from 'src/app/shared.service';
 import { AccessService } from '../access.service';
+import { Buffer } from 'buffer';
 
 @Component({
   selector: 'app-login',
@@ -23,31 +24,34 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', [Validators.required, Validators.pattern('^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$')])
   });
 
-  constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) { }
+  constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder,
+    private sharedService: SharedService) { }
 
   ngOnInit(): void {
   }
 
-  login() {
+  async login() {
     this.isLoading = true;
-    this.accessService.login(this.loginForm).subscribe(
-      (response) => {
-        this.loginFailed = false;
-        this.loginSuccessfull = true;
-        this.message = this.loginSuccessMessage;
-        this.isLoading = false;
-        setTimeout(() => {
-          this._sharedService.emitChange('closeOverlay');
-        }, 2000);
-      },
-      (error) => {
-        this._sharedService.deleteAuthHeaderValue();
-        this.loginFailed = true;
-        this.loginSuccessfull = false;
-        this.message = this.loginFailureMessage;
-        this.isLoading = false;
-      }
-    );
+
+    await lastValueFrom(this.accessService.login(this.loginForm))
+    .then(() => {
+      var buf = Buffer.from(this.loginForm.value.email + ':' + this.loginForm.value.password);
+      this.sharedService.setAuthHeaderValue('Basic ' + buf.toString('base64'));
+      this.loginFailed = false;
+      this.loginSuccessfull = true;
+      this.message = this.loginSuccessMessage;
+      setTimeout(() => {
+        this._sharedService.emitChange('userLoggedIn');
+        this._sharedService.emitChange('closeOverlay');
+      }, 2000);
+    }).catch(() => {
+      this.loginFailed = true;
+      this.loginSuccessfull = false;
+      this.message = this.loginFailureMessage;
+      this._sharedService.emitChange('userNotLoggedIn');
+    });
+
+    this.isLoading = false;
   }
 
   signup() {
