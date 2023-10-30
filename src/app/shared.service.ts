@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, lastValueFrom, timer } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { Meal } from './diet/meal';
 import { AlertDetails } from './overlays/alert/alert-details';
@@ -12,7 +12,8 @@ import { BaseDetails } from './overlays/base/base-details';
   providedIn: 'root'
 })
 export class SharedService {
-  shouldShowOVerlay: boolean = false;
+  shouldShowOverlay: boolean = false;
+  
   private emitChangeSource = new Subject<any>();
   changeEmitted$ = this.emitChangeSource.asObservable();
   overlayRef!: OverlayRef;
@@ -81,25 +82,24 @@ export class SharedService {
 
   closeOverlay(){
     if(this.overlayRef){
-      this.shouldShowOVerlay = false;
+      this.shouldShowOverlay = false;
       setTimeout(() => { this.overlayRef.dispose(); }, 200);
     }
   }
 
-  showOverlay(component: ComponentType<BaseComponent>, details?: BaseDetails, detailsType?: ComponentType<BaseDetails>){
+  async showOverlay(component: ComponentType<BaseComponent>, details?: BaseDetails, detailsType?: ComponentType<BaseDetails>){
     let componentPortal;
     let injectorWithAlertData;
-
-    if(this.overlayRef){
-      this.overlayRef.dispose();
-    }
 
     if(details && !detailsType){
       throw new Error('You need to provide details together with detailsType');
     }
-
-    this.shouldShowOVerlay = true;
-    this.overlayRef = this.overlay.create();
+    
+    if(this.overlayRef){
+      this.shouldShowOverlay = false;
+      await lastValueFrom(timer(200));
+      this.overlayRef.dispose();
+    }
 
     if(details){
       injectorWithAlertData = Injector.create({
@@ -112,7 +112,9 @@ export class SharedService {
     } else {
       componentPortal = new ComponentPortal(component);
     }
-
+    
+    this.shouldShowOverlay = true;
+    this.overlayRef = this.overlay.create();
     this.overlayRef.attach(componentPortal);
   }
 }
