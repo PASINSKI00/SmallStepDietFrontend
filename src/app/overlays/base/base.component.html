@@ -1,5 +1,5 @@
-<div @fadeSlideInOut *ngIf="sharedService.shouldShowOVerlay" id="base-container" (click)="sharedService.closeOverlay()">
-    <div id="form-background" (click)="$event.stopPropagation()">
+<div @fadeSlideInOut *ngIf="sharedService.shouldShowOverlay" id="base-container" (click)="sharedService.closeOverlay()">
+    <div @fadeSlideInOut *ngIf="shouldShowOverlaySubContent" id="form-background" (click)="$event.stopPropagation()">
         <ng-content></ng-content>
     </div>
 </div>

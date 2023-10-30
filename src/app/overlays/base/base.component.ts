@@ -19,9 +19,15 @@ import { SharedService } from 'src/app/shared.service';
   ]
 })
 export class BaseComponent implements OnInit {  
+  shouldShowOverlaySubContent: boolean = false;
+
   constructor(protected sharedService: SharedService) { }
 
   ngOnInit(): void {
+    this.shouldShowOverlaySubContent = false;
+    setTimeout(() => {
+      this.shouldShowOverlaySubContent = true;
+    }, 200)
   }
 
   close(){
