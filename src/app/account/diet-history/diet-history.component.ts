@@ -4,6 +4,7 @@ import { DietService } from '../../diet/diet.service';
 import { lastValueFrom } from 'rxjs';
 import { AlertDetails } from 'src/app/overlays/alert/alert-details';
 import { SharedService } from 'src/app/shared.service';
+import { RedirectDetails } from 'src/app/overlays/redirect/redirect-details';
 
 @Component({
   selector: 'app-diet-history',
@@ -20,8 +21,8 @@ export class DietHistoryComponent implements OnInit {
     lastValueFrom(this.dietService.getMyDiets()).then((response) => {
       this.diets = JSON.parse(response.body);
       if(this.diets.length == 0) {
-        const alertDetails = new AlertDetails("You have no diets yet. Refer to the diet page to create one.");
-        this.sharedService.emitChange(alertDetails);
+        const redirectDetails = new RedirectDetails("You have no diets yet. Refer to the diet page to create one.", "/diet");
+        this.sharedService.emitChange(redirectDetails);
       }
       this.isLoading = false;
     }).catch(() => {
