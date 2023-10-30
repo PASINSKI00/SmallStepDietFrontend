@@ -30,6 +30,7 @@ import { DietViewComponent } from './account/diet-history/views/diet-view/diet-v
 import { SpinnerComponent } from './spinner/spinner.component';
 import { RedirectComponent } from './overlays/redirect/redirect.component';
 import { AlertComponent } from './overlays/alert/alert.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { AlertComponent } from './overlays/alert/alert.component';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    ImageCropperModule
+    ImageCropperModule,
+    BrowserAnimationsModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]
