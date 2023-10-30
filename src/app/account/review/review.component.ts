@@ -42,7 +42,7 @@ export class ReviewComponent implements OnInit {
         this.meals.push(Object.assign(new Meal(mealJSON.id, mealJSON.name, mealJSON.ingredientNames, mealJSON.rating, mealJSON.image, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed), mealJSON));
       });
       if(this.meals.length == 0){
-        const alertDetails = new AlertDetails("You don't have any unreviewed used meals");
+        const alertDetails = new AlertDetails("You don't have any unreviewed meals yet");
         this.sharedService.emitChange(alertDetails);
       }
     }).catch(() => {
