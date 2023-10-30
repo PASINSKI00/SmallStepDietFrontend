@@ -1,18 +1,30 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { SharedService } from 'src/app/shared.service';
 
 @Component({
   selector: 'app-base',
   templateUrl: './base.component.html',
-  styleUrls: ['./base.component.sass']
+  styleUrls: ['./base.component.sass'],
+  animations: [
+    trigger('fadeSlideInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+      transition(':leave', [
+        animate('200ms', style({ opacity: 0, transform: 'translateY(10px)' })),
+      ]),
+    ])
+  ]
 })
-export class BaseComponent implements OnInit {
-  constructor(private _sharedService: SharedService) { }
+export class BaseComponent implements OnInit {  
+  constructor(protected sharedService: SharedService) { }
 
   ngOnInit(): void {
   }
 
-  closeAccess(){
-    this._sharedService.emitChange('closeOverlay');
+  close(){
+    this.sharedService.closeOverlay();
   }
 }
