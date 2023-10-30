@@ -1,7 +1,7 @@
-export class AlertDetails {
-    message: string;
+import { BaseDetails } from "../base/base-details";
 
+export class AlertDetails extends BaseDetails{
     constructor(message: string){
-        this.message = message;
+        super(message);
     }
 }

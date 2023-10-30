@@ -1,9 +1,10 @@
-export class RedirectDetails {
-    message: string;
+import { BaseDetails } from "../base/base-details";
+
+export class RedirectDetails extends BaseDetails {
     url: string;
 
     constructor(message: string, url: string){
-        this.message = message;
+        super(message);
         this.url = url;
     }
 }
