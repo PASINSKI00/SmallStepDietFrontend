@@ -2,14 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { SharedService } from 'src/app/shared.service';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AccessService } from '../access.service';
-import { faL } from '@fortawesome/free-solid-svg-icons';
+import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.sass']
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent extends BaseComponent implements OnInit {
   readonly defaultMessage: string = 'Create a new account';
   readonly signUpSuccessMessage: string = 'Account created! You can Log in now!';
   readonly signUpFailureMessage: string = 'Something went wrong. Please try again.';
@@ -24,7 +24,9 @@ export class SignupComponent implements OnInit {
   passwordsMatch: boolean = false;
   isLoading: boolean = false;
 
-  constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) { }
+  constructor(sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) {
+    super(sharedService);
+  }
 
   passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const password = control.get('password');
@@ -47,22 +49,19 @@ export class SignupComponent implements OnInit {
     repassword: new FormControl('', [Validators.required]),
   }, { validators: this.passwordMatchValidator });
 
-  ngOnInit(): void {
-  }
-
   signup() {
     if (!this.goodInputOrFeedback()) {
       return;
     }
     this.isLoading = true;
     this.accessService.signup(this.signupForm).subscribe(
-      (response) => {
+      () => {
         this.signUpFailed = false;
         this.signUpSuccessfull = true;
         this.message = this.signUpSuccessMessage;
         this.isLoading = false;
         setTimeout(() => {
-          this._sharedService.emitChange('loginOverlay');
+          this.sharedService.emitChange('loginOverlay');
         }
         , 2000);
       },
@@ -81,7 +80,7 @@ export class SignupComponent implements OnInit {
   }
 
   login() {
-    this._sharedService.emitChange('loginOverlay');
+    this.sharedService.emitChange('loginOverlay');
   }
 
   private goodInputOrFeedback(): boolean {

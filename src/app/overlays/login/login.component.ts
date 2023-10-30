@@ -4,13 +4,14 @@ import { lastValueFrom } from 'rxjs';
 import { SharedService } from 'src/app/shared.service';
 import { AccessService } from '../access.service';
 import { Buffer } from 'buffer';
+import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.sass']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent extends BaseComponent implements OnInit {
   readonly defaultMessage: string = 'Sign in to Your Account';
   readonly loginSuccessMessage: string = 'Login successful. Welcome!';
   readonly loginFailureMessage: string = 'Bad email or password. Please try again.';
@@ -24,10 +25,8 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', [Validators.required, Validators.pattern('^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$')])
   });
 
-  constructor(private _sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder,
-    private sharedService: SharedService) { }
-
-  ngOnInit(): void {
+  constructor(private accessService: AccessService, private formBuilder: FormBuilder, sharedService: SharedService) {
+    super(sharedService);
   }
 
   async login() {
@@ -41,21 +40,21 @@ export class LoginComponent implements OnInit {
       this.loginSuccessfull = true;
       this.message = this.loginSuccessMessage;
       setTimeout(() => {
-        this._sharedService.emitChange('userLoggedIn');
-        this._sharedService.emitChange('closeOverlay');
+        this.sharedService.emitChange('userLoggedIn');
+        this.sharedService.emitChange('closeOverlay');
       }, 2000);
     }).catch(() => {
       this.loginFailed = true;
       this.loginSuccessfull = false;
       this.message = this.loginFailureMessage;
-      this._sharedService.emitChange('userNotLoggedIn');
+      this.sharedService.emitChange('userNotLoggedIn');
     });
 
     this.isLoading = false;
   }
 
   signup() {
-    this._sharedService.emitChange('signupOverlay');
+    this.sharedService.emitChange('signupOverlay');
   }
 
   retryLogin() {

@@ -2,22 +2,21 @@ import { Component } from '@angular/core';
 import { RedirectDetails } from './redirect-details';
 import { Router } from '@angular/router';
 import { SharedService } from 'src/app/shared.service';
+import { BaseComponent } from '../base/base.component';
 
 @Component({
   selector: 'app-redirect',
   templateUrl: './redirect.component.html',
   styleUrls: ['./redirect.component.sass']
 })
-export class RedirectComponent {
+export class RedirectComponent extends BaseComponent {
   message: string = '';
   url: string = '';
 
-  constructor(redirectDetails: RedirectDetails, private router: Router, private sharedService: SharedService) {
+  constructor(redirectDetails: RedirectDetails, private router: Router, sharedService: SharedService) {
+    super(sharedService);
     this.message = redirectDetails.message;
     this.url = redirectDetails.url;
-  }
-
-  ngOnInit(): void {
   }
 
   redirect() {
@@ -31,9 +30,5 @@ export class RedirectComponent {
       this.router.navigate([this.url]);
       this.sharedService.emitChange('closeOverlay');
     }
-  }
-
-  close() {
-    this.sharedService.emitChange('closeOverlay');
   }
 }
