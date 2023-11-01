@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DietService } from 'src/app/diet/diet.service';
 import { Meal } from 'src/app/diet/meal';
 import { faAngleLeft } from '@fortawesome/free-solid-svg-icons';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ReviewService } from 'src/app/diet/review.service';
 import { AlertDetails } from 'src/app/overlays/alert/alert-details';
 import { SharedService } from 'src/app/shared.service';
@@ -16,14 +16,14 @@ import { lastValueFrom } from 'rxjs';
 export class ReviewComponent implements OnInit {
   meals: Meal[] = [];
   mealForReview: Meal|undefined = undefined;
-  reviewing: boolean = false;
+  isReviewing: boolean = false;
   returnIcon = faAngleLeft;
 
   isLoading: boolean = false;
   
   reviewForm = this.formBuilder.group({
-    idMeal: 0,
-    rating: -1,
+    idMeal: new FormControl(0,[Validators.required]),
+    rating: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(10)]), 
     comment: ''
   });
 
@@ -53,7 +53,7 @@ export class ReviewComponent implements OnInit {
   }
 
   review(meal: Meal) {
-    this.reviewing = true;
+    this.isReviewing = true;
     this.mealForReview = meal;
   }
 
@@ -71,7 +71,7 @@ export class ReviewComponent implements OnInit {
       }
     });
 
-    this.reviewing = false;
+    this.isReviewing = false;
     this.meals = this.meals.filter(meal => meal.idMeal != this.mealForReview!.idMeal);
     this.mealForReview = undefined;
   }
