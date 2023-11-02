@@ -36,19 +36,20 @@ export class Meal {
         reviews ? this.reviews = reviews : null;
     }
 
-    getIngredientsNames(): string {
-        let ingredientsNamesString: string = "";
-        for (let i=0; i<2; i++) {
-            if(i != 1) {
-                ingredientsNamesString += this.ingredientsNames[i] + ", ";
-            } else {
-                ingredientsNamesString += this.ingredientsNames[i];
-                if(this.ingredientsNames.length > 2) {
-                    ingredientsNamesString += ", ...";
-                }
-            }
-        }
+    getTwoIngredientsNames(): string {
+        return this.ingredientsNames[0]
+            .concat(this.ingredientsNames[1] ? ", " + this.ingredientsNames[1] : "")
+            .concat(this.ingredientsNames[2] ? ", ..." : "");
+    }
 
-        return ingredientsNamesString;
+    getAllIngredientsNames(): string {
+        let names: string = "";
+        this.ingredientsNames.forEach((ingredient, i) => {
+            if(i != 0)
+                names.concat(", " + ingredient);
+            else
+                names = ingredient.toString();
+        })
+        return names;
     }
 }
