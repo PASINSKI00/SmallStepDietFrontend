@@ -10,7 +10,7 @@ import { BodyInfoService } from '../account/body-info/body-info.service';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { RedirectDetails } from '../overlays/redirect/redirect-details';
 import { AlertDetails } from '../overlays/alert/alert-details';
-import { slideFromTop  } from '../animations';
+import { slideFromTop } from '../animations';
 
 @Component({
   selector: 'app-diet',
