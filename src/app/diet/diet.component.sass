@@ -12,6 +12,7 @@
     width: 75%
     height: 100%
     overflow-y: scroll
+    z-index: 3
 
 
 #utility-bar
@@ -25,7 +26,7 @@
     width: 75%
     background-color: $color-white
     box-shadow: 4px 4px 6px $color-black-o07
-    z-index: 2
+    z-index: 4
 
 #show-filter 
     display: flex
@@ -55,6 +56,7 @@
     height: fit-content
     color: $color-white
     padding-bottom: 10px
+    z-index: 3
 
 #sort-box
     min-width: 140px
@@ -279,7 +281,8 @@
 // ---------------------------- SINGLE MEAL  ----------------------------
 #single-meal-container
     max-width: 700px
-    margin: 20px
+    margin: 40px
+    margin-bottom: 101px
     padding: 20px
     display: flex
     flex-direction: column
@@ -289,6 +292,9 @@
     background-color: $color-white
     border-radius: 20px
     box-shadow: 3px 3px 10px $color-black-o04
+    position: relative
+    top: 61px
+    z-index: 1
 
 #single-meal
     display: flex
