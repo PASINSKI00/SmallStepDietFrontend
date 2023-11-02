@@ -153,6 +153,12 @@ input
 .dimmed
     opacity: 0.5
 
+.disabled
+    @extend .dimmed
+    cursor: default
+    &:hover
+        transform: none
+        box-shadow: none
 
 // Scroll 
 ::-webkit-scrollbar
