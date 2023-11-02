@@ -236,6 +236,7 @@ export class DietComponent implements OnInit {
     await this.getInitialMealsFromBackend();
     this.formUpdated = false;
     this.isSearching = false;
+    this.filtersVisible = false;
   }
 
   async showSingleMeal(idMeal: number){
