@@ -40,13 +40,12 @@ export class SharedService {
     return this.cookieService.check('authHeaderValue');
   }
 
-  logout() {
-    this.cookieService.check('authHeaderValue') ? this.cookieService.delete('authHeaderValue') : null;
-    this.cookieService.check('activeDietId') ? this.cookieService.delete('activeDietId') : null;
+  logout(): boolean {
+    this.cookieService.deleteAll('/');
     localStorage.getItem('activeDiet') ? localStorage.removeItem('activeDiet') : null;
 
     if( this.cookieService.check('authHeaderValue') || this.cookieService.check('activeDietId') || localStorage.getItem('activeDiet')) {
-      const alertDetails = new AlertDetails("Something went wrong with the logout. Please try again.");
+      const alertDetails = new AlertDetails("Something went wrong. Please try again or clear cookies manually");
       this.emitChange(alertDetails);
       return false;
     }

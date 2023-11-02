@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { lastValueFrom } from 'rxjs';
 import { ImageService } from 'src/app/image.service';
 import { AlertDetails } from 'src/app/overlays/alert/alert-details';
+import { RedirectDetails } from 'src/app/overlays/redirect/redirect-details';
 import { SharedService } from 'src/app/shared.service';
 import { User } from 'src/app/user';
 import { UserService } from 'src/app/user.service';
@@ -20,8 +20,9 @@ export class UserInfoComponent implements OnInit {
   hideFileInput = true;
 
   isLoading: boolean = false;
+  isLoggingOut: boolean = false;
 
-  constructor(private sharedService: SharedService, private userService: UserService, private router: Router, private imageService: ImageService) { }
+  constructor(private sharedService: SharedService, private userService: UserService, private imageService: ImageService) { }
 
   async ngOnInit() {
     this.isLoading = true;
@@ -35,7 +36,9 @@ export class UserInfoComponent implements OnInit {
   }
 
   logout() {
-    this.sharedService.logout() ? this.router.navigate(['/home']) : null;
+    this.isLoggingOut = true;
+    this.sharedService.logout() ? this.sharedService.emitChange(new RedirectDetails("Logged Out Successfully.", '/home', true)) : null;
+    this.isLoggingOut = false;
   }
 
   fileChangeEvent(event: any): void {
@@ -53,11 +56,11 @@ export class UserInfoComponent implements OnInit {
 
   uploadImage() {
     this.imageService.uploadUserImage(this.croppedImage).subscribe(
-      (response) => {
+      () => {
         this.hideFileInput = true;
         location.reload();
       },
-      (error) => {
+      () => {
         const alertDetails = new AlertDetails("Image upload failed. Please try again.");
         this.sharedService.emitChange(alertDetails);
       }

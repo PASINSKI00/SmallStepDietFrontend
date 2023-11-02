@@ -2,7 +2,7 @@
     <p class="normal-text">{{message}}</p>
     
     <div id="button-box">
-        <button class="btn btn-primary-gray" (click)="close()">Cancel</button>
+        <button class="btn btn-primary-gray" *ngIf="!continueOnly" (click)="close()">Cancel</button>
         <button class="btn btn-primary-green" (click)="redirect()">Continue</button>
     </div>
 </app-base>

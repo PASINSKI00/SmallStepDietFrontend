@@ -28,5 +28,6 @@
         <p class="normal-text">{{user.name}}</p>
     </div>
 
-    <button class="btn btn-primary-gray" (click)="logout()">Log Out</button>
+    <button class="btn btn-primary-gray" (click)="logout()" *ngIf="!isLoggingOut">Log Out</button>
+    <app-spinner *ngIf="isLoggingOut"></app-spinner>
 </div>
