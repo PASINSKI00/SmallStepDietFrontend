@@ -10,6 +10,7 @@ import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { Router } from '@angular/router';
 import { AlertDetails } from '../overlays/alert/alert-details';
 import { SharedService } from '../shared.service';
+import { RedirectDetails } from '../overlays/redirect/redirect-details';
 
 @Component({
   selector: 'app-add-meal',
@@ -127,34 +128,21 @@ export class AddMealComponent implements OnInit {
       return;
     }
 
-    if(!this.checkMealImage()) {
-      const alertDetails = new AlertDetails("Success");
-      this.sharedService.emitChange(alertDetails);
-      setTimeout(() => {
-        this.router.navigate(['/diet']);
-      }, 3000);
-      this.isUploading = false;
-      return;
+    if(this.checkMealImage()) {
+      const imageName: string | undefined = await this.uploadMealImage(uploadedMealId);
+      if (imageName == undefined) {
+        const alertDetails = new AlertDetails("There were issues with uploading the image :( Please try again");
+        this.sharedService.emitChange(alertDetails);
+        this.dietService.deleteMeal(uploadedMealId);
+        this.isUploading = false;
+        return;
+      }
     }
 
-    const imageName: string | undefined = await this.uploadMealImage(uploadedMealId);
-    if (imageName == undefined) {
-      const alertDetails = new AlertDetails("There were issues with uploading the image :( Please try again");
-      this.sharedService.emitChange(alertDetails);
-      this.dietService.deleteMeal(uploadedMealId).subscribe((response) => {
-        if (response.status != 200)
-          console.error("Meal wasn't deleted :(");
-      });
-      this.isUploading = false;
-      return;
-    }
-
-    const alertDetails = new AlertDetails("Success");
-    this.sharedService.emitChange(alertDetails);
-    setTimeout(() => {
-      this.router.navigate(['/diet']);
-    }, 3000);
+    const redirectDetails = new RedirectDetails("Meal successfully created", '/diet', true);
+    this.sharedService.emitChange(redirectDetails);
     this.isUploading = false;
+    return;
   }
 
   private checkMealImage(): boolean {

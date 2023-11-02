@@ -71,7 +71,10 @@
 
 
         <div id="add-meal-btn-container">
-            <button *ngIf="!isUploading" class="btn btn-primary-green normal-text upload-button" (click)="upload()">Upload</button>
+            <button *ngIf="!isUploading" class="btn btn-primary-green normal-text upload-button" (click)="upload()"
+                [disabled]="!addMealForm.valid" [ngClass]="{'disabled': !addMealForm.valid}">
+                Upload
+            </button>
             <app-spinner *ngIf="isUploading" class="upload-button"></app-spinner>
         </div>
     </div>
