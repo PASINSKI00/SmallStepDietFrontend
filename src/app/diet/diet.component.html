@@ -38,7 +38,7 @@
                 </div>
 
                 <ng-container *ngFor="let meal of meals; let i = index">
-                    <div class="meal" (click)="showSingleMeal(meal)">
+                    <div class="meal" (click)="showSingleMeal(meal.idMeal)">
                         <img src="{{meal.imageUrl}}" alt="meal image" />
                         <div class="meal-info">
                             <span>

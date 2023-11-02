@@ -32,7 +32,7 @@ export class DietService {
     )
   }
 
-  extendMeal(idMeal: number) : Observable<any> {
+  extendedMeal(idMeal: number) : Observable<any> {
     return this.http.get(this.address + '/api/meal/extend', { observe: 'response', params: {idMeal}, responseType: 'text' as 'json' })
   }
 

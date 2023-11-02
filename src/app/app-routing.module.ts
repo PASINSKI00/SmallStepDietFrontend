@@ -28,6 +28,10 @@ const routes: Routes = [
     component: DietComponent,
   },
   {
+    path: 'diet/meal/:id',
+    component: DietComponent,
+  },
+  {
     path: 'addMeal',
     component: AddMealComponent,
   },

@@ -17,7 +17,10 @@ export class Meal {
     reviews: Array<Review> = [];
     categoriesNames: Array<String> = [];
 
-    constructor(idMeal: number, name: string, ingredientsNames: Array<String>, rating: number, imageUrl: string, avgRating: number, proteinRatio: number, timesUsed: number) {
+    constructor(idMeal: number, name: string, ingredientsNames: Array<String>, rating: number, imageUrl: string, 
+        avgRating: number, proteinRatio: number, timesUsed: number, recipe?: string, timeToPrepare?: number, 
+        carbsRatio?: number, fatsRatio?: number, reviews?: Array<Review>) 
+        {
         this.idMeal = idMeal;
         this.name = name;
         this.ingredientsNames = ingredientsNames;
@@ -26,15 +29,11 @@ export class Meal {
         this.avgRating = avgRating;
         this.proteinRatio = proteinRatio;
         this.timesUsed = timesUsed;
-    }
-
-    extendMeal(recipe: string, timeToPrepare: number, proteinRatio: number, carbsRatio: number, fatsRatio: number, reviews: Array<Review>) {
-        this.recipe = recipe;
-        this.timeToPrepare = timeToPrepare;
-        this.proteinRatio = proteinRatio;
-        this.carbsRatio = carbsRatio;
-        this.fatsRatio = fatsRatio;
-        this.reviews = reviews;
+        recipe ? this.recipe = recipe : null;
+        timeToPrepare ? this.timeToPrepare = timeToPrepare : null;
+        carbsRatio ? this.carbsRatio = carbsRatio : null;
+        fatsRatio ? this.fatsRatio = fatsRatio : null;
+        reviews ? this.reviews = reviews : null;
     }
 
     getIngredientsNames(): string {

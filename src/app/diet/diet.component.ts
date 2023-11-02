@@ -5,7 +5,7 @@ import { Category } from './category';
 import { DietService } from './diet.service';
 import { SharedService } from '../shared.service';
 import { lastValueFrom } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BodyInfoService } from '../account/body-info/body-info.service';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { RedirectDetails } from '../overlays/redirect/redirect-details';
@@ -65,11 +65,16 @@ export class DietComponent implements OnInit {
   });
 
   constructor(
-    private bodyInfoService: BodyInfoService, 
-    private dietService: DietService, 
-    private sharedService: SharedService, 
-    private router: Router, 
-    private formBuilder: FormBuilder) {}
+    private bodyInfoService: BodyInfoService, private dietService: DietService, private sharedService: SharedService, 
+    private router: Router, private formBuilder: FormBuilder, private route: ActivatedRoute) 
+    {
+      this.route.params.subscribe( params => 
+        {
+          if(params['id'])
+            this.showSingleMeal(params['id']);       
+        }
+      );
+    }
 
   async ngOnInit() {
     this.getInitialMealsFromBackend();
@@ -229,13 +234,14 @@ export class DietComponent implements OnInit {
     this.isSearching = false;
   }
 
-  async showSingleMeal(meal: Meal){
+  async showSingleMeal(idMeal: number){
+    this.singleMealVisible = true;
     this.isSingleMealLoading = true;
-    await lastValueFrom(this.dietService.extendMeal(meal.idMeal)).then((response) => {
-      let value = JSON.parse(response.body);
-      meal.extendMeal(value.recipe, value.timeToPrepare, value.proteinRatio, value.carbsRatio, value.fatsRatio, value.reviews);
-      this.singleMeal = meal;
-      this.singleMealVisible = !this.singleMealVisible;
+    await lastValueFrom(this.dietService.extendedMeal(idMeal)).then((response) => {
+      let mealJSON = JSON.parse(response.body);
+      this.singleMeal = new Meal(mealJSON.idMeal, mealJSON.name, mealJSON.ingredientsNames, mealJSON.rating, 
+        mealJSON.imageUrl, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed, mealJSON.recipe, 
+        mealJSON.timeToPrepare, mealJSON.carbsRatio, mealJSON.fatsRatio, mealJSON.reviews)
     }).catch(() => {
       const alertDetails = new AlertDetails("Couldn't load meal. Please try again.");
       this.sharedService.emitChange(alertDetails);
