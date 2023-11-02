@@ -10,9 +10,9 @@
 
             <input id="search-bar" formControlName="nameContains" class="small-wide-text" placeholder="Meal name..." 
                 (keydown.enter)="searchClicked()"/>
-            <button *ngIf="!isSearching" id="search-button" class="btn btn-small-green small-wide-text" [ngClass]="{'display-none' : this.formUpdated === false}" 
+            <button *ngIf="!isSearching" class="search-button btn btn-small-green small-wide-text" [ngClass]="{'display-none' : this.formUpdated === false}" 
                 (click)="searchClicked()">Search</button>
-            <app-spinner *ngIf="isSearching" id="search-button"></app-spinner>    
+            <app-spinner *ngIf="isSearching" class="search-button"></app-spinner>    
         </div>
 
         <div id="filters" [formGroup]="mealQueryInput" *ngIf="filtersVisible" [@slideFromTop] class="grey-bg">
@@ -22,11 +22,17 @@
                 *ngFor="let sort of sortCriterias; let i = index">{{sort}}</p>
             </div>
 
-            <div id="categories-box">
+            <div id="categories">
                 <p class="normal-text box-title">Choose categories</p>
-                <p [ngClass]="{'active': mealQueryInput.get('categories')?.value?.includes(category.name)}" class="category super-small-text left-cut" 
-                (click)="appendCategoryToQuery(category.name)" *ngFor="let category of categories; let i = index">{{category.name}}</p>
+                <div id="categories-box">
+                    <p [ngClass]="{'active': mealQueryInput.get('categories')?.value?.includes(category.name)}" class="category super-small-text left-cut" 
+                    (click)="appendCategoryToQuery(category.name)" *ngFor="let category of categories; let i = index">{{category.name}}</p>
+                </div>
             </div>
+
+            <button *ngIf="!isSearching" class="search-button btn btn-small-green small-wide-text" [ngClass]="{'display-none' : this.formUpdated === false}" 
+                (click)="searchClicked()">Search</button>
+            <app-spinner *ngIf="isSearching" class="search-button"></app-spinner>    
         </div>
 
         <div id="meals" [ngClass]="{'display-none' : singleMealVisible === true}">
