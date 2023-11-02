@@ -8,7 +8,7 @@
 
             <div class="line-vr"></div>
 
-            <input id="search-bar" formControlName="nameContains" class="small-wide-text" placeholder="Meal name..." 
+            <input id="search-bar" formControlName="nameContains" class="small-wide-text" placeholder="Search for a meal..." 
                 (keydown.enter)="searchClicked()"/>
             <button *ngIf="!isSearching" class="search-button btn btn-small-green small-wide-text" [ngClass]="{'display-none' : this.formUpdated === false}" 
                 (click)="searchClicked()">Search</button>
