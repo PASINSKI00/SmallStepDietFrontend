@@ -139,7 +139,7 @@ export class AddMealComponent implements OnInit {
       }
     }
 
-    const redirectDetails = new RedirectDetails("Meal successfully created", '/diet', true);
+    const redirectDetails = new RedirectDetails("Meal successfully created", '/diet/meal/' + uploadedMealId, true);
     this.sharedService.emitChange(redirectDetails);
     this.isUploading = false;
     return;
