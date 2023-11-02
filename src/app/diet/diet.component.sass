@@ -8,8 +8,11 @@
 #bar-and-meals
     display: flex
     flex-direction: column
+    align-items: center
     width: 75%
     height: 100%
+    overflow-y: scroll
+
 
 #utility-bar
     display: flex
@@ -17,6 +20,7 @@
     justify-content: flex-start
     align-items: center
     height: 61px
+    width: 100%
     background-color: $color-white
     box-shadow: 4px 4px 6px $color-black-o07
     z-index: 1
@@ -112,7 +116,6 @@
 // ------------------ MEALS ------------------
 #meals
     height: calc(100% - 50px)
-    overflow-y: scroll
     padding: 8px
 
 #meals #meals-box
@@ -273,6 +276,7 @@
 
 // ---------------------------- SINGLE MEAL  ----------------------------
 #single-meal-container
+    max-width: 700px
     margin: 20px
     padding: 20px
     display: flex
