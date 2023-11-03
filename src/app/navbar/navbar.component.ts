@@ -16,7 +16,7 @@ export class NavbarComponent implements OnInit {
   active: string = '';
   isLoggedIn: boolean = false;
   hamburger = faBars;
-  showMenu = true;
+  showMenu = false;
 
   constructor(private sharedService: SharedService, private router: Router) { }
 
