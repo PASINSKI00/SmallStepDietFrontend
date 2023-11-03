@@ -2,7 +2,7 @@
     <div id="bar-and-meals">
         <div id="utility-bar" [formGroup]="mealQueryInput">
             <div id="show-filter" (click)="this.filtersVisible = !this.filtersVisible">
-                <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible == true}"></fa-icon>
+                <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible}"></fa-icon>
                 <p class="small-wide-text" >Show Filters</p>
             </div>
 
@@ -141,8 +141,11 @@
         </div>
     </div>
 
-    <div id="diet-planner">
+    <div id="diet-planner" [class.top]="mobileDietPlannerVisible" [class.bottom]="!mobileDietPlannerVisible && !firstShow">
         <div id="day-bar">
+            <fa-icon *ngIf="isViewportLessThan600px" class="filter-icon fa-2x" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': !mobileDietPlannerVisible}"
+                (click)="mobileDietPlannerVisible = !mobileDietPlannerVisible; firstShow=false"></fa-icon>
+
             <div id="days">
                 <button class="btn btn-round-white small-wide-text day" *ngFor="let day of diet; let i = index" [ngClass]="{'non-active-day' : i !== chosenDayIndex}" 
                 (click)="this.chosenDayIndex = i">

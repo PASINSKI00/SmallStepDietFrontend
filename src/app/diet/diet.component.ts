@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Meal } from './meal';
 import { faTrashAlt, faAdd, faAnglesDown, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { Category } from './category';
@@ -63,6 +63,10 @@ export class DietComponent implements OnInit {
 
   appendingAllowed: boolean = false;
 
+  mobileDietPlannerVisible: boolean = false;
+  isViewportLessThan600px: boolean = false;
+  firstShow: boolean = true;
+
   mealQueryInput = this.formBuilder.group({
     nameContains: '',
     sortBy: '',
@@ -102,6 +106,8 @@ export class DietComponent implements OnInit {
       this.formUpdated = true;
       this.noMoreMeals = false;
     });
+
+    this.isViewportLessThan600px = window.innerWidth < 600;
   }
 
   ngAfterViewInit() {
@@ -309,6 +315,11 @@ export class DietComponent implements OnInit {
     if(isFailed) return;
 
     this.router.navigate(['/diet/final']);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isViewportLessThan600px = window.innerWidth < 600;
   }
 
   private async getInitialMealsFromBackend() : Promise<void> {
