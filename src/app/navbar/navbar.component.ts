@@ -1,15 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../shared.service';
 import { NavigationEnd, Router } from '@angular/router';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { slideFromTop } from '../animations';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.sass']
+  styleUrls: ['./navbar.component.sass'],
+  animations: [
+    slideFromTop
+  ]
 })
 export class NavbarComponent implements OnInit {
   active: string = '';
   isLoggedIn: boolean = false;
+  hamburger = faBars;
+  showMenu = true;
 
   constructor(private sharedService: SharedService, private router: Router) { }
 
