@@ -36,10 +36,13 @@
         </div>
 
         <div id="meals" [ngClass]="{'display-none' : singleMealVisible === true}">
-
-            <div style="opacity: 0; width: 100%; height: 5px" #infinityScrollStart></div>
-
             <div id="meals-box">
+                <button *ngIf="this.firstPageNumber != 0" class="append-start" (click)="appendMealsAtTheStart()">
+                    <button class="button green-bg color-white">
+                        <fa-icon class="icon-size-45" [icon]="addIcon" (click)="appendMealsAtTheStart()"></fa-icon>
+                    </button>
+                </button>
+
                 <div *ngIf="isLoadingTop || isLoading" class="meal centered-meal">
                     <app-spinner></app-spinner>
                 </div>

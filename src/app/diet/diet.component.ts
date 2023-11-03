@@ -21,7 +21,6 @@ import { slideFromTop } from '../animations';
   ]
 })
 export class DietComponent implements OnInit {
-  @ViewChild('infinityScrollStart', { static: true }) infinityScrollStart!: ElementRef;
   @ViewChild('infinityScrollEnd', { static: true }) infinityScrollEnd!: ElementRef;
 
   observerStart!: IntersectionObserver;
@@ -115,30 +114,22 @@ export class DietComponent implements OnInit {
       threshold: 0.01
     };
 
-    this.observerStart = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && this.appendingAllowed) {
-          this.appendMealsAtTheStart();
-        }
-      });
-    }, options);
-
     this.observerEnd = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
+        console.log("entering observerEnd")
         if (entry.isIntersecting && this.appendingAllowed) {
           this.appendMealsAtTheBack();
         }  
       });
     }, options);
 
-    this.observerStart.observe(this.infinityScrollStart.nativeElement);
     this.observerEnd.observe(this.infinityScrollEnd.nativeElement);
   }
 
   async appendMealsAtTheStart() {
-    if(this.firstPageNumber == 0)
+    if(this.firstPageNumber == 0 || this.appendingAllowed === false)
       return;
-  
+    this.appendingAllowed = false;
     console.log("Appending meals at the start");
     this.isLoadingTop = true;
     await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.firstPageNumber-1, this.pageSize)).then((array) => {
@@ -154,6 +145,7 @@ export class DietComponent implements OnInit {
       this.sharedService.emitChange(alertDetails);
     });
     this.isLoadingTop = false;
+    this.appendingAllowed = true;
   }
 
   async appendMealsAtTheBack() {

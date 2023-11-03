@@ -124,8 +124,28 @@
     padding: 8px
     z-index: -1
 
+.append-start
+    grid-column: span 3
+    height: 100px
+    width: 90%
+    display: grid
+    place-items: center
+    background-color: $color-white
+    border-radius: 20px
+    margin-top: 10px
+    box-shadow: 3px 3px 10px $color-black-o06
+
+.append-start button
+    display: grid
+    place-items: center
+    width: 60px
+    height: 60px
+    border-radius: 50%
+    box-sizing: border-box
+        
 #meals #meals-box
     display: grid
+    place-items: center
     grid-template-columns: repeat(3, 1fr)
     gap: 8px
 
