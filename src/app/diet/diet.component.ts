@@ -62,6 +62,8 @@ export class DietComponent implements OnInit {
   isSearching: boolean = false;
   isSingleMealLoading: boolean = false;
 
+  appendingAllowed: boolean = false;
+
   mealQueryInput = this.formBuilder.group({
     nameContains: '',
     sortBy: '',
@@ -115,7 +117,7 @@ export class DietComponent implements OnInit {
 
     this.observerStart = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && this.appendingAllowed) {
           this.appendMealsAtTheStart();
         }
       });
@@ -123,7 +125,7 @@ export class DietComponent implements OnInit {
 
     this.observerEnd = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && this.appendingAllowed) {
           this.appendMealsAtTheBack();
         }  
       });
@@ -154,10 +156,11 @@ export class DietComponent implements OnInit {
     this.isLoadingTop = false;
   }
 
-  appendMealsAtTheBack() {
+  async appendMealsAtTheBack() {
+    this.appendingAllowed = false;
     console.log("Appending meals at the back");
     this.isLoadingBottom = true;
-    lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.lastPageNumber+1, this.pageSize)).then((array) => {
+    await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.lastPageNumber+1, this.pageSize)).then((array) => {
       this.isLoadingBottom = false;
       if(array.length == 0){
         this.noMoreMeals = true;
@@ -173,6 +176,7 @@ export class DietComponent implements OnInit {
       this.sharedService.emitChange(alertDetails);
       this.isLoadingBottom = false;
     });
+    this.appendingAllowed = true;
   }
 
   addDayToDiet() {
@@ -317,6 +321,7 @@ export class DietComponent implements OnInit {
 
   private async getInitialMealsFromBackend() : Promise<void> {
     this.isLoading = true;
+    this.appendingAllowed = false;
     await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, 0, this.pageSize*3)).then((array) => {
       this.meals = array;
     }).catch(() => {
@@ -324,6 +329,7 @@ export class DietComponent implements OnInit {
       this.sharedService.emitChange(alertDetails);
     });
     this.isLoading = false;
+    this.appendingAllowed = true;
   }
 
   private getCategoriesFromBackend() {
