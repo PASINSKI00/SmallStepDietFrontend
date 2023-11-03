@@ -3,7 +3,7 @@
 #container
     display: flex
     flex-direction: row
-    height: $height-without-navbar
+    height: 100%
 
 #bar-and-meals
     display: flex
@@ -407,3 +407,20 @@
 
 #return-button:hover
     background-color: $color-yellow
+
+@media screen and (max-width: $layout-breakpoint-small)
+    #diet-planner 
+        display: none
+
+    #bar-and-meals
+        width: 100%
+
+    #utility-bar
+        display: none
+    
+    #meals
+        top: 0
+
+    .meal
+        grid-column: span 3
+        
