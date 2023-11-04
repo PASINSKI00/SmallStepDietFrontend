@@ -18,7 +18,7 @@ import { SharedService } from 'src/app/shared.service';
 export class GroceriesComponent implements OnInit {
   deleteIcon = faTrashAlt;
   ingredients: Array<Array<Ingredient>> = [];
-  numOfColumns: number = 3;
+  numOfColumns: number = 2;
   elementesPerColumn: number = 0;
   cameFromDietHistory: boolean = false;
 
