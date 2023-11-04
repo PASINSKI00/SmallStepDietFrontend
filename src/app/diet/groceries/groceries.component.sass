@@ -65,3 +65,27 @@
     position: fixed
     bottom: 0
     background-color: $color-black-o04
+
+@media screen and (max-width: $layout-breakpoint-small)   
+    #shopping-list
+        margin: 20px
+
+    #ingredients-box
+        width: 100%
+        padding: 10px
+        grid-template-columns: repeat(1, 1fr)
+
+    .ingredients
+        width: 100%
+    
+    #button-box
+        padding: 7px 10px
+        
+
+@media screen and (min-width: $layout-breakpoint-small + 1) and (max-width: $layout-breakpoint-medium)
+    #shopping-list
+        margin: 20px
+
+    #ingredients-box
+        width: 100%
+        padding: 10px
