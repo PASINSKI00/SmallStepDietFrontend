@@ -1,13 +1,17 @@
 @import 'src/variables.sass'
     
 #container
-    height: $height-without-navbar
     width: 100%
+    height: $height-without-navbar
+    position: relative
+    top: $height-navbar
     background-color: $color-bg-white
-    display: grid                                                      
-    place-items: center
+    display: flex
+    flex-direction: column
+    align-items: center
 
 #background
+    max-width: 700px
     padding: 100px
     display: flex
     flex-direction: column
@@ -16,12 +20,9 @@
     background-color: $color-yellow
     border-radius: 20px
 
-#banner p
-    display: flex
-    align-content: center
-
-#banner p button
-    margin: 0px 10px
+#banner
+    display: grid
+    place-items: center
 
 #empty-box
     height: 25px
@@ -36,3 +37,17 @@
     position: fixed
     bottom: 0
     background-color: $color-black-o04
+
+@media screen and (max-width: $layout-breakpoint-medium)    
+    #background
+        padding: 100px 20px
+        width: 90%
+
+    h1
+        text-align: center
+
+    #banner
+        width: 100%
+
+    #button-box
+        padding: 7px 10px
