@@ -342,12 +342,9 @@
 
 
 #reviews
-    // padding: 10px
     display: flex
     flex-direction: column
-    // background-color: $color-bg-white
     border-radius: 20px
-    // box-shadow: 3px 3px 10px $color-black-o04
 
 .review
     padding: 10px
@@ -477,6 +474,25 @@
     .meal
         grid-column: span 6 !important
 
+    #single-meal-container
+        width: 100%
+        margin: 0
+        top: 40px
+        margin-bottom: calc(5% + 100px)
+        box-shadow: none
+
+    #return-button
+        margin-left: 0
+
+    #single-meal
+        width: 100%
+
+    .review
+        flex-wrap: wrap
+
+    .review .name-and-content
+        flex-direction: column
+
 @media screen and (min-width: $layout-breakpoint-small + 1) and (max-width: $layout-breakpoint-medium)
     #bar-and-meals
         width: 60%
@@ -515,6 +531,22 @@
         overflow-y: scroll
         position: fixed
         
+    #single-meal-container
+        width: 90%
+        margin: 5%
+        margin-bottom: calc(5% + 70px)
+
+    #return-button
+        margin-left: 0
+
+    #single-meal
+        width: 100%
+
+    .review
+        flex-wrap: wrap
+
+    .review .name-and-content
+        flex-direction: column
 
 @keyframes moveUp
   0%
