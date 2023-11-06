@@ -131,6 +131,7 @@
     box-shadow: 1px 3px 15px $color-black-o04
     box-sizing: border-box
     border-radius: 20px
+    background-color: $color-white
 
 input
     width: 40px
@@ -177,3 +178,22 @@ textarea
     width: 90%
     box-shadow: 1px 3px 15px $color-black-o04
     box-sizing: border-box
+
+@media screen and (max-width: $layout-breakpoint-small)
+    :host 
+        width: 100vw
+        position: relative
+        top: 80px
+
+    #meals
+        grid-template-columns: repeat(1, 1fr)
+
+    #review
+        width: 100%
+        margin: 0
+        background: none
+        box-shadow: none
+
+@media screen and (min-width: $layout-breakpoint-small) and (max-width: $layout-breakpoint-medium)
+    #meals
+        grid-template-columns: repeat(2, 1fr)
