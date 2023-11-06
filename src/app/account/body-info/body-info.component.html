@@ -59,11 +59,14 @@
             <input type="range" id="pal" name="pal" formControlName="pal" name="value" min="1.4" max="2.5" step="0.1" value="1.4">
             
             <p>Example:</p>
-            <div *ngIf="bodyInfoForm.value.pal! < 1.7" class="description super-small-wide-text">Office worker getting little or no exercise</div>
+            <div *ngIf="bodyInfoForm.value.pal! < 1.7" class="description super-small-wide-text">
+                Office worker getting little or no exercise
+            </div>
             <div *ngIf="bodyInfoForm.value.pal! < 2.0 && bodyInfoForm.value.pal! >= 1.7" 
                 class="description super-small-wide-text">Construction worker or person running one hour daily</div>
             <div *ngIf="bodyInfoForm.value.pal! <= 2.4 && bodyInfoForm.value.pal! >= 2.0" 
-                class="description super-small-wide-text">Agricultural worker (non mechanized) or person swimming two hours daily</div>
+                class="description super-small-wide-text">Agricultural worker (non mechanized) or person swimming two hours daily
+            </div>
             <div *ngIf="bodyInfoForm.value.pal! > 2.4" class="description super-small-wide-text">Competitive cyclist</div>
         </div>
 
