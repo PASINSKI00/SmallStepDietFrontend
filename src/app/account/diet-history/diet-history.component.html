@@ -6,7 +6,7 @@
             <span class="normal-wide-text">Diet {{dietIndex + 1}}</span>
             <div class="days">
                 <div class="day" *ngFor="let day of diet.finalDays; let dayIndex = index">
-                    Day {{dayIndex + 1}}
+                    <span class="diet-title">Day {{dayIndex + 1}}</span>
                     <div *ngFor="let meal of day.finalMeals" [ngStyle]="chosenMealBackground(meal.imageUrl!)" class="chosen-meal">
                         <div class="background-darkener">
                             <p class="chosen-meal-name super-small-wide-text">{{meal.name}}</p>
