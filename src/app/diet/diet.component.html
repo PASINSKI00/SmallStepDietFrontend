@@ -25,8 +25,11 @@
             <div id="categories">
                 <p class="normal-text box-title">Choose categories</p>
                 <div id="categories-box">
-                    <p [ngClass]="{'active': mealQueryInput.get('categories')?.value?.includes(category.name)}" class="category super-small-text left-cut" 
-                    (click)="appendCategoryToQuery(category.name)" *ngFor="let category of categories; let i = index">{{category.name}}</p>
+                    <p [ngClass]="{'active': mealQueryInput.get('categories')?.value?.includes(category.name)}" 
+                    class="category super-small-text left-cut" (click)="appendCategoryToQuery(category.name)" 
+                    *ngFor="let category of categories; let i = index">
+                        {{category.name}}
+                    </p>
                 </div>
             </div>
 
