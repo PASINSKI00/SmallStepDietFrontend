@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedService } from 'src/app/shared.service';
 import { fadeSlideInOut } from 'src/app/animations';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-base',
@@ -12,6 +13,7 @@ import { fadeSlideInOut } from 'src/app/animations';
 })
 export class BaseComponent implements OnInit {  
   shouldShowOverlaySubContent: boolean = false;
+  xMark = faXmark;
 
   constructor(protected sharedService: SharedService) { }
 
