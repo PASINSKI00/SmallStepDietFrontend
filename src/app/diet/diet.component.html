@@ -51,7 +51,7 @@
                 </div>
 
                 <ng-container *ngFor="let meal of meals; let i = index">
-                    <div class="meal" (click)="showSingleMeal(meal.idMeal)">
+                    <div class="meal" (click)="showSingleMeal(meal.idMeal)" (click)="$event.stopPropagation()">
                         <img src="{{meal.imageUrl}}" alt="meal image" />
                         <div class="meal-info">
                             <span>
@@ -62,7 +62,22 @@
                                     </p>
                                 </div>
                             </span>
-                            <button class="btn btn-small-green" (click)="addMealToDiet(meal)" (click)="$event.stopPropagation()">add</button>
+
+                            <ng-container
+                                *ngIf="isMealAssignedAlready(meal); then added; else add ">
+                            </ng-container>
+
+                            <ng-template #add>
+                                <button class="btn btn-small-green" (click)="addMealToDiet($event, meal)">
+                                        add
+                                </button>
+                            </ng-template>
+
+                            <ng-template #added>
+                                <button class="btn btn-small-gray" (click)="addMealToDiet($event, meal)">
+                                        added
+                                </button>
+                            </ng-template>
                         </div>
                     </div>
 
@@ -140,7 +155,7 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary-green normal-text" (click)="addMealToDiet(singleMeal)" (click)="$event.stopPropagation()">Add to diet</button>
+            <button class="btn btn-primary-green normal-text" (click)="addMealToDiet($event, singleMeal)">Add to diet</button>
         </div>
     </div>
 

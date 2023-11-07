@@ -187,7 +187,8 @@ export class DietComponent implements OnInit {
     this.diet.push(new Array<Meal>());
   }
 
-  addMealToDiet(meal: Meal) {
+  addMealToDiet(event: Event, meal: Meal) {
+    event.stopPropagation();
     if(this.diet[this.chosenDayIndex].length == 8) {
       return;
     }
@@ -320,6 +321,10 @@ export class DietComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.isViewportLessThan600px = window.innerWidth < 600;
+  }
+
+  isMealAssignedAlready(meal: Meal): boolean {
+    return this.diet[this.chosenDayIndex].some(chosenMeal => chosenMeal.idMeal === meal.idMeal)
   }
 
   private async getInitialMealsFromBackend() : Promise<void> {
