@@ -46,7 +46,8 @@ input
     border-radius: 50px
     width: 100%
     padding: 5px 50px
-    font-size: $font-size-2
+    min-height: 45px
+    font-size: $font-size-1
     cursor: pointer
     font-weight: $font-weight-light
 
@@ -61,3 +62,10 @@ input
     width: 100%
     border: none
     border-bottom: 1px solid $color-black-o04
+
+@media screen and (max-width: $layout-breakpoint-small)
+    #signup-container, #login-container
+        width: 95%
+
+    #change-view-button
+        font-size: $font-size-1
