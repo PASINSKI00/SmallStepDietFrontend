@@ -15,21 +15,21 @@
             <div class="day-info">
                 <p class="go-center normal-wide-text">{{this.sumDayPercentage(finalDay)}}%</p>
 
-                <span class="macro first-macro">
+                <div class="macro first-macro">
                     <p class="super-small-wide-text">calories:</p><p>{{finalDay.calories}} kcal</p>
-                </span>
+                </div>
 
-                <span class="macro">
+                <div class="macro">
                     <p class="super-small-wide-text">carbs:</p><p>{{finalDay.carbs}}g</p>
-                </span>
+                </div>
 
-                <span class="macro">
+                <div class="macro">
                     <p class="super-small-wide-text">protein:</p><p>{{finalDay.protein}}g</p>
-                </span>
+                </div>
 
-                <span class="macro">
+                <div class="macro">
                     <p class="super-small-wide-text">fats:</p><p>{{finalDay.fats}}g</p>
-                </span>
+                </div>
 
                 <button class="btn btn-primary-green apply-changes-button" *ngIf="finalDay.modified" (click)="applyChanges()">Apply changes</button>
                 <button class="btn btn-primary-red reset-day-button" *ngIf="applicableForResetStates[dayIndex] || finalDay.modified" 
@@ -45,7 +45,7 @@
                             </span>
                     </div>
 
-                    <span class="meal-details">
+                    <div class="meal-details">
                         <div class="meal-ingredients">
                             <div [ngClass]="{'display-none': ingredient.remove}" class="meal-ingredient super-small-wide-text" *ngFor="let ingredient of finalMeal.finalIngredients">
                                 <p>{{ingredient.name}}</p>
@@ -76,7 +76,7 @@
                                 <p class="super-small-wide-text">fats:</p><p>{{finalMeal.fats}}g</p>
                             </span>
                         </div>
-                    </span>
+                    </div>
                 </div>
             </div>
         </span>
