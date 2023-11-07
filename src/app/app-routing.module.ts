@@ -12,6 +12,7 @@ import { DietHistoryComponent } from './account/diet-history/diet-history.compon
 import { BodyInfoComponent } from './account/body-info/body-info.component';
 import { ReviewComponent } from './account/review/review.component';
 import { DietViewComponent } from './account/diet-history/views/diet-view/diet-view.component';
+import { authGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -38,44 +39,54 @@ const routes: Routes = [
   {
     path: 'diet/final',
     component: FinalDietComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'diet/final/groceries',
     component: GroceriesComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'diet/final/groceries/:id',
     component: GroceriesComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'diet/finished',
     component: FinishedComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'account',
     component: AccountHomeComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'user',
         component: UserInfoComponent,
+        canActivate: [authGuard]
       },
       {
         path: 'diets',
         component: DietHistoryComponent,
+        canActivate: [authGuard]
       },
       {
         path: 'bodyinfo',
         component: BodyInfoComponent,
+        canActivate: [authGuard]
       },
       {
         path: 'reviews',
         component: ReviewComponent,
+        canActivate: [authGuard]
       },
     ],
   },
   {
     path: 'diet/final/:id/view',
     component: DietViewComponent,
+    canActivate: [authGuard]
   }
 ];
 
