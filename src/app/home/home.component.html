@@ -12,10 +12,10 @@
             <p>Then follow these 3 simple steps</p>
         </div>
         <fa-icon [icon]="faAnglesDown" class="yellow icon fa-bounce" style="--fa-animation-delay: 5s; 
-            --fa-animation-iteration-count: 3"></fa-icon>
+            --fa-animation-iteration-count: 3" (click)="scroll(target)"></fa-icon>
     </div>
 
-    <div id="steps">
+    <div id="steps" #target>
         <div class="step yellow-bg">
             <div class="step-info">
                 <p class="big-text">Step 1</p>
