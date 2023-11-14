@@ -83,7 +83,7 @@
 #img-1
     background-image: url('/assets/images/Home_Step_1.jpg')
     background-size: cover
-    background-position: right
+    background-position: bottom right
 
 #img-2
     background-image: url('/assets/images/Home_Step_2.jpg')
@@ -95,6 +95,18 @@
     border-radius: 200px
 
 @media screen and (max-width: $layout-breakpoint-small)
+    #img-1
+        background-image: url('/assets/images/Home_Step_1_mobile.jpg')
+        background-size: cover
+        // background-repeat: no-repeat
+        background-position: bottom
+
+    #img-2
+        background-image: url('/assets/images/Home_Step_2_mobile.jpg')
+        background-size: cover
+        background-position: bottom
+
+@media screen and (max-width: $layout-breakpoint-medium)
     #landing-page #big-text
         font-size: $font-size-2
 
