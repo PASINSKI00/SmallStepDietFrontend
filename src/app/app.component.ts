@@ -13,8 +13,6 @@ import { AlertComponent } from './overlays/alert/alert.component';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
-  title = 'frontend';
-
   constructor(private sharedService: SharedService) {
     sharedService.changeEmitted$.subscribe( change => {
       if(change == 'closeOverlay')
