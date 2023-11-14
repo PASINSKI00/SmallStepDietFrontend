@@ -1,15 +1,17 @@
 <app-base>
     <div [formGroup]="signupForm" id="signup-container">
-        <p *ngIf="!isLoading" [ngClass]="{'red-text': signUpFailed, 'green-text': signUpSuccessfull}">{{message}}</p>
+        <p *ngIf="!isLoading" [ngClass]="{'red-text': wrongInputValue, 'green-text': signUpSuccessfull}">{{message}}</p>
+
         <app-spinner *ngIf="isLoading"></app-spinner>
-        <input [ngClass]="{'red-border': signupForm.get('name')!.invalid && signupForm.controls.name.touched}" 
-            formControlName="name" id="name" placeholder="name" (keydown.enter)="signup()">
-        <input [ngClass]="{'red-border': signupForm.get('email')!.invalid && signupForm.controls.email.touched}" 
-            formControlName="email" id="email" placeholder="email" (keydown.enter)="signup()">
-        <input [ngClass]="{'red-border': signupForm.get('password')!.invalid && signupForm.controls.password.touched}" formControlName="password" type="password"
-            id="password" placeholder="password" (keydown.enter)="signup()">
-        <input [ngClass]="{'red-border': passwordsMatch && signupForm.controls.repassword.touched}" formControlName="repassword" type="password" 
-            id="confirm-password" placeholder="confirm password" (keydown.enter)="signup()">
+
+        <input #name formControlName="name" id="name" placeholder="name" (keydown.enter)="signup()" 
+            (blur)="checkInput('name', name)">
+        <input #email formControlName="email" id="email" placeholder="email" (keydown.enter)="signup()"
+            (blur)="checkInput('email', email)">
+        <input #password formControlName="password" type="password" id="password" placeholder="password" 
+            (keydown.enter)="signup()" (blur)="checkInput('password', password)">
+        <input #repassword formControlName="repassword" type="password" id="confirm-password" placeholder="confirm password" 
+            (keydown.enter)="signup()" (blur)="checkInput('repassword', repassword)">
 
         <button id="signup-button" [ngClass]="{'dimmed': !signupForm.valid}" (click)="signup()">Sign Up</button>
         

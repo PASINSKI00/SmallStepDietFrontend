@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { SharedService } from 'src/app/shared.service';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AccessService } from '../access.service';
@@ -19,12 +19,13 @@ export class SignupComponent extends BaseComponent implements OnInit {
   readonly passwordInvalidMessage: string = 'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter and one number';
   readonly passwordsDontMatchMessage: string = 'Passwords do not match';
   message: string = this.defaultMessage;
-  signUpFailed: boolean = false;
+  wrongInputValue: boolean = false;
   signUpSuccessfull: boolean = false;
   passwordsMatch: boolean = false;
   isLoading: boolean = false;
 
-  constructor(sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder) {
+  constructor(sharedService: SharedService, private accessService: AccessService, private formBuilder: FormBuilder,
+    private rendered: Renderer2) {
     super(sharedService);
   }
 
@@ -56,7 +57,7 @@ export class SignupComponent extends BaseComponent implements OnInit {
     this.isLoading = true;
     this.accessService.signup(this.signupForm).subscribe(
       () => {
-        this.signUpFailed = false;
+        this.wrongInputValue = false;
         this.signUpSuccessfull = true;
         this.message = this.signUpSuccessMessage;
         this.isLoading = false;
@@ -72,7 +73,7 @@ export class SignupComponent extends BaseComponent implements OnInit {
         if(error.status == 400 && error.error.message)
           this.message = error.error.message;
 
-        this.signUpFailed = true;
+        this.wrongInputValue = true;
         this.signUpSuccessfull = false;
         this.isLoading = false;
       }
@@ -81,6 +82,44 @@ export class SignupComponent extends BaseComponent implements OnInit {
 
   login() {
     this.sharedService.emitChange('loginOverlay');
+  }
+
+  checkInput(fieldName: string, el: HTMLInputElement) {
+    let field: FormControl;
+    let message: string;
+
+    switch(fieldName) {
+      case 'name':
+        field = this.signupForm.controls.name;
+        message = this.nameInvalidMessage;
+        break;
+      case 'email':
+        field = this.signupForm.controls.email;
+        message = this.emailInvalidMessage;
+        break;
+      case 'password':
+        field = this.signupForm.controls.password;
+        message = this.passwordInvalidMessage;
+        break;
+      case 'repassword':
+        field = this.signupForm.controls.repassword;
+        message = this.passwordsDontMatchMessage;
+        break;
+      default:
+        return;
+    }
+
+    if(field!.invalid) {
+      this.message = message!;
+      this.rendered.addClass(el, "red-border")
+      field!.markAsTouched();
+      this.wrongInputValue = true;
+      return;
+    }
+
+    this.message = this.defaultMessage;
+    this.rendered.removeClass(el, "red-border")
+    this.wrongInputValue = false;
   }
 
   private goodInputOrFeedback(): boolean {
@@ -109,7 +148,7 @@ export class SignupComponent extends BaseComponent implements OnInit {
       this.message = this.signUpFailureMessage;
     }
 
-    this.signUpFailed = true;
+    this.wrongInputValue = true;
     this.signUpSuccessfull = false;
     return false;
   }
