@@ -31,6 +31,9 @@ import { SpinnerComponent } from './spinner/spinner.component';
 import { RedirectComponent } from './overlays/redirect/redirect.component';
 import { AlertComponent } from './overlays/alert/alert.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PrivacyComponent } from './footer/policies/privacy/privacy.component';
+import { TermsAndConditionsComponent } from './footer/policies/terms-and-conditions/terms-and-conditions.component';
+import { CookiesComponent } from './footer/policies/cookies/cookies.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +57,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     DietViewComponent,
     SpinnerComponent,
     RedirectComponent,
-    AlertComponent
+    AlertComponent,
+    PrivacyComponent,
+    TermsAndConditionsComponent,
+    CookiesComponent
   ],
   imports: [
     BrowserModule,

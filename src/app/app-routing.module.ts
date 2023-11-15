@@ -13,6 +13,9 @@ import { BodyInfoComponent } from './account/body-info/body-info.component';
 import { ReviewComponent } from './account/review/review.component';
 import { DietViewComponent } from './account/diet-history/views/diet-view/diet-view.component';
 import { authGuard } from './guards/auth.guard';
+import { PrivacyComponent } from './footer/policies/privacy/privacy.component';
+import { CookiesComponent } from './footer/policies/cookies/cookies.component';
+import { TermsAndConditionsComponent } from './footer/policies/terms-and-conditions/terms-and-conditions.component';
 
 const routes: Routes = [
   {
@@ -87,6 +90,18 @@ const routes: Routes = [
     path: 'diet/final/:id/view',
     component: DietViewComponent,
     canActivate: [authGuard]
+  },
+  {
+    path: 'policies/privacy',
+    component: PrivacyComponent
+  },
+  {
+    path: 'policies/cookies',
+    component: CookiesComponent
+  },
+  {
+    path: 'policies/termsandconditions',
+    component: TermsAndConditionsComponent
   }
 ];
 
