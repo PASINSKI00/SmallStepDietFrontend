@@ -29,7 +29,7 @@ export class BodyInfoComponent implements OnInit {
     gender: new FormControl('MALE', [Validators.required]),
     height: new FormControl(undefined, [Validators.required]),
     weight: new FormControl(undefined, [Validators.required]),
-    age: new FormControl(undefined, [Validators.required]),
+    age: new FormControl(undefined, [Validators.required, Validators.min(13)]),
     pal: new FormControl<number>(1.4, [Validators.required, Validators.min(1.4), Validators.max(2.5)]),
     additionalCalories: 0
   });
