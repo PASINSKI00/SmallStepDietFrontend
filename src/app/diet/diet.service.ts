@@ -5,12 +5,13 @@ import { FormGroup } from '@angular/forms';
 import { SharedService } from '../shared.service';
 import { Meal } from './meal';
 import { FinalDiet } from './final-diet/final-diet';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DietService {
-  address = 'http://localhost:8080';
+  address = environment.backendUrl;
   tmpMeals: Array<Meal> = [];
 
   constructor(private http: HttpClient, private sharedService: SharedService) { }

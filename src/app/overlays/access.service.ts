@@ -3,12 +3,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Buffer } from 'buffer';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccessService {
-  address = 'http://localhost:8080';
+  address = environment.backendUrl;
 
   constructor(private http: HttpClient) { }
 
