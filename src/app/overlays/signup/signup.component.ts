@@ -54,6 +54,7 @@ export class SignupComponent extends BaseComponent implements OnInit {
     if (!this.goodInputOrFeedback()) {
       return;
     }
+
     this.isLoading = true;
     this.accessService.signup(this.signupForm).subscribe(
       () => {
@@ -72,6 +73,9 @@ export class SignupComponent extends BaseComponent implements OnInit {
         
         if(error.status == 400 && error.error.message)
           this.message = error.error.message;
+
+          if(error.status != 400 && error.status != 409)
+          this.message = error.error.message ? error.error.message : "Something went wrong..."
 
         this.wrongInputValue = true;
         this.signUpSuccessfull = false;
