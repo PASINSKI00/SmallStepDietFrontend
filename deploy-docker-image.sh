@@ -28,6 +28,6 @@ echo "Building and publishing $IMAGE_NAME image"
 rm -rf dist &&\
 ng build -c $NG_BUILD_ENV &&\
 docker build -t $IMAGE_NAME . &&\
-doctl registry login
-docker tag $IMAGE_NAME registry.digitalocean.com/container-registry-smallstepdiet/frontend-app-$env
+doctl registry login &&\
+docker tag $IMAGE_NAME registry.digitalocean.com/container-registry-smallstepdiet/frontend-app-$env &&\
 docker push registry.digitalocean.com/container-registry-smallstepdiet/frontend-app-$env
