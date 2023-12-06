@@ -332,6 +332,9 @@ export class DietComponent implements OnInit {
     this.appendingAllowed = false;
     await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, 0, this.pageSize*3)).then((array) => {
       this.meals = array;
+      if(array.length < this.pageSize*3){
+        this.noMoreMeals = true;
+      }
     }).catch(() => {
       const alertDetails = new AlertDetails("Couldn't load meals. Please refresh the page to try again.")
       this.sharedService.emitChange(alertDetails);
