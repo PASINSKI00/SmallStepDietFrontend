@@ -13,6 +13,12 @@
         <input #repassword formControlName="repassword" type="password" id="confirm-password" placeholder="confirm password" 
             (keydown.enter)="signup()" (blur)="checkInput('repassword', repassword)">
 
+        <p class="rules">
+            By signing up, you agree to our <a class="link" routerLink="/policies/termsandconditions">Terms</a>. 
+            Learn how we collect and use your data in our <a class="link" routerLink="/policies/privacy">Privacy Policy</a>
+            and how we use cookies and similar technology in our <a class="link" routerLink="/policies/cookies">Cookie Policy</a>
+        </p>
+
         <button id="signup-button" [ngClass]="{'dimmed': !signupForm.valid}" (click)="signup()">Sign Up</button>
         
         <div id="divider">
