@@ -1,21 +1,26 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Meal } from './meal';
 import { faTrashAlt, faAdd, faAnglesDown, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { Category } from './category';
 import { DietService } from './diet.service';
 import { SharedService } from '../shared.service';
 import { lastValueFrom } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BodyInfoService } from '../account/body-info/body-info.service';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { RedirectDetails } from '../overlays/redirect/redirect-details';
+import { AlertDetails } from '../overlays/alert/alert-details';
+import { slideFromTop } from '../animations';
 
 @Component({
   selector: 'app-diet',
   templateUrl: './diet.component.html',
-  styleUrls: ['./diet.component.sass']
+  styleUrls: ['./diet.component.sass'],
+  animations: [
+    slideFromTop
+  ]
 })
 export class DietComponent implements OnInit {
-  @ViewChild('infinityScrollStart', { static: true }) infinityScrollStart!: ElementRef;
   @ViewChild('infinityScrollEnd', { static: true }) infinityScrollEnd!: ElementRef;
 
   observerStart!: IntersectionObserver;
@@ -48,6 +53,20 @@ export class DietComponent implements OnInit {
   lastPageNumber: number = 2;
   pageSize: number = 15;
 
+  noMoreMeals: boolean = false;
+  isLoading: boolean = false;
+  isLoadingTop: boolean = false;
+  isLoadingBottom: boolean = false;
+  isUploading: boolean  = false;
+  isSearching: boolean = false;
+  isSingleMealLoading: boolean = false;
+
+  appendingAllowed: boolean = false;
+
+  mobileDietPlannerVisible: boolean = false;
+  isViewportLessThan600px: boolean = false;
+  firstShow: boolean = true;
+
   mealQueryInput = this.formBuilder.group({
     nameContains: '',
     sortBy: '',
@@ -55,11 +74,16 @@ export class DietComponent implements OnInit {
   });
 
   constructor(
-    private bodyInfoService: BodyInfoService, 
-    private dietService: DietService, 
-    private sharedService: SharedService, 
-    private router: Router, 
-    private formBuilder: FormBuilder) {}
+    private bodyInfoService: BodyInfoService, private dietService: DietService, private sharedService: SharedService, 
+    private router: Router, private formBuilder: FormBuilder, private route: ActivatedRoute) 
+    {
+      this.route.params.subscribe( params => 
+        {
+          if(params['id'])
+            this.showSingleMeal(params['id']);       
+        }
+      );
+    }
 
   async ngOnInit() {
     this.getInitialMealsFromBackend();
@@ -80,7 +104,10 @@ export class DietComponent implements OnInit {
 
     this.mealQueryInput.valueChanges.subscribe(() => {
       this.formUpdated = true;
+      this.noMoreMeals = false;
     });
+
+    this.isViewportLessThan600px = window.innerWidth < 600;
   }
 
   ngAfterViewInit() {
@@ -93,62 +120,65 @@ export class DietComponent implements OnInit {
       threshold: 0.01
     };
 
-    this.observerStart = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          this.appendMealsAtTheStart();
-          console.log("start");
-        }
-      });
-    }, options);
-
     this.observerEnd = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
+        console.log("entering observerEnd")
+        if (entry.isIntersecting && this.appendingAllowed) {
           this.appendMealsAtTheBack();
-          console.log("end");
         }  
       });
     }, options);
 
-    this.observerStart.observe(this.infinityScrollStart.nativeElement);
     this.observerEnd.observe(this.infinityScrollEnd.nativeElement);
   }
 
-  appendMealsAtTheStart() {
-    if(this.firstPageNumber == 0)
+  async appendMealsAtTheStart() {
+    if(this.firstPageNumber == 0 || this.appendingAllowed === false)
       return;
-
-    lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.firstPageNumber-1, this.pageSize)).then((array) => {
-      if(array.length == 0)
+    this.appendingAllowed = false;
+    console.log("Appending meals at the start");
+    this.isLoadingTop = true;
+    await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.firstPageNumber-1, this.pageSize)).then((array) => {
+      if(array.length == 0){
         return;
-
+      }
       this.meals.unshift(...array);
       this.meals.splice(this.meals.length - array.length, array.length);
       this.firstPageNumber--;
       this.lastPageNumber--;
     }).catch(() => {
-      alert("Couldn't load meals. Please refresh the page to try again.");
+      const alertDetails = new AlertDetails("Couldn't load meals. Please refresh the page to try again.")
+      this.sharedService.emitChange(alertDetails);
     });
+    this.isLoadingTop = false;
+    this.appendingAllowed = true;
   }
 
-  appendMealsAtTheBack() {
-    lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.lastPageNumber+1, this.pageSize)).then((array) => {
-      if(array.length == 0)
+  async appendMealsAtTheBack() {
+    this.appendingAllowed = false;
+    console.log("Appending meals at the back");
+    this.isLoadingBottom = true;
+    await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.lastPageNumber+1, this.pageSize)).then((array) => {
+      this.isLoadingBottom = false;
+      if(array.length == 0){
+        this.noMoreMeals = true;
         return;
+      }
 
       this.meals.push(...array);
       this.meals.splice(0, array.length);
       this.firstPageNumber++;
       this.lastPageNumber++;
     }).catch(() => {
-      alert("Couldn't load meals. Please refresh the page to try again.");
+      const alertDetails = new AlertDetails("Something went wrong when getting new meals")
+      this.sharedService.emitChange(alertDetails);
+      this.isLoadingBottom = false;
     });
+    this.appendingAllowed = true;
   }
 
   addDayToDiet() {
     if(this.maxDayIndex == 6) {
-      alert("You can't add more than 7 days to a diet");
       return;
     }
     
@@ -157,9 +187,9 @@ export class DietComponent implements OnInit {
     this.diet.push(new Array<Meal>());
   }
 
-  addMealToDiet(meal: Meal) {
+  addMealToDiet(event: Event, meal: Meal) {
+    event.stopPropagation();
     if(this.diet[this.chosenDayIndex].length == 8) {
-      alert("You can't add more than 8 meals to one day");
       return;
     }
 
@@ -178,8 +208,12 @@ export class DietComponent implements OnInit {
     }
   }
 
-  removeDayFromDiet() {
-    this.diet.splice(this.chosenDayIndex, 1);
+  removeDayFromDiet(i?: number) {
+    if(i == undefined) {
+      i = this.chosenDayIndex;
+    }
+
+    this.diet.splice(i, 1);
     this.maxDayIndex--;
     this.chosenDayIndex = this.maxDayIndex;
   }
@@ -200,90 +234,113 @@ export class DietComponent implements OnInit {
     }
   }
 
-  searchClicked(){
-    this.getInitialMealsFromBackend();
+  async searchClicked(){
+    this.isSearching = true;
+    await this.getInitialMealsFromBackend();
     this.formUpdated = false;
+    this.isSearching = false;
+    this.filtersVisible = false;
   }
 
-  async showSingleMeal(meal: Meal){
-    console.log(meal);
-    const response$ = this.dietService.extendMeal(meal.idMeal);
-    const lastValue$ = await lastValueFrom(response$);
-
-    if(lastValue$.status != 200) 
-      return;
-
-    let value = JSON.parse(lastValue$.body);
-
-    meal.extendMeal(value.recipe, value.timeToPrepare, value.proteinRatio, value.carbsRatio, value.fatsRatio, value.reviews);
-
-    this.singleMeal = meal;
-    this.singleMealVisible = !this.singleMealVisible;
+  async showSingleMeal(idMeal: number){
+    this.singleMealVisible = true;
+    this.isSingleMealLoading = true;
+    await lastValueFrom(this.dietService.extendedMeal(idMeal)).then((response) => {
+      let mealJSON = JSON.parse(response.body);
+      this.singleMeal = new Meal(mealJSON.idMeal, mealJSON.name, mealJSON.ingredientsNames, mealJSON.rating, 
+        mealJSON.imageUrl, mealJSON.avgRating, mealJSON.proteinRatio, mealJSON.timesUsed, mealJSON.recipe, 
+        mealJSON.timeToPrepare, mealJSON.carbsRatio, mealJSON.fatsRatio, mealJSON.reviews)
+    }).catch(() => {
+      const alertDetails = new AlertDetails("Couldn't load meal. Please try again.");
+      this.sharedService.emitChange(alertDetails);
+    });
+    this.isSingleMealLoading = false;
   }
 
   async continue() {
+    let isFailed = false;
+    this.isUploading = true;
     this.sharedService.setActiveDiet(this.diet);
 
-    // Check if diet is empty
-    if(this.diet.length == 0) {
-      alert("You can't continue with an empty diet");
-      return;
-    }
-
-    // Check if diet is valid
-    for(let i = 0; i < this.diet.length; i++) {
+    for(let i = this.diet.length-1 ; i >= 0 ; i--) {
       if(this.diet[i].length == 0) {
-        alert("You can't continue with empty days");
-        return;
+        this.removeDayFromDiet(i);
       }
     }
 
-    // Check if logged in and save diet if not
-    if(!this.sharedService.isLoggedIn()) {
-      alert("You need to be logged in to continue");
-      return;
+    if(this.diet.length == 0 && !isFailed) {
+      const alertDetails = new AlertDetails("Diet is empty. Please add meals.");
+      this.sharedService.emitChange(alertDetails);
+      this.addDayToDiet();
+      isFailed = true
     }
 
-    // Check if user provided bodyinfo
-    if(!this.isBodyInfoSet) {
-      alert("You need to provide your body information to continue. You will be redirected.");
-      this.router.navigate(['/account/bodyinfo']);
-      return;
+    if(!this.sharedService.isLoggedIn() && !isFailed) {
+      const redirectDetails = new RedirectDetails("You need to be logged in to continue", "login");
+      this.sharedService.emitChange(redirectDetails);
+      isFailed = true
     }
 
-    // Update diet if active diet
-    if(this.sharedService.getActiveDietId() != -1) {
-      const response$ = this.dietService.updateDiet(this.diet);
-      const lastValue$ = await lastValueFrom(response$);
-
-      if(lastValue$.status != 200) {
-        alert("Diet wasn't updated. Please try again.");
-        return;
-      }
+    if(!this.isBodyInfoSet && !isFailed) {
+      const redirectDetails = new RedirectDetails("Body information missing", "/account/bodyinfo");
+      this.sharedService.emitChange(redirectDetails);
+      isFailed = true
     }
 
-    // Create diet if no active diet
-    if(this.sharedService.getActiveDietId() == -1) {
-      const response$ = this.dietService.uploadDiet(this.diet);
-      const lastValue$ = await lastValueFrom(response$);
+    if(this.sharedService.getActiveDietId() != -1 && !isFailed)  {
+      await lastValueFrom(this.dietService.updateDiet(this.diet))
+        .catch((error) => {
+          if (error.status == 404) {
+            this.sharedService.setActiveDietId(-1);
+            return;
+          }
 
-      if(lastValue$.status != 201) {
-        alert("Diet wasn't created. Please try again.");
-        return;
-      }
-
-      this.sharedService.setActiveDietId(JSON.parse(lastValue$.body));
+          const alertDetails = new AlertDetails("Diet wasn't updated. Please try again.");
+          this.sharedService.emitChange(alertDetails);
+          isFailed = true;
+        });
     }
+
+    if(this.sharedService.getActiveDietId() == -1 && !isFailed) {
+      await lastValueFrom(this.dietService.uploadDiet(this.diet)).then((response) => {
+        this.sharedService.setActiveDietId(JSON.parse(response.body));
+      }).catch(() => {
+        const alertDetails = new AlertDetails("Diet wasn't created. Please try again.");
+        this.sharedService.emitChange(alertDetails);
+        isFailed = true;
+      });
+    }
+
+    this.isUploading = false;
+
+    if(isFailed) return;
 
     this.router.navigate(['/diet/final']);
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isViewportLessThan600px = window.innerWidth < 600;
+  }
+
+  isMealAssignedAlready(meal: Meal): boolean {
+    return this.diet[this.chosenDayIndex].some(chosenMeal => chosenMeal.idMeal === meal.idMeal)
+  }
+
   private async getInitialMealsFromBackend() : Promise<void> {
-    lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, 0, this.pageSize*3)).then((array) => {
+    this.isLoading = true;
+    this.appendingAllowed = false;
+    await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, 0, this.pageSize*3)).then((array) => {
       this.meals = array;
+      if(array.length < this.pageSize*3){
+        this.noMoreMeals = true;
+      }
     }).catch(() => {
-      alert("Couldn't load meals. Please refresh the page to try again.");
+      const alertDetails = new AlertDetails("Couldn't load meals. Please refresh the page to try again.")
+      this.sharedService.emitChange(alertDetails);
     });
+    this.isLoading = false;
+    this.appendingAllowed = true;
   }
 
   private getCategoriesFromBackend() {

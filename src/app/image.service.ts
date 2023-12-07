@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SharedService } from './shared.service';
 import { HttpHeaders } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImageService {
-  address = 'http://localhost:8080';
+  address = environment.backendUrl;
 
   constructor(private http: HttpClient, private sharedService: SharedService) { }
 

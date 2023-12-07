@@ -11,6 +11,11 @@ import { UserInfoComponent } from './account/user-info/user-info.component';
 import { DietHistoryComponent } from './account/diet-history/diet-history.component';
 import { BodyInfoComponent } from './account/body-info/body-info.component';
 import { ReviewComponent } from './account/review/review.component';
+import { DietViewComponent } from './account/diet-history/views/diet-view/diet-view.component';
+import { authGuard } from './guards/auth.guard';
+import { PrivacyComponent } from './footer/policies/privacy/privacy.component';
+import { CookiesComponent } from './footer/policies/cookies/cookies.component';
+import { TermsAndConditionsComponent } from './footer/policies/terms-and-conditions/terms-and-conditions.component';
 
 const routes: Routes = [
   {
@@ -27,43 +32,77 @@ const routes: Routes = [
     component: DietComponent,
   },
   {
+    path: 'diet/meal/:id',
+    component: DietComponent,
+  },
+  {
     path: 'addMeal',
     component: AddMealComponent,
   },
   {
     path: 'diet/final',
     component: FinalDietComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'diet/final/groceries',
     component: GroceriesComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'diet/final/groceries/:id',
+    component: GroceriesComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'diet/finished',
     component: FinishedComponent,
+    canActivate: [authGuard]
   },
   {
     path: 'account',
     component: AccountHomeComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'user',
         component: UserInfoComponent,
+        canActivate: [authGuard]
       },
       {
         path: 'diets',
         component: DietHistoryComponent,
+        canActivate: [authGuard]
       },
       {
         path: 'bodyinfo',
         component: BodyInfoComponent,
+        canActivate: [authGuard]
       },
       {
         path: 'reviews',
         component: ReviewComponent,
+        canActivate: [authGuard]
       },
     ],
   },
+  {
+    path: 'diet/final/:id/view',
+    component: DietViewComponent,
+    canActivate: [authGuard]
+  },
+  {
+    path: 'policies/privacy',
+    component: PrivacyComponent
+  },
+  {
+    path: 'policies/cookies',
+    component: CookiesComponent
+  },
+  {
+    path: 'policies/termsandconditions',
+    component: TermsAndConditionsComponent
+  }
 ];
 
 @NgModule({

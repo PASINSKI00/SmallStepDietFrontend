@@ -5,12 +5,13 @@ import { FormGroup } from '@angular/forms';
 import { SharedService } from '../shared.service';
 import { Meal } from './meal';
 import { FinalDiet } from './final-diet/final-diet';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DietService {
-  address = 'http://localhost:8080';
+  address = environment.backendUrl;
   tmpMeals: Array<Meal> = [];
 
   constructor(private http: HttpClient, private sharedService: SharedService) { }
@@ -32,7 +33,7 @@ export class DietService {
     )
   }
 
-  extendMeal(idMeal: number) : Observable<any> {
+  extendedMeal(idMeal: number) : Observable<any> {
     return this.http.get(this.address + '/api/meal/extend', { observe: 'response', params: {idMeal}, responseType: 'text' as 'json' })
   }
 
@@ -51,6 +52,11 @@ export class DietService {
 
   getGroceries(): Observable<any> {
     const idDiet = this.sharedService.getActiveDietId();
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
+    return this.http.get(this.address + '/api/diet/groceries', { observe: 'response', params:{idDiet},headers: headers, responseType: 'text' as 'json' });
+  }
+
+  getGroceriesById(idDiet: number): Observable<any> {
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.get(this.address + '/api/diet/groceries', { observe: 'response', params:{idDiet},headers: headers, responseType: 'text' as 'json' });
   }
@@ -124,6 +130,17 @@ export class DietService {
     return this.http.put(this.address + '/api/diet/final', diet, { headers: headers, observe: 'response', responseType: 'text' as 'json' })
   }
 
+  resetDay(idDiet: number, idFinalDay: number) {
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
+    return this.http.put(this.address + '/api/diet/final/day/reset', null, { headers: headers, observe: 'response', responseType: 'text' as 'json', params: {idDiet, idFinalDay} })
+  }
+
+  reCalculateDiet(idDiet: number) {
+    const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
+    return this.http.put(this.address + '/api/diet/final/recalculate', null, { headers: headers, observe: 'response', responseType: 'text' as 'json', params: {idDiet} })
+  }
+
+  //TODO: move to different service
   deleteMeal(idMeal: number) : Observable<any> {
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.delete(this.address + '/api/meal', { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });

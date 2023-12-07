@@ -1,11 +1,35 @@
 <div id="navbar">
     <p id="logo" class="bigger-on-hover" routerLink="/home" (click)="active='home'">SmallStepDiet</p>
+
     <nav class="small-text">
-        <a [ngClass]="{'selected': active === 'home'}" class="bigger-on-hover" routerLink="/home" (click)="active='home'" routerLinkActive="active">Home</a>
-        <a [ngClass]="{'selected': active === 'diet'}" class="bigger-on-hover" routerLink="/diet" (click)="active='diet'" routerLinkActive="active">Diet</a>
+        <a [ngClass]="{'selected': active === 'home'}" class="bigger-on-hover" routerLink="/home" (click)="active='home'" 
+            routerLinkActive="active">Home</a>
+        <a [ngClass]="{'selected': active === 'diet'}" class="bigger-on-hover" routerLink="/diet" (click)="active='diet'" 
+            routerLinkActive="active">Diet</a>
     </nav>
+
     <div id="button-container">
         <button class="btn btn-primary-green" [ngClass]="{'display-none': isLoggedIn}" (click)="access()">Join Us</button>
-        <button class="btn green-text small-wide-text bg-none bigger-on-hover" [ngClass]="{'display-none': !isLoggedIn, 'selected': active === 'account'}" (click)="active='account'" routerLink="/account/user">Your account</button>
+        <button class="btn green-text small-wide-text bg-none" 
+            [ngClass]="{'display-none': !isLoggedIn, 'selected': active === 'account'}" (click)="active='account'" 
+            routerLink="/account/user">Your account</button>
     </div>
+
+    <button class="hamburger" (click)="showMenu = !showMenu">
+        <fa-icon [icon]="hamburger" class="fa-2x" ></fa-icon>
+    </button>
+</div>
+
+<div class="menu" *ngIf="showMenu" @slideFromTop>
+    <a [ngClass]="{'selected': active === 'home'}" class="bigger-on-hover" routerLink="/home" (click)="active='home'; showMenu = !showMenu" 
+        routerLinkActive="active">Home</a>
+
+    <a [ngClass]="{'selected': active === 'diet'}" class="bigger-on-hover" routerLink="/diet" (click)="active='diet'; showMenu = !showMenu" 
+        routerLinkActive="active">Diet</a>
+
+    <button class="btn btn-primary-green" *ngIf="!isLoggedIn" (click)="access(); showMenu = !showMenu">Join Us</button>
+    
+    <button class="btn green-text small-wide-text bg-none" *ngIf="isLoggedIn"
+        [ngClass]="{'selected': active === 'account'}" (click)="active='account'; showMenu = !showMenu" 
+        routerLink="/account/user">Your account</button>
 </div>

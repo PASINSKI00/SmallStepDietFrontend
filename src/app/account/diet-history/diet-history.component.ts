@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FinalDiet } from '../../diet/final-diet/final-diet';
 import { DietService } from '../../diet/diet.service';
+import { lastValueFrom } from 'rxjs';
+import { AlertDetails } from 'src/app/overlays/alert/alert-details';
+import { SharedService } from 'src/app/shared.service';
+import { RedirectDetails } from 'src/app/overlays/redirect/redirect-details';
 
 @Component({
   selector: 'app-diet-history',
@@ -10,18 +14,21 @@ import { DietService } from '../../diet/diet.service';
 export class DietHistoryComponent implements OnInit {
   diets: FinalDiet[] = null!;
 
-  constructor(private dietService: DietService) {
-    this.dietService.getMyDiets().subscribe((response) => {
-      if(response.status != 200) {
-        alert("Something went wrong");
-        return;
-      }
+  isLoading: boolean = false;
 
+  constructor(private dietService: DietService, private sharedService: SharedService) {
+    this.isLoading = true;
+    lastValueFrom(this.dietService.getMyDiets()).then((response) => {
       this.diets = JSON.parse(response.body);
-      console.log(this.diets);
       if(this.diets.length == 0) {
-        alert("You have no diets yet. Refer to the diet page to create one.");
+        const redirectDetails = new RedirectDetails("You have no diets yet. Refer to the diet page to create one.", "/diet");
+        this.sharedService.emitChange(redirectDetails);
       }
+      this.isLoading = false;
+    }).catch(() => {
+      const alertDetails = new AlertDetails("Something went wrong. Please try again.");
+      this.sharedService.emitChange(alertDetails);
+      this.isLoading = false;
     });
   }
 
@@ -29,7 +36,6 @@ export class DietHistoryComponent implements OnInit {
   }
 
   downloadMyFile(fileUrl: string, number: number) {
-    console.log(fileUrl);
     const now = new Date();
     const link = document.createElement('a');
     link.setAttribute('target', '_blank');
@@ -46,5 +52,12 @@ export class DietHistoryComponent implements OnInit {
       'background-size': 'cover',
       'background-position': 'center'
     }
+  }
+
+  reCalculateDiet(idDiet: number) {
+    lastValueFrom(this.dietService.reCalculateDiet(idDiet)).catch(() => {
+      const alertDetails = new AlertDetails("Something went wrong");
+      this.sharedService.emitChange(alertDetails);
+    });
   }
 }

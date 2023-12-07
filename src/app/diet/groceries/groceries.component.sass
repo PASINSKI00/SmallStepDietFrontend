@@ -1,21 +1,42 @@
 @import 'src/variables.sass'
+
+#container
+    display: flex
+    flex-direction: column
+
+#shopping-list
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-items: space-between
+
+#ingredients-box
+    display: grid
+    justify-items: center
+    grid-template-columns: repeat(var(--num-of-columns), 1fr)
+    background-color: $color-black-o04
+    width: 700px
+    border-radius: 20px
+    box-sizing: border-box
+    padding: 20px
     
 .ingredients
-    width: 30%
+    width: 90%
     padding: 10px
-    margin: 20px
     background-color: $color-yellow
     border-radius: 10px
     display: flex
     flex-direction: column
-    width: fit-content
+    box-sizing: border-box
+    padding-bottom: 25px
 
 .ingredient
-    padding-bottom: 5px
+    padding-top: 10px
     display: flex
     flex-direction: row
     align-items: center
     gap: 20px   
+    border-bottom: 1px solid $color-black-o04
 
 .ingredient-info 
     width: 100%
@@ -28,9 +49,46 @@
 .ingredient p
     margin: 0
 
+.weight
+    min-width: fit-content
+
+#empty-box
+    height: 25px
+
 #button-box
+    box-sizing: border-box
+    width: 100%
+    padding: 5px 100px
     display: flex
+    flex-direction: row
     justify-content: space-between
-    align-items: center
-    margin: 20px 50px
-    padding-bottom: 10px
+    position: fixed
+    bottom: 0
+    background-color: $color-black-o04
+
+@media screen and (max-width: $layout-breakpoint-small)   
+    #shopping-list
+        margin: 20px
+
+    #ingredients-box
+        width: 100%
+        padding: 10px
+        grid-template-columns: repeat(1, 1fr)
+
+    .ingredients
+        width: 100%
+    
+    #button-box
+        padding: 7px 10px
+        
+
+@media screen and (min-width: $layout-breakpoint-small + 1) and (max-width: $layout-breakpoint-medium)
+    #shopping-list
+        margin: 20px
+
+    #ingredients-box
+        width: 100%
+        padding: 10px
+
+    #button-box
+        padding: 7px 10px

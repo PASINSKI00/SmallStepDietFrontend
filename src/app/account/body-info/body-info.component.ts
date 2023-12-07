@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { lastValueFrom } from 'rxjs';
 import { BodyInfoService } from './body-info.service';
+import { SharedService } from 'src/app/shared.service';
+import { RedirectDetails } from 'src/app/overlays/redirect/redirect-details';
+import { AlertDetails } from 'src/app/overlays/alert/alert-details';
 
 @Component({
   selector: 'app-body-info',
@@ -12,9 +15,10 @@ export class BodyInfoComponent implements OnInit {
   BEE: number = 0;
   TDEE: number = 0;
   caloriesGoal: number = 0;
-  
+  isLoading: boolean = false;
+  firstTimer: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private bodyInfoService: BodyInfoService) { }
+  constructor(private formBuilder: FormBuilder, private bodyInfoService: BodyInfoService, private sharedService: SharedService) { }
 
   ngOnInit(): void {
     this.getBodyInfo();
@@ -23,42 +27,52 @@ export class BodyInfoComponent implements OnInit {
   bodyInfoForm = this.formBuilder.group({
     goal: new FormControl('LOSE_WEIGHT', [Validators.required]),
     gender: new FormControl('MALE', [Validators.required]),
-    height: new FormControl('', [Validators.required]),
-    weight: new FormControl('', [Validators.required]),
-    age: new FormControl('', [Validators.required]),
-    pal: new FormControl('', [Validators.required, Validators.min(1.4), Validators.max(2.4)]),
+    height: new FormControl(undefined, [Validators.required]),
+    weight: new FormControl(undefined, [Validators.required]),
+    age: new FormControl(undefined, [Validators.required, Validators.min(16)]),
+    pal: new FormControl<number>(1.4, [Validators.required, Validators.min(1.4), Validators.max(2.5)]),
     additionalCalories: 0
   });
 
   async getBodyInfo() {
-    const response$ = this.bodyInfoService.getBodyInfo();
-    const lastValue$ = await lastValueFrom(response$);
-
-    let result = JSON.parse(lastValue$.body);
-    
-    this.bodyInfoForm.patchValue({
-      goal: result.goal,
-      gender: result.gender,
-      height: result.height,
-      weight: result.weight,
-      age: result.age,
-      pal: result.pal,
-      additionalCalories: result.additionalCalories
+    await lastValueFrom(this.bodyInfoService.getBodyInfo()).then((response) => {
+      const result = JSON.parse(response.body);
+      this.bodyInfoForm.patchValue({
+        goal: result.goal,
+        gender: result.gender,
+        height: result.height,
+        weight: result.weight,
+        age: result.age,
+        pal: result.pal,
+        additionalCalories: result.additionalCalories
+      });
+      this.BEE = result.bee;
+      this.TDEE = result.tdee;
+      this.caloriesGoal = result.caloriesGoal;
+    }).catch((error) => {
+      if(error.status == 404) {
+        this.firstTimer = true;
+      }
     });
-
-    this.BEE = result.bee;
-    this.TDEE = result.tdee;
-    this.caloriesGoal = result.caloriesGoal;
   }
 
   async onSubmit() {
+    this.isLoading = true;
     this.bodyInfoService.saveBodyInfo(this.bodyInfoForm).subscribe(
       (response) => {
           this.getBodyInfo();
+          this.isLoading = false;
+
+          if(this.firstTimer) {
+            this.firstTimer = false;
+            const redirectDetails = new RedirectDetails("Now that we know Your Calories Goal, You can go ahead and finish Your diet","/diet")
+            this.sharedService.emitChange(redirectDetails);
+          }
       },
       (error) => {
-        alert('Error while saving. Please check the values and try again.');
-        console.log(error);
+        const alertDetails = new AlertDetails("Error while saving. Please check the values and try again.");
+        this.sharedService.emitChange(alertDetails);
+        this.isLoading = false;
       }
     );
   }

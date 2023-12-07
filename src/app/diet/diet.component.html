@@ -2,46 +2,82 @@
     <div id="bar-and-meals">
         <div id="utility-bar" [formGroup]="mealQueryInput">
             <div id="show-filter" (click)="this.filtersVisible = !this.filtersVisible">
-                <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible == true}"></fa-icon>
+                <fa-icon class="filter-icon" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': filtersVisible}"></fa-icon>
                 <p class="small-wide-text" >Show Filters</p>
             </div>
 
             <div class="line-vr"></div>
 
-            <input id="search-bar" formControlName="nameContains" class="small-wide-text" placeholder="Meal name..."/>
-            <button id="search-button" class="btn btn-small-green" [ngClass]="{'display-none' : this.formUpdated === false}" (click)="searchClicked()">Search</button>
+            <input id="search-bar" formControlName="nameContains" class="small-wide-text" placeholder="Search for a meal..." 
+                (keydown.enter)="searchClicked()"/>
+            <button *ngIf="!isSearching" class="search-button btn btn-small-green small-wide-text" [ngClass]="{'display-none' : this.formUpdated === false}" 
+                (click)="searchClicked()">Search</button>
+            <app-spinner *ngIf="isSearching" class="search-button"></app-spinner>    
         </div>
 
-        <div id="meals" [ngClass]="{'display-none' : singleMealVisible === true}">
-            <div id="filters" [formGroup]="mealQueryInput" [ngClass]="{'display-none' : filtersVisible === false}" class="grey-bg">
-                <div id="sort-box">
-                    <p class="normal-text">Sort by:</p>
-                    <p [ngClass]="{'active': mealQueryInput.get('sortBy')?.value === sort}" class="super-small-text sort left-cut" (click)="toggleSortValue(sort)" 
-                    *ngFor="let sort of sortCriterias; let i = index">{{sort}}</p>
-                </div>
+        <div id="filters" [formGroup]="mealQueryInput" *ngIf="filtersVisible" [@slideFromTop] class="grey-bg">
+            <div id="sort-box">
+                <p class="normal-text">Sort by:</p>
+                <p [ngClass]="{'active': mealQueryInput.get('sortBy')?.value === sort}" class="super-small-text sort left-cut" (click)="toggleSortValue(sort)" 
+                *ngFor="let sort of sortCriterias; let i = index">{{sort}}</p>
+            </div>
 
+            <div id="categories">
+                <p class="normal-text box-title">Choose categories</p>
                 <div id="categories-box">
-                    <p class="normal-text box-title">Choose categories</p>
-                    <p [ngClass]="{'active': mealQueryInput.get('categories')?.value?.includes(category.name)}" class="category super-small-text left-cut" 
-                    (click)="appendCategoryToQuery(category.name)" *ngFor="let category of categories; let i = index">{{category.name}}</p>
+                    <p [ngClass]="{'active': mealQueryInput.get('categories')?.value?.includes(category.name)}" 
+                    class="category super-small-text left-cut" (click)="appendCategoryToQuery(category.name)" 
+                    *ngFor="let category of categories; let i = index">
+                        {{category.name}}
+                    </p>
                 </div>
             </div>
 
-            <div style="opacity: 0; width: 100%; height: 5px" #infinityScrollStart></div>
+            <button *ngIf="!isSearching" class="search-button btn btn-small-green small-wide-text" [ngClass]="{'display-none' : this.formUpdated === false}" 
+                (click)="searchClicked()">Search</button>
+            <app-spinner *ngIf="isSearching" class="search-button"></app-spinner>    
+        </div>
+
+        <div id="meals" [ngClass]="{'display-none' : singleMealVisible === true}">
             <div id="meals-box">
+                <button *ngIf="this.firstPageNumber != 0" class="append-start" (click)="appendMealsAtTheStart()">
+                    <button class="button green-bg color-white">
+                        <fa-icon class="icon-size-45" [icon]="addIcon" (click)="appendMealsAtTheStart()"></fa-icon>
+                    </button>
+                </button>
+
+                <div *ngIf="isLoadingTop || isLoading" class="meal centered-meal">
+                    <app-spinner></app-spinner>
+                </div>
+
                 <ng-container *ngFor="let meal of meals; let i = index">
-                    <div class="meal" (click)="showSingleMeal(meal)">
+                    <div class="meal" (click)="showSingleMeal(meal.idMeal)" (click)="$event.stopPropagation()">
                         <img src="{{meal.imageUrl}}" alt="meal image" />
                         <div class="meal-info">
                             <span>
                                 <p class="meal-name super-small-wide-text">{{meal.name}}</p>
                                 <div class="ingredients-names">
                                     <p class="super-super-small-wide-text">
-                                        {{meal.getIngredientsNames()}}
+                                        {{meal.getTwoIngredientsNames()}}
                                     </p>
                                 </div>
                             </span>
-                            <button class="btn btn-small-green" (click)="addMealToDiet(meal)" (click)="$event.stopPropagation()">add</button>
+
+                            <ng-container
+                                *ngIf="isMealAssignedAlready(meal); then added; else add ">
+                            </ng-container>
+
+                            <ng-template #add>
+                                <button class="btn btn-small-green" (click)="addMealToDiet($event, meal)">
+                                        add
+                                </button>
+                            </ng-template>
+
+                            <ng-template #added>
+                                <button class="btn btn-small-gray" (click)="addMealToDiet($event, meal)">
+                                        added
+                                </button>
+                            </ng-template>
                         </div>
                     </div>
 
@@ -59,22 +95,34 @@
                         </script>
                     </div>
                 </ng-container>
+
+                <div *ngIf="isLoadingBottom" class="meal centered-meal">
+                    <app-spinner></app-spinner>
+                </div>
+
+                <div *ngIf="noMoreMeals" class="meal add-meal">
+                    <p>Out of meals?</p>
+                    <button class="btn btn-small-green" routerLink="/addMeal">Add a new one</button>
+                </div>
             </div>
+
             <div style="opacity: 0; width: 100%; margin-bottom: 10px; height: 5px;" #infinityScrollEnd></div>
         </div>
 
         <div id="single-meal-container" [ngClass]="{'display-none' : singleMealVisible === false}">
-            <div id="return-button" class="bigger-on-hover" (click)="singleMealVisible = false">
+            <div id="return-button" class="btn btn-primary-gray" (click)="singleMealVisible = false">
                 <fa-icon class="filter-icon" [icon]="returnIcon"></fa-icon>
                 <p class="small-wide-text">return</p>
             </div>
 
-            <div id="single-meal">
+            <app-spinner *ngIf="isSingleMealLoading"></app-spinner>
+
+            <div *ngIf="!isSingleMealLoading" id="single-meal">
                 <img src="{{singleMeal.imageUrl}}" alt="meal image" />
 
                 <div id="single-meal-info">
                     <p class="normal-super-wide-text">{{singleMeal.name}}</p>
-                    <p class="small-wide-text left-cut">{{singleMeal!.getIngredientsNames()}}</p>
+                    <p class="small-wide-text left-cut">{{singleMeal!.getAllIngredientsNames()}}</p>
 
                     <br>
                     <p class="small-super-wide-text">Ratio:</p>
@@ -106,24 +154,29 @@
                     </div>
                 </div>
             </div>
+
+            <button class="btn btn-primary-green normal-text" (click)="addMealToDiet($event, singleMeal)">Add to diet</button>
         </div>
     </div>
 
-    <div id="diet-planner">
+    <div id="diet-planner" [class.top]="mobileDietPlannerVisible" [class.bottom]="!mobileDietPlannerVisible && !firstShow">
         <div id="day-bar">
+            <fa-icon *ngIf="isViewportLessThan600px" class="filter-icon fa-2x" [icon]="filterIcon" [ngClass]="{'fa-flip-vertical': !mobileDietPlannerVisible}"
+                (click)="mobileDietPlannerVisible = !mobileDietPlannerVisible; firstShow=false"></fa-icon>
+
             <div id="days">
-                <div class="btn btn-round-white super-small-wide-text day" *ngFor="let day of diet; let i = index" [ngClass]="{'non-active-day' : i !== chosenDayIndex}" 
+                <button class="btn btn-round-white small-wide-text day" *ngFor="let day of diet; let i = index" [ngClass]="{'non-active-day' : i !== chosenDayIndex}" 
                 (click)="this.chosenDayIndex = i">
                     {{i+1}}
-                </div>
+                </button>
             </div>
             <div id="buttons">
-                <div class="button round green-bg color-white">
-                    <fa-icon size="lg" [icon]="addIcon" (click)="addDayToDiet()"></fa-icon>
-                </div>
-                <div class="button round red-bg color-white">
-                    <fa-icon size="sm" [icon]="deleteIcon" (click)="removeDayFromDiet()"></fa-icon>
-                </div>
+                <button class="button round green-bg color-white">
+                    <fa-icon class="icon-size-29" [icon]="addIcon" (click)="addDayToDiet()"></fa-icon>
+                </button>
+                <button class="button round red-bg color-white">
+                    <fa-icon class="icon-size-22" [icon]="deleteIcon" (click)="removeDayFromDiet()"></fa-icon>
+                </button>
             </div>
         </div>
 
@@ -131,13 +184,16 @@
             <div *ngFor="let meal of diet[chosenDayIndex]" [ngStyle]="chosenMealBackground(meal.imageUrl)" class="chosen-meal">
                 <div class="background-darkener">
                     <p class="chosen-meal-name super-small-wide-text">{{meal.name}}</p>
-                    <fa-icon class="btn btn-small-red" [icon]="deleteIcon" (click)="removeMealFromDiet(meal)"></fa-icon>
+                    <button class="btn btn-small-red">
+                        <fa-icon [icon]="deleteIcon" (click)="removeMealFromDiet(meal)"></fa-icon>
+                    </button>
                 </div>
             </div>
         </div>
 
         <div id="button-box">
-            <button class="btn btn-primary-green" (click)="continue()">Continue</button>
+            <button *ngIf="!isUploading" class="btn btn-primary-green" (click)="continue()">Continue</button>
+            <app-spinner *ngIf="isUploading"></app-spinner>
         </div>
     </div>
 </div>

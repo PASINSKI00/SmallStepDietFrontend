@@ -1,6 +1,7 @@
 import { FinalMeal } from './final-meal';
 
 export class FinalDay {
+    idFinalDay: number;
     finalMeals: Array<FinalMeal>;
     calories: number;
     protein: number;
@@ -8,8 +9,10 @@ export class FinalDay {
     carbs: number;
 
     modified: boolean = false;
+    applicableForReset: boolean = false;
 
-    constructor(finalMeals: Array<FinalMeal>, calories: number, protein: number, fats: number, carbs: number) {
+    constructor(idFindalDay: number, finalMeals: Array<FinalMeal>, calories: number, protein: number, fats: number, carbs: number) {
+        this.idFinalDay = idFindalDay;
         this.finalMeals = finalMeals;
         this.calories = calories;
         this.protein = protein;

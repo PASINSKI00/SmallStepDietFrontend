@@ -17,7 +17,10 @@ export class Meal {
     reviews: Array<Review> = [];
     categoriesNames: Array<String> = [];
 
-    constructor(idMeal: number, name: string, ingredientsNames: Array<String>, rating: number, imageUrl: string, avgRating: number, proteinRatio: number, timesUsed: number) {
+    constructor(idMeal: number, name: string, ingredientsNames: Array<String>, rating: number, imageUrl: string, 
+        avgRating: number, proteinRatio: number, timesUsed: number, recipe?: string, timeToPrepare?: number, 
+        carbsRatio?: number, fatsRatio?: number, reviews?: Array<Review>) 
+        {
         this.idMeal = idMeal;
         this.name = name;
         this.ingredientsNames = ingredientsNames;
@@ -26,30 +29,27 @@ export class Meal {
         this.avgRating = avgRating;
         this.proteinRatio = proteinRatio;
         this.timesUsed = timesUsed;
+        recipe ? this.recipe = recipe : null;
+        timeToPrepare ? this.timeToPrepare = timeToPrepare : null;
+        carbsRatio ? this.carbsRatio = carbsRatio : null;
+        fatsRatio ? this.fatsRatio = fatsRatio : null;
+        reviews ? this.reviews = reviews : null;
     }
 
-    extendMeal(recipe: string, timeToPrepare: number, proteinRatio: number, carbsRatio: number, fatsRatio: number, reviews: Array<Review>) {
-        this.recipe = recipe;
-        this.timeToPrepare = timeToPrepare;
-        this.proteinRatio = proteinRatio;
-        this.carbsRatio = carbsRatio;
-        this.fatsRatio = fatsRatio;
-        this.reviews = reviews;
+    getTwoIngredientsNames(): string {
+        return this.ingredientsNames[0]
+            .concat(this.ingredientsNames[1] ? ", " + this.ingredientsNames[1] : "")
+            .concat(this.ingredientsNames[2] ? ", ..." : "");
     }
 
-    getIngredientsNames(): string {
-        let ingredientsNamesString: string = "";
-        for (let i=0; i<2; i++) {
-            if(i != 1) {
-                ingredientsNamesString += this.ingredientsNames[i] + ", ";
-            } else {
-                ingredientsNamesString += this.ingredientsNames[i];
-                if(this.ingredientsNames.length > 2) {
-                    ingredientsNamesString += ", ...";
-                }
-            }
-        }
-
-        return ingredientsNamesString;
+    getAllIngredientsNames(): string {
+        let names: string = "";
+        this.ingredientsNames.forEach((ingredient, i) => {
+            if(i != 0)
+                names.concat(", " + ingredient);
+            else
+                names = ingredient.toString();
+        })
+        return names;
     }
 }

@@ -8,9 +8,9 @@ import { HomeComponent } from './home/home.component';
 import { DietComponent } from './diet/diet.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { LoginComponent } from './access/login/login.component';
-import { SignupComponent } from './access/signup/signup.component';
-import { BaseComponent } from './access/base/base.component';
+import { LoginComponent } from './overlays/login/login.component';
+import { SignupComponent } from './overlays/signup/signup.component';
+import { BaseComponent } from './overlays/base/base.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FooterComponent } from './footer/footer.component';
@@ -26,6 +26,14 @@ import { UserInfoComponent } from './account/user-info/user-info.component';
 import { ReviewComponent } from './account/review/review.component';
 import { AccountHomeComponent } from './account/account-home/account-home.component';
 import { DatePipe } from '@angular/common';
+import { DietViewComponent } from './account/diet-history/views/diet-view/diet-view.component';
+import { SpinnerComponent } from './spinner/spinner.component';
+import { RedirectComponent } from './overlays/redirect/redirect.component';
+import { AlertComponent } from './overlays/alert/alert.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PrivacyComponent } from './footer/policies/privacy/privacy.component';
+import { TermsAndConditionsComponent } from './footer/policies/terms-and-conditions/terms-and-conditions.component';
+import { CookiesComponent } from './footer/policies/cookies/cookies.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +53,14 @@ import { DatePipe } from '@angular/common';
     BodyInfoComponent,
     UserInfoComponent,
     ReviewComponent,
-    AccountHomeComponent
+    AccountHomeComponent,
+    DietViewComponent,
+    SpinnerComponent,
+    RedirectComponent,
+    AlertComponent,
+    PrivacyComponent,
+    TermsAndConditionsComponent,
+    CookiesComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +70,8 @@ import { DatePipe } from '@angular/common';
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    ImageCropperModule
+    ImageCropperModule,
+    BrowserAnimationsModule
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]

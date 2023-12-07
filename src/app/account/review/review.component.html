@@ -1,25 +1,29 @@
-<div id="meals" [ngClass]="{'display-none': reviewing}">
-    <div *ngFor="let meal of meals" class="meal">
-        <img src="{{meal.imageUrl}}" alt="meal image" />
-        <div class="meal-info">
-            <span>
-                <p class="meal-name super-small-wide-text">{{meal.name}}</p>
-                <div class="ingredients-names">
-                    <p class="super-super-small-wide-text">
-                        {{meal.getIngredientsNames()}}
-                    </p>
-                </div>
-            </span>
-            <button class="btn btn-small-green" (click)="review(meal)">review</button>
+<div id="meals" [ngClass]="{'display-none': isReviewing}">
+    <app-spinner class="spinner" *ngIf="isLoading"></app-spinner>
+
+    <ng-container *ngIf="!isLoading">
+        <div *ngFor="let meal of meals" class="meal">
+            <img src="{{meal.imageUrl}}" alt="meal image" />
+            <div class="meal-info">
+                <span>
+                    <p class="meal-name super-small-wide-text">{{meal.name}}</p>
+                    <div class="ingredients-names">
+                        <p class="super-super-small-wide-text">
+                            {{meal.getTwoIngredientsNames()}}
+                        </p>
+                    </div>
+                </span>
+                <button class="btn btn-small-green" (click)="review(meal)">review</button>
+            </div>
         </div>
-    </div>
+    </ng-container> 
 </div>
 
-<div id="review" [formGroup]="reviewForm" [ngClass]="{'display-none': !reviewing}">
-    <div id="return-button" (click)="reviewing = false">
+<div id="review" [formGroup]="reviewForm" [ngClass]="{'display-none': !isReviewing}">
+    <button id="return-button" class="btn-primary-gray" (click)="isReviewing = false">
         <fa-icon class="filter-icon" [icon]="returnIcon"></fa-icon>
         <p class="small-wide-text">return</p>
-    </div>
+    </button>
 
     <div id="review-meal-info">
         <img src="{{mealForReview?.imageUrl}}" alt="meal image" />
@@ -31,10 +35,12 @@
     </div>
 
     <div id="rating-container" class="small-wide-text">
-        <p>Rating: </p>
-        <input type="number" class="small-wide-text" id="review-rating" placeholder="0-10" formControlName="rating" min="0" max="10" step="1"/>
+        <label class="small-wide-text" for="rating">Rating</label>
+        <div class="description normal-wide-text"><b>{{reviewForm.value.rating}}</b></div>
+        <input type="range" id="pal" name="rating" formControlName="rating" name="value" min="0" max="10" step="1">
     </div>
 
-    <textarea id="review-content" class="small-text" placeholder="Write your review here..." formControlName="comment"></textarea>
-    <button id="submit-review" class="btn btn-primary-green" (click)="submitReview()">Submit</button>
+    <textarea id="review-content" class="small-text" placeholder="Your comment... [optional]" formControlName="comment"></textarea>
+
+    <button id="submit-review" class="btn btn-primary-green normal-wide-text" (click)="submitReview()">Submit</button>
 </div>

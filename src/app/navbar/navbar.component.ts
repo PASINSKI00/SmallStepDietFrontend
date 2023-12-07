@@ -1,38 +1,45 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { SharedService } from '../shared.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { slideFromTop } from '../animations';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.sass']
+  styleUrls: ['./navbar.component.sass'],
+  animations: [
+    slideFromTop
+  ]
 })
 export class NavbarComponent implements OnInit {
-  @Output() accessEvent = new EventEmitter<string>();
   active: string = '';
   isLoggedIn: boolean = false;
+  hamburger = faBars;
+  showMenu = false;
 
-  constructor(private sharedService: SharedService) { 
-    this.setCorrectActive();
-  }
+  constructor(private sharedService: SharedService, private router: Router) { }
 
   ngOnInit(): void {
+    this.active = 'home';
     this.isLoggedIn = this.sharedService.isLoggedIn();
-    this.sharedService.changeEmitted$.subscribe(
-      (change) => {
-        this.isLoggedIn = this.sharedService.isLoggedIn();
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.active = event.url.split('/')[1]
+      }
+    })
+
+    this.sharedService.changeEmitted$.subscribe((change) => {
+        if(change == 'userLoggedIn')
+          this.isLoggedIn = true;
+        else if(change == 'userNotLoggedIn')
+          this.isLoggedIn = false;
       }
     );
   }
 
   access() {
-    this.accessEvent.next('access');
-  }
-
-  setCorrectActive() {
-    this.active = window.location.pathname.split('/')[1];
-    if (this.active == '' || this.active == 'addMeal') {
-      this.active = 'home';
-    }
+    this.sharedService.emitChange('loginOverlay')
   }
 }

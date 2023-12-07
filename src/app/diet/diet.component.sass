@@ -3,23 +3,30 @@
 #container
     display: flex
     flex-direction: row
-    height: $height-without-navbar
+    height: 100%
 
 #bar-and-meals
     display: flex
     flex-direction: column
+    align-items: center
     width: 75%
     height: 100%
+    overflow-y: scroll
+    z-index: 3
+
 
 #utility-bar
     display: flex
     flex-direction: row
     justify-content: flex-start
+    position: fixed
+    left: 0
     align-items: center
-    height: 52px
+    height: 61px
+    width: 75%
     background-color: $color-white
-    box-shadow: 0 4px 6px $color-black-o07
-    z-index: 1
+    box-shadow: 4px 4px 6px $color-black-o07
+    z-index: 8
 
 #show-filter 
     display: flex
@@ -43,43 +50,37 @@
     display: flex
     flex-direction: row
     box-shadow: 0 3px 10px $color-black-o07
-    width: 100%
+    position: absolute
+    width: 75%
+    top: 111px
     height: fit-content
     color: $color-white
     padding-bottom: 10px
-    transition: all 0.5s ease-in-out !important
+    z-index: 3
 
 #sort-box
-    display: flex
-    flex-direction: column
-    width: 500px
+    min-width: 140px
+    display: grid
+    grid-template-columns: repeat(1, 1fr)
     gap: 5px
-    padding: 30px
+    padding: 20px 50px
     border-right: 1px solid $color-black-o06
 
 #sort-box p
     margin: 0
 
-#sort-box p:first-child
-    margin-top: 0
-    margin-bottom: 10px
-
 .sort:hover, .sort.active
     color: $color-yellow
     cursor: pointer
 
+#categories
+    padding: 20px 50px
 
 #categories-box
-    display: flex
-    flex-direction: row
-    height: fit-content
+    display: grid
+    grid-template-columns: repeat(3, 1fr)
     gap: 5px
-    padding: 30px
-    flex-wrap: wrap
-
-#categories-box p:first-child
-    margin-top: 0
-    margin-bottom: 10px
+    padding-top: 10px
 
 .category
     width: 120px
@@ -103,21 +104,49 @@
     outline: none
     cursor: pointer
 
-#search-button
+.search-button
     margin-right: 50px
+    animation: pulse 2s linear 2
 
-
+#filters .search-button
+    margin-top: auto
+    margin-left: auto
+    margin-bottom: 20px
 
 
 // ------------------ MEALS ------------------
 #meals
     height: calc(100% - 50px)
-    overflow-y: scroll
+    width: 100%
+    box-sizing: border-box
+    position: relative
+    top: 61px
     padding: 8px
+    z-index: -1
 
+.append-start
+    grid-column: span 6
+    height: 100px
+    width: 90%
+    display: grid
+    place-items: center
+    background-color: $color-white
+    border-radius: 20px
+    margin-top: 10px
+    box-shadow: 3px 3px 10px $color-black-o06
+
+.append-start button
+    display: grid
+    place-items: center
+    width: 60px
+    height: 60px
+    border-radius: 50%
+    box-sizing: border-box
+        
 #meals #meals-box
     display: grid
-    grid-template-columns: repeat(3, 1fr)
+    place-items: center
+    grid-template-columns: repeat(6, 1fr)
     gap: 8px
 
 #meals .meal
@@ -128,13 +157,14 @@
     overflow: hidden
     box-shadow: 1px 3px 15px $color-black-o04
     cursor: pointer
+    grid-column: span 2
 
 #meals .meal .meal-info
-    padding: 0px 10px
-    padding-bottom: 5px
+    padding: 0px 5px 5px 10px
     display: flex
     flex-direction: row
     justify-content: space-between
+    align-items: flex-end
     background-color: $color-white
 
 #meals .meal .meal-info p
@@ -162,12 +192,27 @@
     -webkit-box-orient: vertical
 
 .ad-box
-    grid-column: span 3
+    grid-column: span 6
     display: grid
     place-items: center
     box-shadow: 1px 3px 15px $color-black-o04
     border-radius: 20px
     padding: 5px
+
+.add-meal, .centered-meal
+    width: 100%
+    min-height: 140px
+    padding: 10px
+    box-sizing: border-box
+    display: grid !important
+    place-items: center
+    place-content: center
+    background-color: $color-white
+
+.add-meal p
+    margin-top: 0
+    margin-bottom: 10px
+    text-align: center
 
 
 // ---------------------------- DIET PLANNER ----------------------------
@@ -185,11 +230,12 @@
     flex-direction: row
     justify-content: space-between
     align-items: center
-    min-height: 30px
+    min-height: 61px
+    box-sizing: border-box
     max-height: 100px
     padding: 10px
     background-color: $color-yellow
-    box-shadow: 0 4px 6px $color-black-o07
+    box-shadow: 4px 4px 6px $color-black-o07
     z-index: 2
 
 #diet-planner #day-bar #days
@@ -199,16 +245,15 @@
     align-items: center
     
 #diet-planner #buttons
-    display: flex
-    flex-direction: row
-    justify-content: center
-    align-items: center
+    display: grid
+    place-items: center
+    grid-template-columns: repeat(2, 1fr)
 
 #diet-planner #buttons .button
     display: grid
     place-items: center
-    width: 25px
-    height: 25px
+    width: 35px
+    height: 35px
     margin: 2px
     padding: 2px
     border-radius: 50%
@@ -217,8 +262,8 @@
 #diet-planner #day-bar .day
     display: grid
     place-items: center
-    min-width: 30px
-    min-height: 30px
+    min-width: 35px
+    min-height: 35px
     margin: 2px
 
 #diet-planner #button-box
@@ -261,7 +306,10 @@
 
 // ---------------------------- SINGLE MEAL  ----------------------------
 #single-meal-container
-    margin: 20px
+    max-width: 700px
+    margin: 40px
+    margin-bottom: 101px
+    padding: 20px
     display: flex
     flex-direction: column
     align-items: center
@@ -270,6 +318,9 @@
     background-color: $color-white
     border-radius: 20px
     box-shadow: 3px 3px 10px $color-black-o04
+    position: relative
+    top: 61px
+    z-index: 1
 
 #single-meal
     display: flex
@@ -291,12 +342,9 @@
 
 
 #reviews
-    // padding: 10px
     display: flex
     flex-direction: column
-    // background-color: $color-bg-white
     border-radius: 20px
-    // box-shadow: 3px 3px 10px $color-black-o04
 
 .review
     padding: 10px
@@ -357,3 +405,145 @@
 
 #return-button:hover
     background-color: $color-yellow
+
+@media screen and (max-width: $layout-breakpoint-small)
+    #diet-planner 
+        position: fixed
+        z-index: 10
+        width: 100%
+        height: 100vh
+        bottom: calc(-100vh + 61px) !important
+        z-index: 11
+
+    .bottom
+        animation: moveDown 0.5s ease forwards
+
+    .top        
+        animation: moveUp 0.5s ease forwards
+
+    #diet-planner #day-bar
+        align-items: flex-start
+
+    #diet-planner #day-bar #days
+        flex-wrap: nowrap
+        overflow-x: scroll
+        width: fill
+
+    #bar-and-meals
+        width: 100%
+
+    #utility-bar
+        width: 100vw
+        height: 40px
+
+    #meals
+        top: 40px
+
+    #show-filter p
+        display: none
+    
+    #show-filter fa-icon
+        padding-right: 0
+        padding-left: 5px
+        font-size: $font-size-2
+
+    #search-bar
+        margin-left: 5px !important
+        margin-right: 5px !important
+    
+    .search-button
+        margin-right: 5px !important
+
+    #filters
+        width: 100%
+        height: calc(100vh - 90px - 50px) 
+        flex-direction: column
+        top: 90px
+        overflow-y: scroll
+        position: fixed
+
+    #sort-box, #categories-box
+        gap: 0
+
+    #sort-box .sort, #categories-box .category
+        padding: 8px 0
+
+    #categories-box
+        grid-template-columns: repeat(1, 1fr)
+
+    .meal
+        grid-column: span 6 !important
+
+    #single-meal-container
+        width: 100%
+        margin: 0
+        top: 40px
+        margin-bottom: calc(5% + 100px)
+        box-shadow: none
+
+    #return-button
+        margin-left: 0
+
+    #single-meal
+        width: 100%
+
+    .review
+        flex-wrap: wrap
+
+    .review .name-and-content
+        flex-direction: column
+
+@media screen and (min-width: $layout-breakpoint-small + 1) and (max-width: $layout-breakpoint-medium)
+    #bar-and-meals
+        width: 60%
+
+    #utility-bar
+        width: 60%
+        z-index: 2
+
+    .meal
+        grid-column: span 3 !important
+
+    #diet-planner
+        width: 40%
+
+    #show-filter p
+        display: none
+    
+    #show-filter fa-icon
+        padding-right: 0
+        padding-left: 5px
+        font-size: $font-size-2
+
+    #search-bar
+        margin-left: 5px !important
+        margin-right: 5px !important
+    
+    .search-button
+        margin-right: 5px !important
+
+    #filters
+        width: 100%
+        // height: calc(100vh - 90px - 50px) 
+        flex-direction: column
+        top: 111px
+        left: 0
+        overflow-y: scroll
+        position: fixed
+        
+    #single-meal-container
+        width: 90%
+        margin: 5%
+        margin-bottom: calc(5% + 70px)
+
+    #return-button
+        margin-left: 0
+
+    #single-meal
+        width: 100%
+
+    .review
+        flex-wrap: wrap
+
+    .review .name-and-content
+        flex-direction: column          

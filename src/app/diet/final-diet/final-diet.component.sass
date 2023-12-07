@@ -36,9 +36,7 @@
     display: flex
     flex-direction: column
     justify-content: flex-end
-    min-width: 200px
-    width: 20%
-    max-width: 220px
+    width: fit-content
 
 .first-macro
     padding-top: 15px
@@ -59,7 +57,7 @@
     display: flex
     justify-content: space-between
     gap: 20px
-    min-width: 180px
+    min-width: 200px
 
 .final-meal
     background-color: $color-white
@@ -106,7 +104,7 @@
     padding-right: 20px
     border-right: 1px solid $color-grey
     margin-right: 20px
-    width: 50%
+    width: fill
     min-width: 220px
 
 .meal-ingredient
@@ -143,7 +141,7 @@
     padding-top: 20px 
 
 .meal-ratio
-    width: 30%
+    width: fit-content
     margin-left: auto
 
 
@@ -163,13 +161,94 @@
     align-items: center
     gap: 5px
 
+#empty-box
+    height: 25px
+
 #button-box
+    box-sizing: border-box
+    width: 100%
+    padding: 5px 100px
     display: flex
+    flex-direction: row
     justify-content: space-between
-    align-items: center
-    margin: 20px 50px
-    padding-bottom: 10px
+    position: fixed
+    bottom: 0
+    background-color: $color-black-o04
 
 .apply-changes-button
     margin: 10px 5px
+
+
+@media screen and (max-width: $layout-breakpoint-medium)
+    #banner
+        margin: 20px
+
+    .final-day
+        margin: 20px
+        border-radius: 20px
+    
+    .final-day-content
+        flex-direction: column
+        align-items: center
+
+    .day-info
+        width: 100%
+
+    .final-meals
+        flex-direction: column
+        width: 100%
+        flex-wrap: nowrap
+
+    .final-meal
+        min-width: 0
+        width: 100%
+        justify-content: center
+
+    .meal-details
+        flex-direction: column
+        padding-top: 15px
+
+    .meal-title
+        border-bottom: 1px solid $color-grey
+        padding-bottom: 10px
+
+    .meal-ingredients
+        min-width: 0
+        width: 100%
+        border-right: none
+        border-bottom: 1px solid $color-grey
+        // border-top: 1px solid $color-grey
+        padding-right: 0
+        margin-right: 0
+        padding-bottom: 10px
+
+    .meal-ingredient
+        min-width: none
+        flex-direction: row
+        flex-wrap: wrap
+        justify-content: flex-start
+        gap: 0px
+        margin-bottom: 10px
+        & p
+            margin-right: auto
+        & .ingredient-hub
+            margin-left: auto
+        & .weight-input
+            min-width: 50px
+            & input
+                width: 50px
+
+
+    .meal-ratio
+        padding-top: 15px
+        margin-left: 0
+        width: 100%
+
+    #button-box
+        padding: 7px 10px
+    
+@media screen and (min-width: $layout-breakpoint-small + 1) and (max-width: $layout-breakpoint-medium)
+    .final-meals
+        display: grid
+        grid-template-columns: repeat(2, 1fr)
 

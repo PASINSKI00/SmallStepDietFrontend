@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { SharedService } from 'src/app/shared.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BodyInfoService {
-  address = 'http://localhost:8080';
+  address = environment.backendUrl;
 
   constructor(private sharedService: SharedService, private http: HttpClient) { }
 

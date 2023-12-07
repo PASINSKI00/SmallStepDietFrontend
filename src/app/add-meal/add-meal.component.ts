@@ -8,6 +8,9 @@ import { ImageService } from '../image.service';
 import { lastValueFrom } from 'rxjs';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { Router } from '@angular/router';
+import { AlertDetails } from '../overlays/alert/alert-details';
+import { SharedService } from '../shared.service';
+import { RedirectDetails } from '../overlays/redirect/redirect-details';
 
 @Component({
   selector: 'app-add-meal',
@@ -24,6 +27,8 @@ export class AddMealComponent implements OnInit {
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
+
+  isUploading: boolean = false;
 
   addMealForm = this.formBuilder.group({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -42,7 +47,8 @@ export class AddMealComponent implements OnInit {
     return this.addMealForm.get('categoriesArray') as FormArray;
   }
   
-  constructor(private formBuilder: FormBuilder, private dietService: DietService, private imageService: ImageService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private dietService: DietService, private imageService: ImageService, 
+    private router: Router, private sharedService: SharedService) { }
   
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;
@@ -50,7 +56,6 @@ export class AddMealComponent implements OnInit {
 
   imageCropped(event: ImageCroppedEvent) {
     this.croppedImage = event.base64;
-    console.log("Image cropped!");
   }
 
   loadImageFailed() {
@@ -107,6 +112,7 @@ export class AddMealComponent implements OnInit {
   }  
 
   async upload() {
+    this.isUploading = true;
     let finalForm = this.formBuilder.group({
       name: new FormControl(this.addMealForm.value.name!, [Validators.required]),
       recipe: new FormControl(this.addMealForm.value.recipe!, [Validators.required]),
@@ -118,33 +124,25 @@ export class AddMealComponent implements OnInit {
   
     const uploadedMealId: number | undefined = await this.uploadMeal(finalForm);
     if (uploadedMealId == undefined) {
-      alert("Meal wasn't created :( Please try again");
+      this.isUploading = false;
       return;
     }
 
-    if(!this.checkMealImage()) {
-      alert("Meal without picture was successfully created! You'll be redirected");
-      setTimeout(() => {
-        this.router.navigate(['/diet']);
-      }, 3000);
-      return;
+    if(this.checkMealImage()) {
+      const imageName: string | undefined = await this.uploadMealImage(uploadedMealId);
+      if (imageName == undefined) {
+        const alertDetails = new AlertDetails("There were issues with uploading the image :( Please try again");
+        this.sharedService.emitChange(alertDetails);
+        this.dietService.deleteMeal(uploadedMealId);
+        this.isUploading = false;
+        return;
+      }
     }
 
-    const imageName: string | undefined = await this.uploadMealImage(uploadedMealId);
-    if (imageName == undefined) {
-      alert("There were issues with uploading the image :( Please try again");
-      this.dietService.deleteMeal(uploadedMealId).subscribe((response) => {
-        if (response.status != 200)
-          console.error("Meal wasn't deleted :(");
-      });
-
-      return;
-    }
-
-    alert("Meal was successfully created! You'll be redirected");
-    setTimeout(() => {
-      this.router.navigate(['/diet']);
-    }, 3000);
+    const redirectDetails = new RedirectDetails("Meal successfully created", '/diet/meal/' + uploadedMealId, true);
+    this.sharedService.emitChange(redirectDetails);
+    this.isUploading = false;
+    return;
   }
 
   private checkMealImage(): boolean {
@@ -157,13 +155,12 @@ export class AddMealComponent implements OnInit {
   private async uploadMeal(finalForm: FormGroup) : Promise<number | undefined> {
     let idMeal: number | undefined = undefined;
 
-    const response$ = this.dietService.addMeal(finalForm);
-    const lastValue$ = await lastValueFrom(response$);
-
-    if (lastValue$.status != 201)
-      return;
-
-    idMeal = lastValue$.body;
+    await lastValueFrom(this.dietService.addMeal(finalForm)).then((response) => {
+      idMeal = response.body
+    }).catch(() => {
+      const alertDetails = new AlertDetails("Meal wasn't created. Please try again");
+      this.sharedService.emitChange(alertDetails);
+    });
 
     return idMeal;
   }

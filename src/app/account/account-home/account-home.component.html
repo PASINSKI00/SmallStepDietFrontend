@@ -2,18 +2,23 @@
     <div id="sidebar">
         <ul>
             <li>
-                <fa-icon [ngClass]="{'active-icon': activeLink === 'user'}" (click)="activeLink='user'" class="icon" routerLink="user" [icon]="userIcon"></fa-icon>
+                <fa-icon [ngClass]="{'active-icon': activeLink === 'user'}" (click)="activeLink='user'" class="icon" 
+                    routerLink="user" [icon]="userIcon"></fa-icon>
             </li>
             <li>
-                <fa-icon [ngClass]="{'active-icon': activeLink === 'diets'}" (click)="activeLink='diets'" class="icon" routerLink="diets" [icon]="dietsIcon"></fa-icon>
+                <fa-icon [ngClass]="{'active-icon': activeLink === 'diets'}" (click)="activeLink='diets'" class="icon" 
+                    routerLink="diets" [icon]="dietsIcon"></fa-icon>
             </li>
             <li>
-                <fa-icon [ngClass]="{'active-icon': activeLink === 'bodyinfo'}" (click)="activeLink='bodyinfo'" class="icon" routerLink="bodyinfo" [icon]="bodyInfoIcon"></fa-icon>
+                <fa-icon [ngClass]="{'active-icon': activeLink === 'bodyinfo'}" (click)="activeLink='bodyinfo'" class="icon" 
+                    routerLink="bodyinfo" [icon]="bodyInfoIcon"></fa-icon>
             </li>
             <li>
-                <fa-icon [ngClass]="{'active-icon': activeLink == 'reviews'}" (click)="activeLink='reviews'" class="icon" routerLink="reviews" [icon]="reviewsIcon"></fa-icon>
+                <fa-icon [ngClass]="{'active-icon': activeLink == 'reviews'}" (click)="activeLink='reviews'" class="icon" 
+                    routerLink="reviews" [icon]="reviewsIcon"></fa-icon>
             </li>
         </ul>
     </div>
+    
     <router-outlet id="content"></router-outlet>
 </div>

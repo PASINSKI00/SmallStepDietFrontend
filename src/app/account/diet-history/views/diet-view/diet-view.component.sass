@@ -1,0 +1,133 @@
+@import 'src/variables.sass'
+    
+#container
+    display: grid
+    place-items: center
+
+.page-break
+    page-break-inside: avoid
+
+.final-day
+    background-color: $color-yellow
+    margin: 15px
+    padding: 10px
+    border-radius: 20px
+    width: 700px
+
+.day-number-and-makro
+    display: grid
+    grid-template-columns: repeat(2, 1fr)
+    place-items: center
+    margin-bottom: 20px
+
+.day-info
+    padding-top: 15px 
+    display: flex
+    flex-direction: column
+
+.macro
+    display: flex
+    justify-content: space-between
+    gap: 20px
+    min-width: 180px
+
+.day-info p
+    margin: 0
+    padding: 3px
+
+.final-meals
+    display: grid
+    grid-template-columns: repeat(1, 1fr)
+    gap: 10px
+
+.final-meal
+    width: 100%
+    box-sizing: border-box
+    background-color: $color-white
+    padding: 20px
+    border-radius: 20px
+    display: flex
+    flex-direction: column
+    justify-content: flex-end
+    min-width: 580px
+
+.meal-title-and-makro
+    display: grid
+    grid-template-columns: repeat(2, 1fr)
+    place-items: center
+    padding-bottom: 20px
+    border-bottom: 1px solid $color-grey
+
+.meal-title-and-makro p 
+    margin: 0
+    padding: 0
+
+.meal-details
+    width: 100%
+    display: grid
+    grid-template-columns: repeat(1, 1fr)
+    place-items: center
+    padding-top: 20px 
+    padding-bottom: 13px
+    border-bottom: 1px solid $color-grey
+
+.meal-ingredients
+    width: fit-content
+    box-sizing: border-box
+
+.meal-ingredient
+    display: flex
+    margin-bottom: 5px
+    gap: 30px
+    justify-content: space-between
+    align-items: center
+
+.meal-ingredient p
+    margin: 0
+    padding: 1px
+
+.meal-ratio p 
+    margin: 0
+    padding: 0
+    margin-top: 5px
+
+.meal-recipe
+    padding-top: 20px
+
+#empty-box
+    height: 25px
+
+#button-box
+    box-sizing: border-box
+    width: 100%
+    padding: 5px 100px
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    position: fixed
+    bottom: 0
+    background-color: $color-black-o04
+
+@media screen and (max-width: $layout-breakpoint-small)    
+    #days-container
+        width: 100%
+        
+    .final-day
+        width: 96%
+        margin: 2%
+
+    .final-meal
+        min-width: 0
+
+    .day-number-and-makro
+        grid-template-columns: repeat(1, 1fr)
+
+    .meal-title-and-makro
+        grid-template-columns: repeat(1, 1fr)
+
+    #empty-box
+        height: 60px
+
+    #button-box
+        padding: 7px 10px
+

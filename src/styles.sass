@@ -10,21 +10,31 @@ body
     overflow-y: overlay
     background-color: $color-bg-white
 
+div
+    box-sizing: border-box
+
 #container 
     width: 100%
     padding-top: $height-navbar  
   
-
-
-
-
-
+button
+    border: none
+    transition: box-shadow 0.5s ease, transform 0.5s ease
+    &:hover
+        box-shadow: 2px 4px 8px $color-black-o04
+        transform: scale(1.03)
 
 button, input
     font-family: 'Roboto', sans-serif
+    cursor: pointer
 
 input
     outline: none
+    transition: box-shadow 0.3s ease, transform 0.3s ease
+    border-top-right-radius: 10px
+    border-top-left-radius: 10px
+    &:hover, &:focus
+        transform: scale(1.01)
 
 .btn
     border: none
@@ -55,6 +65,10 @@ input
     background-color: $color-green
     color: $color-white
     font-size: $font-size-0
+
+.btn-small-gray
+    @extend .btn-small-green
+    background-color: $color-black-o06
 
 .btn-small-red
     height: fit-content
@@ -127,6 +141,9 @@ input
 .red-text
     color: $color-red
 
+.red-border
+    border-color: $color-red !important
+
 .green-text
     color: $color-green
 
@@ -137,10 +154,18 @@ input
 
 .bg-none
     background-color: transparent
+    &:hover
+        box-shadow: none
 
 .dimmed
     opacity: 0.5
 
+.disabled
+    @extend .dimmed
+    cursor: default
+    &:hover
+        transform: none
+        box-shadow: none
 
 // Scroll 
 ::-webkit-scrollbar
@@ -191,7 +216,7 @@ input
     transition: all 0.3s ease-in-out
 
     &:hover
-        transform: scale(1.1)
+        transform: scale(1.05)
 
 .line-hr
     margin: 15px 0px
@@ -202,3 +227,45 @@ input
     margin: 0px 5px
     height: 90%
     border-left: 1px solid $color-black
+
+.icon-size-22
+    font-size: 22px
+
+.icon-size-20
+    font-size: 20px
+
+.icon-size-29
+    font-size: 29px
+
+.icon-size-45
+    font-size: 45px
+
+fa-icon
+    display: grid
+    place-items: center
+
+@keyframes pulse
+    30%
+        scale: 1
+    40%
+        scale: 1.15
+        box-shadow: 1px 3px 15px $color-black-o06
+    50%
+        scale: 1
+    60%
+        scale: 1.15
+        box-shadow: 1px 3px 15px $color-black-o06
+    70%
+        scale: 1
+
+@keyframes moveUp
+  0%
+    transform: translateY(0px)
+  100%
+    transform: translateY(calc(-100vh + 61px))        
+
+@keyframes moveDown
+  0%
+    transform: translateY(calc(-100vh + 61px))
+  100%
+    transform: translateY(0px)   

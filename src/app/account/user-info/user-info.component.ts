@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { lastValueFrom } from 'rxjs';
 import { ImageService } from 'src/app/image.service';
+import { AlertDetails } from 'src/app/overlays/alert/alert-details';
+import { RedirectDetails } from 'src/app/overlays/redirect/redirect-details';
 import { SharedService } from 'src/app/shared.service';
 import { User } from 'src/app/user';
 import { UserService } from 'src/app/user.service';
@@ -18,16 +19,26 @@ export class UserInfoComponent implements OnInit {
   croppedImage: any = '';
   hideFileInput = true;
 
-  constructor(private sharedService: SharedService, private userService: UserService, private router: Router, private imageService: ImageService) { }
+  isLoading: boolean = false;
+  isLoggingOut: boolean = false;
 
-  ngOnInit(): void {
-    this.userService.getMe().subscribe(response => {
+  constructor(private sharedService: SharedService, private userService: UserService, private imageService: ImageService) { }
+
+  async ngOnInit() {
+    this.isLoading = true;
+    await lastValueFrom(this.userService.getMe()).then(response => {
       this.user = JSON.parse(response.body);
+    }).catch(() => {
+      const alertDetails = new AlertDetails("Something went wrong. Please try again.")
+      this.sharedService.emitChange(alertDetails);
     });
+    this.isLoading = false;
   }
 
   logout() {
-    this.sharedService.logout() ? this.router.navigate(['/home']) : null;
+    this.isLoggingOut = true;
+    this.sharedService.logout() ? this.sharedService.emitChange(new RedirectDetails("Logged Out Successfully.", '/home', true)) : null;
+    this.isLoggingOut = false;
   }
 
   fileChangeEvent(event: any): void {
@@ -39,18 +50,19 @@ export class UserInfoComponent implements OnInit {
   }
 
   loadImageFailed() {
-    alert("Image load failed. Please try again.");
+    const alertDetails = new AlertDetails("Image load failed. Please try again.");
+    this.sharedService.emitChange(alertDetails);
   }
 
   uploadImage() {
     this.imageService.uploadUserImage(this.croppedImage).subscribe(
-      (response) => {
-        alert("Image uploaded successfully!");
+      () => {
         this.hideFileInput = true;
         location.reload();
       },
-      (error) => {
-        alert("Image upload failed. Please try again.");
+      () => {
+        const alertDetails = new AlertDetails("Image upload failed. Please try again.");
+        this.sharedService.emitChange(alertDetails);
       }
     );
   }

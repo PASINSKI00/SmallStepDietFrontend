@@ -1,0 +1,8 @@
+<div @fadeSlideInOut *ngIf="sharedService.shouldShowOverlay" id="base-container" (click)="sharedService.closeOverlay()">
+    <div @fadeSlideInOut *ngIf="shouldShowOverlaySubContent" id="form-background" (click)="$event.stopPropagation()">
+        <button class="btn btn-primary-gray close-button" (click)="sharedService.closeOverlay()">
+            <fa-icon [icon]="xMark"></fa-icon>
+        </button>
+        <ng-content></ng-content>
+    </div>
+</div>

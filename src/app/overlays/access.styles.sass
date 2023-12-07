@@ -1,0 +1,82 @@
+@import '/src/variables.sass'
+    
+#signup-container, #login-container
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    text-align: center
+    width: 80%
+
+#login-container p, #signup-container p 
+    font-size: $font-size-2
+    font-weight: $font-weight-light
+    margin: 15px
+
+#signup-container .rules, #login-container .rules
+    font-size: 14px
+    font-weight: 300
+    margin-bottom: 0
+
+.link
+    font-weight: 400
+    text-decoration: none
+    &:hover
+        cursor: pointer
+    
+input
+    border: none
+    border-bottom: 1px solid $color-black-o04
+    outline: none
+    padding: 2px 10px
+    padding-top: 5px
+    margin: 5px
+    width: 100%
+    font-size: $font-size-1
+    &:hover
+        border-color: $color-black
+    &:focus
+        background-color: $color-black-o01
+
+#login-button, #signup-button
+    background: $color-green
+    color: $color-white
+    border: none
+    width: 100%
+    border-radius: 50px
+    padding: 5px 50px
+    margin: 5px
+    margin-top: 25px
+    font-size: $font-size-2
+    cursor: pointer
+    font-weight: $font-weight-medium
+
+#change-view-button
+    background-color: $color-yellow
+    border: none
+    border-radius: 50px
+    width: 100%
+    padding: 5px 50px
+    min-height: 45px
+    font-size: $font-size-1
+    cursor: pointer
+    font-weight: $font-weight-light
+
+#divider
+    width: 100%
+    display: flex
+    justify-content: space-between
+    align-items: center
+    font-size: $font-size-1
+
+#divider hr
+    width: 100%
+    border: none
+    border-bottom: 1px solid $color-black-o04
+
+@media screen and (max-width: $layout-breakpoint-small)
+    #signup-container, #login-container
+        width: 95%
+
+    #change-view-button
+        font-size: $font-size-1
