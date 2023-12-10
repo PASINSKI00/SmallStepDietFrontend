@@ -32,7 +32,7 @@ export class AddMealComponent implements OnInit {
 
   addMealForm = this.formBuilder.group({
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    recipe: new FormControl('', [Validators.required, Validators.minLength(10)]),
+    recipe: new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(4096)]),
     ingredientsArray: this.formBuilder.array([], [Validators.required, Validators.minLength(1)]),
     categoriesArray: this.formBuilder.array([], [Validators.required, Validators.minLength(1)]),
     image: '',
