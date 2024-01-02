@@ -96,13 +96,13 @@
                     </div>
                 </ng-container>
 
-                <div *ngIf="isLoadingBottom" class="meal centered-meal">
-                    <app-spinner></app-spinner>
-                </div>
-
                 <div *ngIf="noMoreMeals" class="meal add-meal">
                     <p>Out of meals?</p>
                     <button class="btn btn-small-green" routerLink="/addMeal">Add a new one</button>
+                </div>
+
+                <div *ngIf="isLoadingBottom" class="meal centered-meal">
+                    <app-spinner></app-spinner>
                 </div>
             </div>
 
