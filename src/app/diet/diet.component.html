@@ -122,7 +122,10 @@
 
                 <div id="single-meal-info">
                     <p class="normal-super-wide-text">{{singleMeal.name}}</p>
-                    <p class="small-wide-text left-cut">{{singleMeal!.getAllIngredientsNames()}}</p>
+                    
+                    <ng-container *ngFor="let ingredient of singleMeal.ingredientsNames">
+                        <p class="small-wide-text left-cut">{{ingredient}}</p>
+                    </ng-container>
 
                     <br>
                     <p class="small-super-wide-text">Ratio:</p>
