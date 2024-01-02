@@ -41,15 +41,4 @@ export class Meal {
             .concat(this.ingredientsNames[1] ? ", " + this.ingredientsNames[1] : "")
             .concat(this.ingredientsNames[2] ? ", ..." : "");
     }
-
-    getAllIngredientsNames(): string {
-        let names: string = "";
-        this.ingredientsNames.forEach((ingredient, i) => {
-            if(i != 0)
-                names.concat(", " + ingredient);
-            else
-                names = ingredient.toString();
-        })
-        return names;
-    }
 }
