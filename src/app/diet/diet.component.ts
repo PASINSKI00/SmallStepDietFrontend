@@ -122,8 +122,7 @@ export class DietComponent implements OnInit {
 
     this.observerEnd = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        console.log("entering observerEnd")
-        if (entry.isIntersecting && this.appendingAllowed) {
+        if (entry.isIntersecting && this.appendingAllowed && this.noMoreMeals === false) {
           this.appendMealsAtTheBack();
         }  
       });
@@ -136,7 +135,7 @@ export class DietComponent implements OnInit {
     if(this.firstPageNumber == 0 || this.appendingAllowed === false)
       return;
     this.appendingAllowed = false;
-    console.log("Appending meals at the start");
+    this.noMoreMeals = false;
     this.isLoadingTop = true;
     await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.firstPageNumber-1, this.pageSize)).then((array) => {
       if(array.length == 0){
@@ -156,7 +155,6 @@ export class DietComponent implements OnInit {
 
   async appendMealsAtTheBack() {
     this.appendingAllowed = false;
-    console.log("Appending meals at the back");
     this.isLoadingBottom = true;
     await lastValueFrom(this.dietService.getMealsAsArray(this.mealQueryInput, this.lastPageNumber+1, this.pageSize)).then((array) => {
       this.isLoadingBottom = false;
@@ -169,6 +167,7 @@ export class DietComponent implements OnInit {
       this.meals.splice(0, array.length);
       this.firstPageNumber++;
       this.lastPageNumber++;
+      this.noMoreMeals = false;
     }).catch(() => {
       const alertDetails = new AlertDetails("Something went wrong when getting new meals")
       this.sharedService.emitChange(alertDetails);
