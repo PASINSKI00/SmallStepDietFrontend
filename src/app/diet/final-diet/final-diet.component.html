@@ -6,81 +6,98 @@
         </p>
     </div>
 
-    <div class="final-day" *ngFor="let finalDay of diet.finalDays; let dayIndex = index">
-        <p class="big-text">Day {{dayIndex+1}}</p>
-        
-        <app-spinner *ngIf="isDayLoading(dayIndex)"></app-spinner>
+    <ng-container *ngFor="let finalDay of diet.finalDays; let dayIndex = index">
 
-        <span *ngIf="!isDayLoading(dayIndex)" class="final-day-content">
-            <div class="day-info">
-                <p class="go-center normal-wide-text">{{this.sumDayPercentage(finalDay)}}%</p>
+        <div class="final-day">
+            <p class="big-text">Day {{dayIndex+1}}</p>
+            
+            <app-spinner *ngIf="isDayLoading(dayIndex)"></app-spinner>
 
-                <div class="macro first-macro">
-                    <p class="super-small-wide-text">calories:</p><p>{{finalDay.calories}} kcal</p>
-                </div>
+            <span *ngIf="!isDayLoading(dayIndex)" class="final-day-content">
+                <div class="day-info">
+                    <p class="go-center normal-wide-text">{{this.sumDayPercentage(finalDay)}}%</p>
 
-                <div class="macro">
-                    <p class="super-small-wide-text">carbs:</p><p>{{finalDay.carbs}}g</p>
-                </div>
-
-                <div class="macro">
-                    <p class="super-small-wide-text">protein:</p><p>{{finalDay.protein}}g</p>
-                </div>
-
-                <div class="macro">
-                    <p class="super-small-wide-text">fats:</p><p>{{finalDay.fats}}g</p>
-                </div>
-
-                <button class="btn btn-primary-green apply-changes-button" *ngIf="finalDay.modified" (click)="applyChanges()">Apply changes</button>
-                <button class="btn btn-primary-red reset-day-button" *ngIf="applicableForResetStates[dayIndex] || finalDay.modified" 
-                    (click)="resetDay(finalDay.idFinalDay, dayIndex)">Reset day</button>
-            </div>
-
-            <div class="final-meals">
-                <div class="final-meal" *ngFor="let finalMeal of finalDay.finalMeals;let mealIndex = index">
-                    <div class="meal-title">
-                            <p class="meal-actual-title small-wide-text">{{finalMeal.name}}</p>
-                            <span class="input-percent">
-                                <input class="super-small-wide-text" type="number" min="0" (input)="finalMeal.percentModified = true; finalDay.modified = true; finalDay.applicableForReset = true" [(ngModel)]="finalMeal.percentOfDay" max="100">%
-                            </span>
+                    <div class="macro first-macro">
+                        <p class="super-small-wide-text">calories:</p><p>{{finalDay.calories}} kcal</p>
                     </div>
 
-                    <div class="meal-details">
-                        <div class="meal-ingredients">
-                            <div [ngClass]="{'display-none': ingredient.remove}" class="meal-ingredient super-small-wide-text" *ngFor="let ingredient of finalMeal.finalIngredients">
-                                <p>{{ingredient.name}}</p>
-                                <span class="super-small-text ingredient-hub">
-                                    <span class="weight-input super-small-wide-text">
-                                        <input class="super-small-wide-text" type="number" (input)="ingredient.modified = true; finalDay.modified = true; finalDay.applicableForReset = true" [(ngModel)]="ingredient.weight" min="0">g
+                    <div class="macro">
+                        <p class="super-small-wide-text">carbs:</p><p>{{finalDay.carbs}}g</p>
+                    </div>
+
+                    <div class="macro">
+                        <p class="super-small-wide-text">protein:</p><p>{{finalDay.protein}}g</p>
+                    </div>
+
+                    <div class="macro">
+                        <p class="super-small-wide-text">fats:</p><p>{{finalDay.fats}}g</p>
+                    </div>
+
+                    <button class="btn btn-primary-green apply-changes-button" *ngIf="finalDay.modified" (click)="applyChanges()">Apply changes</button>
+                    <button class="btn btn-primary-red reset-day-button" *ngIf="applicableForResetStates[dayIndex] || finalDay.modified" 
+                        (click)="resetDay(finalDay.idFinalDay, dayIndex)">Reset day</button>
+                </div>
+
+                <div class="final-meals">
+                    <div class="final-meal" *ngFor="let finalMeal of finalDay.finalMeals;let mealIndex = index">
+                        <div class="meal-title">
+                                <p class="meal-actual-title small-wide-text">{{finalMeal.name}}</p>
+                                <span class="input-percent">
+                                    <input class="super-small-wide-text" type="number" min="0" (input)="finalMeal.percentModified = true; finalDay.modified = true; finalDay.applicableForReset = true" [(ngModel)]="finalMeal.percentOfDay" max="100">%
+                                </span>
+                        </div>
+
+                        <div class="meal-details">
+                            <div class="meal-ingredients">
+                                <div [ngClass]="{'display-none': ingredient.remove}" class="meal-ingredient super-small-wide-text" *ngFor="let ingredient of finalMeal.finalIngredients">
+                                    <p>{{ingredient.name}}</p>
+                                    <span class="super-small-text ingredient-hub">
+                                        <span class="weight-input super-small-wide-text">
+                                            <input class="super-small-wide-text" type="number" (input)="ingredient.modified = true; finalDay.modified = true; finalDay.applicableForReset = true" [(ngModel)]="ingredient.weight" min="0">g
+                                        </span>
+                                        <button class="bg-none">
+                                            <fa-icon class="icon-size-20" [icon]="deleteIcon" (click)="ingredient.remove = true; 
+                                                ingredient.modified = true; finalDay.modified = true; 
+                                                finalDay.applicableForReset = true"></fa-icon>
+                                        </button>
                                     </span>
-                                    <button class="bg-none">
-                                        <fa-icon class="icon-size-20" [icon]="deleteIcon" (click)="ingredient.remove = true; 
-                                            ingredient.modified = true; finalDay.modified = true; 
-                                            finalDay.applicableForReset = true"></fa-icon>
-                                    </button>
+                                </div>
+                                <!-- <fa-icon [icon]="addIcon"></fa-icon> -->
+                            </div>
+                            <div class="meal-ratio">
+                                <span class="macro">
+                                    <p class="super-small-wide-text">calories:</p><p>{{finalMeal.calories}} kcal</p>
+                                </span>
+                                <span class="macro">
+                                    <p class="super-small-wide-text">carbs:</p><p>{{finalMeal.carbs}}g</p>
+                                </span>
+                                <span class="macro">
+                                    <p class="super-small-wide-text">protein:</p><p>{{finalMeal.protein}}g</p>
+                                </span>
+                                <span class="macro">
+                                    <p class="super-small-wide-text">fats:</p><p>{{finalMeal.fats}}g</p>
                                 </span>
                             </div>
-                            <!-- <fa-icon [icon]="addIcon"></fa-icon> -->
-                        </div>
-                        <div class="meal-ratio">
-                            <span class="macro">
-                                <p class="super-small-wide-text">calories:</p><p>{{finalMeal.calories}} kcal</p>
-                            </span>
-                            <span class="macro">
-                                <p class="super-small-wide-text">carbs:</p><p>{{finalMeal.carbs}}g</p>
-                            </span>
-                            <span class="macro">
-                                <p class="super-small-wide-text">protein:</p><p>{{finalMeal.protein}}g</p>
-                            </span>
-                            <span class="macro">
-                                <p class="super-small-wide-text">fats:</p><p>{{finalMeal.fats}}g</p>
-                            </span>
                         </div>
                     </div>
                 </div>
-            </div>
-        </span>
-    </div>
+            </span>
+        </div>
+
+        <div class="ad-box">ad-box
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5062742448636216"
+            crossorigin="anonymous"></script>
+            <ins class="adsbygoogle"
+                style="display:block; text-align:center;"
+                data-ad-layout="in-article"
+                data-ad-format="fluid"
+                data-ad-client="ca-pub-5062742448636216"
+                data-ad-slot="5334448772"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </ng-container>
 
     <div id="empty-box"></div>
     
