@@ -34,6 +34,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PrivacyComponent } from './footer/policies/privacy/privacy.component';
 import { TermsAndConditionsComponent } from './footer/policies/terms-and-conditions/terms-and-conditions.component';
 import { CookiesComponent } from './footer/policies/cookies/cookies.component';
+import { BodyinfoComponent } from './overlays/bodyinfo/bodyinfo.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { CookiesComponent } from './footer/policies/cookies/cookies.component';
     AlertComponent,
     PrivacyComponent,
     TermsAndConditionsComponent,
-    CookiesComponent
+    CookiesComponent,
+    BodyinfoComponent
   ],
   imports: [
     BrowserModule,
