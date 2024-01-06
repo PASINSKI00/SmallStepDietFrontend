@@ -6,6 +6,7 @@ import { RedirectDetails } from './overlays/redirect/redirect-details';
 import { RedirectComponent } from './overlays/redirect/redirect.component';
 import { AlertDetails } from './overlays/alert/alert-details';
 import { AlertComponent } from './overlays/alert/alert.component';
+import { BodyinfoComponent } from './overlays/bodyinfo/bodyinfo.component';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,8 @@ export class AppComponent {
         this.sharedService.showOverlay(RedirectComponent, change, RedirectDetails)
       else if(change instanceof AlertDetails)
         this.sharedService.showOverlay(AlertComponent, change, AlertDetails)
+      else if(change == 'bodyInfoOverlay')
+        this.sharedService.showOverlay(BodyinfoComponent)
       });
    }
 }
