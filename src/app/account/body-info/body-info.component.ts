@@ -5,6 +5,7 @@ import { BodyInfoService } from './body-info.service';
 import { SharedService } from 'src/app/shared.service';
 import { RedirectDetails } from 'src/app/overlays/redirect/redirect-details';
 import { AlertDetails } from 'src/app/overlays/alert/alert-details';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-body-info',
@@ -17,11 +18,17 @@ export class BodyInfoComponent implements OnInit {
   caloriesGoal: number = 0;
   isLoading: boolean = false;
   firstTimer: boolean = false;
+  overlayActive: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private bodyInfoService: BodyInfoService, private sharedService: SharedService) { }
+  constructor(private formBuilder: FormBuilder, private bodyInfoService: BodyInfoService, private sharedService: SharedService,
+    private router: Router) { }
 
   ngOnInit(): void {
-    this.getBodyInfo();
+    const currentPath = this.router.url;
+    if(currentPath.includes('diet'))
+      this.overlayActive = true
+    else
+      this.getBodyInfo();
   }
 
   bodyInfoForm = this.formBuilder.group({

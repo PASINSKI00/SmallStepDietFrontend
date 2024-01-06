@@ -84,9 +84,9 @@
         <app-spinner *ngIf="isLoading"></app-spinner>
     </form>
 
-    <div class="line-vr"></div>
+    <div *ngIf="!overlayActive" class="line-vr"></div>
 
-    <div id="calculations-container">
+    <div *ngIf="!overlayActive" id="calculations-container">
         <p id="calculations-title" class="big-text">Energetic needs</p>
 
         <div id="calculations">
