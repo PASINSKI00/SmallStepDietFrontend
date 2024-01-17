@@ -7,11 +7,15 @@ import { SharedService } from 'src/app/shared.service';
   styleUrls: ['./finished.component.sass']
 })
 export class FinishedComponent implements OnInit {
+  isLoggedIn: boolean = false;
+  idDiet: number = 0;
 
   constructor(private sharedService: SharedService) { }
 
   ngOnInit(): void {
+    this.isLoggedIn = this.sharedService.isLoggedIn();
+    this.idDiet = this.sharedService.getActiveDietId();
     this.sharedService.clearActiveDiet();
+    this.sharedService.setShouldPromptBodyInfo(true);
   }
-
 }

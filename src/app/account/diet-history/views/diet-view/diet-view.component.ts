@@ -6,6 +6,7 @@ import { FinalDiet } from 'src/app/diet/final-diet/final-diet';
 // @ts-ignore
 import * as html2pdf from 'html2pdf.js';
 import { DatePipe } from '@angular/common';
+import { SharedService } from 'src/app/shared.service';
 
 @Component({
   selector: 'app-diet-view',
@@ -14,8 +15,10 @@ import { DatePipe } from '@angular/common';
 })
 export class DietViewComponent {
   finalDiet: FinalDiet = null!;
+  isLoggedIn: boolean = false;
 
-  constructor(private route: ActivatedRoute, private dietService: DietService, private datePipe: DatePipe) {
+  constructor(private route: ActivatedRoute, private dietService: DietService, private datePipe: DatePipe, 
+              private sharedService: SharedService) {
     this.route.params.subscribe( params => 
       {
         lastValueFrom(this.dietService.getDiet(params['id']))
@@ -26,6 +29,7 @@ export class DietViewComponent {
           });          
       }
     );
+    this.isLoggedIn = this.sharedService.isLoggedIn();
   }  
 
   async downloadPdf() {

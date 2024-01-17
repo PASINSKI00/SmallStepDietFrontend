@@ -64,7 +64,8 @@
     <div id="empty-box"></div>
     
     <div id="button-box">
-        <button class="btn btn-primary-red" routerLink="/account/diets">Return</button>
+        <button *ngIf="isLoggedIn" class="btn btn-primary-red" routerLink="/account/diets">Return</button>
+        <button *ngIf="!isLoggedIn" class="btn btn-primary-red" routerLink="/diet">Start over</button>
         <button class="btn btn-primary-green" (click)="downloadPdf()">Download PDF</button>
     </div>
 </div>

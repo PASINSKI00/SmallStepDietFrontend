@@ -5,13 +5,15 @@
         </div>
 
         <div id="banner" class="normal-wide-text">
-            <button class="btn btn-primary-green" routerLink="/account/diets">Continue</button> 
+            <button *ngIf="isLoggedIn" class="btn btn-primary-green" routerLink="/account/diets">Continue</button>
+            <button *ngIf="!isLoggedIn" class="btn btn-primary-green" routerLink="/diet/final/{{idDiet}}/view">View</button>
         </div>
     </div>
 
     <div id="empty-box"></div>
 
     <div id="button-box">
-        <button class="btn btn-primary-green" routerLink="/account/diets">Continue</button>
+        <button *ngIf="isLoggedIn" class="btn btn-primary-green" routerLink="/account/diets">Continue</button>
+        <button *ngIf="!isLoggedIn" class="btn btn-primary-green" routerLink="/diet/final/{{idDiet}}/view">View</button>
     </div>
 </div>
