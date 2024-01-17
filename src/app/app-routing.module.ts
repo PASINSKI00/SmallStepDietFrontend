@@ -41,13 +41,11 @@ const routes: Routes = [
   },
   {
     path: 'diet/final',
-    component: FinalDietComponent,
-    canActivate: [authGuard]
+    component: FinalDietComponent
   },
   {
     path: 'diet/final/groceries',
-    component: GroceriesComponent,
-    canActivate: [authGuard]
+    component: GroceriesComponent
   },
   {
     path: 'diet/final/groceries/:id',
@@ -56,8 +54,7 @@ const routes: Routes = [
   },
   {
     path: 'diet/finished',
-    component: FinishedComponent,
-    canActivate: [authGuard]
+    component: FinishedComponent
   },
   {
     path: 'account',
@@ -88,8 +85,7 @@ const routes: Routes = [
   },
   {
     path: 'diet/final/:id/view',
-    component: DietViewComponent,
-    canActivate: [authGuard]
+    component: DietViewComponent
   },
   {
     path: 'policies/privacy',
