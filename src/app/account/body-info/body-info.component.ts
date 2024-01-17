@@ -25,10 +25,13 @@ export class BodyInfoComponent implements OnInit {
 
   ngOnInit(): void {
     const currentPath = this.router.url;
-    if(currentPath.includes('diet'))
-      this.overlayActive = true
-    else
+    if(currentPath.includes('diet')) {
+      this.overlayActive = true;
+      this.bodyInfoForm.setValue(this.sharedService.readBodyInfoForm());
+    }
+    else{
       this.getBodyInfo();
+    }
   }
 
   bodyInfoForm = this.formBuilder.group({
@@ -64,6 +67,12 @@ export class BodyInfoComponent implements OnInit {
   }
 
   async onSubmit() {
+    if(this.sharedService.isLoggedIn() == false){
+      this.sharedService.saveBodyInfoForm(this.bodyInfoForm);
+      this.sharedService.emitChange('closeOverlay');
+      return;
+    }
+
     this.isLoading = true;
     this.bodyInfoService.saveBodyInfo(this.bodyInfoForm).subscribe(
       (response) => {
