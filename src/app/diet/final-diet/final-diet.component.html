@@ -32,7 +32,8 @@
                         <p class="super-small-wide-text">fats:</p><p>{{finalDay.fats}}g</p>
                     </div>
 
-                    <button class="btn btn-primary-green apply-changes-button" *ngIf="finalDay.modified" (click)="applyChanges()">Apply changes</button>
+                    <button class="btn btn-primary-green apply-changes-button" *ngIf="finalDay.modified" 
+                        (click)="applyChanges()">Apply changes</button>
                     <button class="btn btn-primary-red reset-day-button" *ngIf="applicableForResetStates[dayIndex] || finalDay.modified" 
                         (click)="resetDay(finalDay.idFinalDay, dayIndex)">Reset day</button>
                 </div>
