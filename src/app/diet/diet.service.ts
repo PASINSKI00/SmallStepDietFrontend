@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { SharedService } from '../shared.service';
 import { Meal } from './meal';
 import { FinalDiet } from './final-diet/final-diet';
@@ -14,7 +14,7 @@ export class DietService {
   address = environment.backendUrl;
   tmpMeals: Array<Meal> = [];
 
-  constructor(private http: HttpClient, private sharedService: SharedService) { }
+  constructor(private http: HttpClient, private sharedService: SharedService, private formBuilder: FormBuilder) { }
 
   getMeals() : Observable<any> {
     return this.http.get(this.address + '/api/meal/search', { observe: 'response', responseType: 'text' as 'json' })
@@ -77,37 +77,32 @@ export class DietService {
   }
 
   uploadDiet(diet: Meal[][]) : Observable<any> {
-    let dietIds: number[][] = [];
-
-    diet.forEach(day => {
-      let dayIds: number[] = [];
-      day.forEach(meal => {
-        dayIds.push(meal.idMeal);
-      });
-      dietIds.push(dayIds);
-    });
-
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
-    return this.http.post(this.address + '/api/diet', dietIds, { headers: headers, observe: 'response', responseType: 'text' as 'json' })
+    let url: string = '/api/diet';
+    let body: any;
+
+    body = this.prepareDietRqBody(diet);
+    url = this.sharedService.isLoggedIn() ? url : url.concat('/unauthenticated');
+    
+    return this.http.post(this.address + url, body, { headers: headers, observe: 'response', responseType: 'text' as 'json' })
   }
 
   updateDiet(diet: Meal[][]) : Observable<any> {
-    let dietIds: number[][] = [];
-
-    diet.forEach(day => {
-      let dayIds: number[] = [];
-      day.forEach(meal => {
-        dayIds.push(meal.idMeal);
-      });
-      dietIds.push(dayIds);
-    });
-
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     const params = {idDiet: this.sharedService.getActiveDietId().toString()};
-    return this.http.put(this.address + '/api/diet', dietIds, { headers: headers, observe: 'response', responseType: 'text' as 'json', params: params })
+    let url: string = '/api/diet';
+    let body: any;
+
+    body = this.prepareDietRqBody(diet);
+    url = this.sharedService.isLoggedIn() ? url : url.concat('/unauthenticated');
+
+    return this.http.put(this.address + url, body, { headers: headers, observe: 'response', responseType: 'text' as 'json', params: params })
   }
 
   modifyDiet(diet: FinalDiet) : Observable<any> {
+    let body: any;
+    let url: string = '/api/diet/final';
+
     diet.finalDays.forEach(day => {
       day.finalMeals.forEach(meal => {
         if(meal.percentModified != true) {
@@ -126,13 +121,33 @@ export class DietService {
       });
     });
 
+    if(this.sharedService.isLoggedIn()) {
+      body = diet;
+    } else {
+      url = url.concat('/unauthenticated');
+      body = {
+        dietModifyForm: diet,
+        bodyInfoForm: this.getUnauthenticatedBodyInfo().value
+      }
+    }
+
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
-    return this.http.put(this.address + '/api/diet/final', diet, { headers: headers, observe: 'response', responseType: 'text' as 'json' })
+    return this.http.put(this.address + url, body, { headers: headers, observe: 'response', responseType: 'text' as 'json' })
   }
 
   resetDay(idDiet: number, idFinalDay: number) {
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
-    return this.http.put(this.address + '/api/diet/final/day/reset', null, { headers: headers, observe: 'response', responseType: 'text' as 'json', params: {idDiet, idFinalDay} })
+    let url: string = '/api/diet/final/day/reset';
+    let body: any;
+    
+    if(this.sharedService.isLoggedIn()) {
+      body = null;
+    } else {
+      url = url.concat('/unauthenticated');
+      body = this.getUnauthenticatedBodyInfo().value;
+    }
+
+    return this.http.put(this.address + url, body, { headers: headers, observe: 'response', responseType: 'text' as 'json', params: {idDiet, idFinalDay} })
   }
 
   reCalculateDiet(idDiet: number) {
@@ -144,5 +159,46 @@ export class DietService {
   deleteMeal(idMeal: number) : Observable<any> {
     const headers = new HttpHeaders({Authorization: this.sharedService.getAuthHeaderValue()});
     return this.http.delete(this.address + '/api/meal', { observe: 'response', params: {idMeal}, headers: headers, responseType: 'text' as 'json' });
+  }
+
+  getUnauthenticatedBodyInfo(): FormGroup {
+    let bodyInfo: FormGroup;
+
+    bodyInfo = this.formBuilder.group({
+      goal: new FormControl('LOSE_WEIGHT', [Validators.required]),
+      gender: new FormControl('MALE', [Validators.required]),
+      height: new FormControl(undefined, [Validators.required]),
+      weight: new FormControl(undefined, [Validators.required]),
+      age: new FormControl(undefined, [Validators.required, Validators.min(16)]),
+      pal: new FormControl<number>(1.4, [Validators.required, Validators.min(1.4), Validators.max(2.5)]),
+      additionalCalories: 0
+    });
+    bodyInfo.setValue(this.sharedService.readBodyInfoForm());
+
+    return bodyInfo;
+  }
+
+  prepareDietRqBody(diet: Meal[][]): any {
+    let days: number[][] = [];
+    let body: any;
+
+    diet.forEach(day => {
+      let dayIds: number[] = [];
+      day.forEach(meal => {
+        dayIds.push(meal.idMeal);
+      });
+      days.push(dayIds);
+    });
+    if(this.sharedService.isLoggedIn() == false){
+      const bodyInfo: FormGroup = this.getUnauthenticatedBodyInfo();
+      body = {
+        days: days,
+        bodyInfoForm: bodyInfo.value
+      }
+    } else {
+      body = days;
+    }
+
+    return body;
   }
 }

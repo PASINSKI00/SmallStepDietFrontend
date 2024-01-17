@@ -267,26 +267,26 @@ export class DietComponent implements OnInit {
       }
     }
 
-    if(this.diet.length == 0 && !isFailed) {
+    if(this.diet.length == 0 && isFailed == false) {
       const alertDetails = new AlertDetails("Diet is empty. Please add meals.");
       this.sharedService.emitChange(alertDetails);
       this.addDayToDiet();
       isFailed = true
     }
 
-    if(!this.sharedService.isLoggedIn() && !isFailed) {
-      const redirectDetails = new RedirectDetails("You need to be logged in to continue", "login");
-      this.sharedService.emitChange(redirectDetails);
-      isFailed = true
+    if(this.sharedService.isLoggedIn() == false && this.sharedService.shouldPromptBodyInfo == true && isFailed == false) {
+      this.sharedService.setShouldPromptBodyInfo(false);
+      this.sharedService.emitChange('bodyInfoOverlay');
+      isFailed = true;
     }
 
-    if(!this.isBodyInfoSet && !isFailed) {
+    if(this.sharedService.isLoggedIn() && !this.isBodyInfoSet && isFailed == false) {
       const redirectDetails = new RedirectDetails("Body information missing", "/account/bodyinfo");
       this.sharedService.emitChange(redirectDetails);
       isFailed = true
     }
-
-    if(this.sharedService.getActiveDietId() != -1 && !isFailed)  {
+    
+    if(this.sharedService.getActiveDietId() != -1 && isFailed == false)  {
       await lastValueFrom(this.dietService.updateDiet(this.diet))
         .catch((error) => {
           if (error.status == 404) {
@@ -300,10 +300,11 @@ export class DietComponent implements OnInit {
         });
     }
 
-    if(this.sharedService.getActiveDietId() == -1 && !isFailed) {
+    if(this.sharedService.getActiveDietId() == -1 && isFailed == false) {
       await lastValueFrom(this.dietService.uploadDiet(this.diet)).then((response) => {
         this.sharedService.setActiveDietId(JSON.parse(response.body));
-      }).catch(() => {
+      }).catch((err) => {
+        console.log(err)
         const alertDetails = new AlertDetails("Diet wasn't created. Please try again.");
         this.sharedService.emitChange(alertDetails);
         isFailed = true;
