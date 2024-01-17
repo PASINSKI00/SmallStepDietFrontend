@@ -7,12 +7,14 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, ComponentType } from '@angular/cdk/portal';
 import { BaseComponent } from './overlays/base/base.component';
 import { BaseDetails } from './overlays/base/base-details';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SharedService {
   shouldShowOverlay: boolean = false;
+  shouldPromptBodyInfo: boolean = true;
   
   private emitChangeSource = new Subject<any>();
   changeEmitted$ = this.emitChangeSource.asObservable();
@@ -115,5 +117,21 @@ export class SharedService {
     this.shouldShowOverlay = true;
     this.overlayRef = this.overlay.create();
     this.overlayRef.attach(componentPortal);
+  }
+
+  readBodyInfoForm() {
+    return JSON.parse(localStorage.getItem('bodyInfoForm') ? localStorage.getItem('bodyInfoForm')! : ''); 
+  }
+
+  saveBodyInfoForm(form: FormGroup) {
+    localStorage.setItem('bodyInfoForm', JSON.stringify(form.value))
+  }
+
+  getShouldPromptBodyInfo() {
+    return this.shouldPromptBodyInfo;
+  }
+  
+  setShouldPromptBodyInfo(value: boolean) {
+    this.shouldPromptBodyInfo = value;
   }
 }
